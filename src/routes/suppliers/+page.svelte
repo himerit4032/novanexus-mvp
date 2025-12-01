@@ -312,10 +312,11 @@
           that match. For urgent projects you can also reply directly to Jun’s
           email with PDFs / layouts attached.
         </p>
-        <p class="sup-footer-note">
-          (For this MVP, your submission is only stored in your browser console.
-          Next step is wiring this up to PocketBase.)
-        </p>
+        <p class="sup-note">
+  Our team will follow up with drawings, layouts, and RFQs that match your machines.
+  For urgent projects, you can also reply directly to the email in our introduction message.
+</p>
+
       </div>
     {/if}
   </div>
