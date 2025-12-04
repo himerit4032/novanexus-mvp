@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "howItWorks": "How it works",
+    "liveRFQs": "Live RFQs",
+    "forSuppliers": "For suppliers",
+    "about": "About NovaNexus"
+  },
+  "home": {
+    "hero": {
+      "kicker": "MANUFACTURING ▢ AUTOMATION ▢ GLOBAL SOURCING",
+      "titleLine1": "Turn complex production projects",
+      "titleLine2": "into clear, quotable work.",
+      "subtitle": "NovaNexus is a neutral hub for buyers and suppliers working on real production lines, automation, and precision manufacturing – focused on capability depth, structured RFQs, and less noise on both sides.",
+      "ctaPrimary": "Submit an RFQ",
+      "ctaSecondary": "Browse vetted suppliers"
+    },
+    "who": {
+      "kicker": "WHO THIS IS FOR",
+      "title": "Built around the people running the work.",
+      "subtitle": "Whether you manage operations, engineering, or sales, the platform should feel like a map – not just another directory.",
+      "pillars": {
+        "buyers": {
+          "title": "For buyers",
+          "body": "When you need a real factory or integrator for production lines, not just a generic contact list.",
+          "bullets": [
+            "Guided RFQ intake that reduces back-and-forth",
+            "Capability-first supplier profiles",
+            "Basic cost and lead-time expectations"
+          ],
+          "cta": "Open buyer overview"
+        },
+        "suppliers": {
+          "title": "For suppliers",
+          "body": "For factories, system integrators, and automation teams that want qualified work, not random one-off requests.",
+          "bullets": [
+            "Profiles built around processes and materials",
+            "RFQs pre-filtered by region and project scale",
+            "Context to price work without decoding vague emails"
+          ],
+          "cta": "Open supplier overview"
+        },
+        "both": {
+          "title": "For both sides",
+          "body": "A neutral layer that focuses on clarity, not noise – fewer mismatches, clearer requirements, and better decisions.",
+          "bullets": [
+            "Shared vocabulary around processes and specs",
+            "Lightweight market signals on cost and capacity",
+            "Content that explains trade-offs in plain language"
+          ],
+          "cta": "See how it works"
+        }
+      }
+    },
+    "flow": {
+      "kicker": "FLOW",
+      "title": "How it works in practice.",
+      "subtitle": "High-level view; the dedicated page goes deeper. The focus is to keep the loop tight, technical, and clear.",
+      "cta": "View full process",
+      "steps": [
+        {
+          "step": "01",
+          "title": "Describe the line or project",
+          "body": "Share a concise brief: process, materials, annual volume, region, and target timeline. Attach layouts, drawings, or photos you already have."
+        },
+        {
+          "step": "02",
+          "title": "RFQ is structured & matched",
+          "body": "The RFQ is cleaned up, checked for missing details, and routed to suppliers whose capabilities actually fit the scope – not just anyone nearby."
+        },
+        {
+          "step": "03",
+          "title": "Focused supplier conversations",
+          "body": "Shortlisted suppliers receive a structured package so they can respond with real numbers instead of guesswork and endless clarification emails."
+        }
+      ]
+    },
+    "supplierBench": {
+      "kicker": "SUPPLIER BENCH",
+      "title": "What kind of work lives on NovaNexus?",
+      "subtitle": "The directory leans toward full lines, automation, and ongoing production – not one-off prototypes. A few examples of where it’s strongest:",
+      "cta": "Open vetted suppliers",
+      "cards": [
+        {
+          "title": "Production lines & automation",
+          "body": "Extrusion lines, hot saws, racking systems, warehouse automation, and robotics where throughput and uptime matter."
+        },
+        {
+          "title": "Precision manufacturing",
+          "body": "CNC, press & forming, and cleanroom lines for industries that need traceability, validation, and documentation."
+        },
+        {
+          "title": "Regional coverage",
+          "body": "Operators across Korea, SE Asia, and selected regions in the U.S. and EU, for teams balancing cost, support, and risk."
+        }
+      ],
+      "note": "Want a deeper dive? The suppliers page shows example industries, regions, minimum project sizes, and certifications."
+    },
+    "final": {
+      "title": "Start with one project.",
+      "sub": "Submit an RFQ, explore the supplier bench, or just use the content to clarify your options. Even if you’re only mapping what’s possible, you should leave with a clearer picture than when you arrived.",
+      "ctaPrimary": "Create RFQ",
+      "ctaSecondary": "Open buyer overview"
+    }
+  },
+  "rfqs": {
+    "hero": {
+      "kicker": "LIVE RFQS · PRE-QUALIFIED PROJECTS",
+      "title": "Live RFQs across production lines, robotics, and automation.",
+      "subtitle": "Examples of real-world RFQs flowing through NovaNexus — CNC & press lines, industrial robotics, warehouse systems, clean-room and medical devices, and large-scale automation where engineering quality matters more than the lowest quote.",
+      "stats": {
+        "live": "Live / in-review RFQs",
+        "avgValue": "Avg. project value",
+        "vettedFactories": "Vetted factories"
+      },
+      "sampleNotice": "Representative sample projects by region — live RFQs will appear here automatically as they go live."
+    },
+    "regions": {
+      "us": {
+        "title": "US & Americas",
+        "summary": "suppliers · active / sample RFQs in scope"
+      },
+      "eu": {
+        "title": "Europe",
+        "summary": "suppliers · active / sample RFQs in scope"
+      },
+      "apac": {
+        "title": "Asia–Pacific",
+        "summary": "suppliers · active / sample RFQs in scope"
+      }
+    },
+    "tableNote": "Filter view only. Under the hood, all projects are fully scoped RFQs with masked buyers and realistic budgets."
+  },
+  "suppliers": {
+    "hero": {
+      "kicker": "SUPPLIER ONBOARDING",
+      "title": "Become a vetted NovaNexus supplier",
+      "subtitle": "We onboard a small number of serious factories in aluminum, racking and automation. Tell us who you are and what you build – we’ll follow up with drawings and RFQs that fit."
+    },
+    "form": {
+      "companyName": "Company name",
+      "mainContact": "Main contact person",
+      "workEmail": "Work email",
+      "capabilities": "Capabilities / machines",
+      "regions": "Regions you can support",
+      "notes": "Notes",
+      "submit": "Submit supplier profile"
+    }
+  },
+  "common": {
+    "status": {
+      "open": "Open",
+      "inReview": "In review",
+      "closed": "Closed"
+    }
+  }
+}

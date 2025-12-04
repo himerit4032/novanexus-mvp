@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "howItWorks": "Cách hoạt động",
+    "liveRFQs": "RFQ đang mở",
+    "forSuppliers": "Dành cho nhà cung cấp",
+    "about": "Giới thiệu NovaNexus"
+  },
+  "home": {
+    "hero": {
+      "kicker": "SẢN XUẤT ▢ TỰ ĐỘNG HÓA ▢ MUA HÀNG TOÀN CẦU",
+      "titleLine1": "Biến các dự án sản xuất phức tạp",
+      "titleLine2": "thành công việc rõ ràng, có thể báo giá.",
+      "subtitle": "NovaNexus là một hub trung lập cho bên mua và nhà cung cấp đang làm việc với các dây chuyền sản xuất thực tế, hệ thống tự động hóa và gia công chính xác – tập trung vào chiều sâu năng lực, RFQ được cấu trúc rõ ràng và giảm nhiễu cho cả hai phía.",
+      "ctaPrimary": "Gửi RFQ",
+      "ctaSecondary": "Xem nhà cung cấp đã được thẩm định"
+    },
+    "who": {
+      "kicker": "ĐỐI TƯỢNG",
+      "title": "Thiết kế xoay quanh những người trực tiếp vận hành công việc.",
+      "subtitle": "Dù bạn phụ trách vận hành, kỹ thuật hay kinh doanh, nền tảng này phải giống như một “bản đồ” hơn là một danh bạ nhà cung cấp thông thường.",
+      "pillars": {
+        "buyers": {
+          "title": "Dành cho bên mua",
+          "body": "Khi bạn cần một nhà máy hoặc integrator thực sự cho dây chuyền sản xuất – không chỉ là danh sách liên hệ chung chung.",
+          "bullets": [
+            "Form tiếp nhận RFQ được dẫn dắt, giảm email qua lại",
+            "Hồ sơ nhà cung cấp xây dựng dựa trên năng lực thực tế",
+            "Kỳ vọng cơ bản về chi phí và lead time ngay từ đầu"
+          ],
+          "cta": "Mở tổng quan cho bên mua"
+        },
+        "suppliers": {
+          "title": "Dành cho nhà cung cấp",
+          "body": "Phù hợp với nhà máy, system integrator và đội tự động hóa muốn tập trung vào dự án đã được sàng lọc, thay vì yêu cầu lẻ tẻ, ngẫu nhiên.",
+          "bullets": [
+            "Hồ sơ xoay quanh quy trình và vật liệu xử lý",
+            "RFQ được lọc trước theo khu vực và quy mô dự án",
+            "Bối cảnh đầy đủ để báo giá mà không phải đoán ý email mơ hồ"
+          ],
+          "cta": "Mở tổng quan cho nhà cung cấp"
+        },
+        "both": {
+          "title": "Cho cả hai phía",
+          "body": "Một lớp trung lập ưu tiên sự rõ ràng thay vì nhiễu – ít sai lệch hơn, yêu cầu rõ ràng hơn và quyết định tốt hơn.",
+          "bullets": [
+            "Ngôn ngữ chung về quy trình và thông số kỹ thuật",
+            "Tín hiệu thị trường nhẹ về chi phí và công suất",
+            "Nội dung giải thích trade-off bằng ngôn ngữ dễ hiểu"
+          ],
+          "cta": "Xem chi tiết quy trình"
+        }
+      }
+    },
+    "flow": {
+      "kicker": "QUY TRÌNH",
+      "title": "Hoạt động thực tế như thế nào.",
+      "subtitle": "Phần này là overview; trang riêng sẽ đi sâu hơn. Mục tiêu là giữ vòng lặp ngắn, giàu thông tin kỹ thuật và thật rõ ràng.",
+      "cta": "Xem toàn bộ quy trình",
+      "steps": [
+        {
+          "step": "01",
+          "title": "Mô tả dây chuyền hoặc dự án",
+          "body": "Chia sẻ một brief ngắn gọn: quy trình, vật liệu, sản lượng hằng năm, khu vực và mốc thời gian mục tiêu. Đính kèm layout, bản vẽ hoặc hình ảnh hiện có."
+        },
+        {
+          "step": "02",
+          "title": "Cấu trúc & phân phối RFQ",
+          "body": "RFQ được chuẩn hóa, kiểm tra thông tin thiếu và chuyển đến những nhà cung cấp có năng lực thực sự phù hợp với scope – không chỉ đơn vị gần về mặt địa lý."
+        },
+        {
+          "step": "03",
+          "title": "Trao đổi tập trung với nhà cung cấp",
+          "body": "Nhà cung cấp trong shortlist nhận được bộ tài liệu có cấu trúc, từ đó phản hồi bằng con số thực tế thay vì phỏng đoán và email hỏi đáp bất tận."
+        }
+      ]
+    },
+    "supplierBench": {
+      "kicker": "SUPPLIER BENCH",
+      "title": "NovaNexus mạnh ở những loại dự án nào?",
+      "subtitle": "Directory tập trung vào dây chuyền hoàn chỉnh, tự động hóa và sản xuất liên tục – không phải đơn hàng prototype một lần. Một vài ví dụ điển hình:",
+      "cta": "Mở danh sách nhà cung cấp đã thẩm định",
+      "cards": [
+        {
+          "title": "Dây chuyền & tự động hóa",
+          "body": "Dây chuyền ép đùn, cưa nóng, hệ thống kệ, tự động hóa kho và robot, nơi throughput và uptime là yếu tố then chốt."
+        },
+        {
+          "title": "Gia công chính xác",
+          "body": "CNC, dập & tạo hình, dây chuyền phòng sạch cho các ngành đòi hỏi truy xuất nguồn gốc, validation và tài liệu đầy đủ."
+        },
+        {
+          "title": "Phủ khu vực",
+          "body": "Đối tác tại Hàn Quốc, Đông Nam Á và một số khu vực được chọn ở Mỹ và EU – phù hợp với đội ngũ cần cân bằng chi phí, hỗ trợ và rủi ro."
+        }
+      ],
+      "note": "Muốn xem kỹ hơn? Trang nhà cung cấp hiển thị ví dụ về ngành, khu vực, quy mô tối thiểu của dự án và chứng chỉ liên quan."
+    },
+    "final": {
+      "title": "Bắt đầu chỉ với một dự án.",
+      "sub": "Gửi RFQ, khám phá supplier bench hoặc đơn giản dùng nội dung để làm rõ các lựa chọn. Ngay cả khi bạn chỉ đang “vẽ bản đồ khả năng”, bạn vẫn nên rời đi với bức tranh rõ ràng hơn lúc bước vào.",
+      "ctaPrimary": "Tạo RFQ",
+      "ctaSecondary": "Mở tổng quan cho bên mua"
+    }
+  },
+  "rfqs": {
+    "hero": {
+      "kicker": "RFQ ĐANG MỞ · DỰ ÁN ĐÃ ĐƯỢC SÀNG LỌC",
+      "title": "RFQ đang hoạt động trên dây chuyền, robot và tự động hóa.",
+      "subtitle": "Ví dụ về RFQ thực tế đi qua NovaNexus – dây chuyền CNC & dập, robot công nghiệp, hệ thống kho, thiết bị y tế trong phòng sạch và các dự án tự động hóa quy mô lớn, nơi chất lượng kỹ thuật quan trọng hơn đơn thuần giá thấp nhất.",
+      "stats": {
+        "live": "RFQ live / đang review",
+        "avgValue": "Giá trị trung bình mỗi dự án",
+        "vettedFactories": "Số nhà máy đã thẩm định"
+      },
+      "sampleNotice": "Các dự án mẫu đại diện theo khu vực – RFQ live sẽ tự động hiển thị tại đây khi được mở."
+    },
+    "regions": {
+      "us": {
+        "title": "Mỹ & Châu Mỹ",
+        "summary": "nhà cung cấp · RFQ active / sample trong scope"
+      },
+      "eu": {
+        "title": "Châu Âu",
+        "summary": "nhà cung cấp · RFQ active / sample trong scope"
+      },
+      "apac": {
+        "title": "Châu Á – Thái Bình Dương",
+        "summary": "nhà cung cấp · RFQ active / sample trong scope"
+      }
+    },
+    "tableNote": "Đây chỉ là view đã lọc. Ở backend, tất cả dự án đều là RFQ full-scope với buyer được ẩn danh và ngân sách thực tế."
+  },
+  "suppliers": {
+    "hero": {
+      "kicker": "ONBOARDING NHÀ CUNG CẤP",
+      "title": "Trở thành nhà cung cấp được thẩm định của NovaNexus",
+      "subtitle": "Chúng tôi chỉ onboard số lượng nhỏ nhà máy nghiêm túc trong mảng nhôm, hệ thống kệ và tự động hóa. Hãy cho chúng tôi biết bạn là ai và đang xây dựng điều gì – chúng tôi sẽ follow-up với bản vẽ và RFQ phù hợp."
+    },
+    "form": {
+      "companyName": "Tên công ty",
+      "mainContact": "Người liên hệ chính",
+      "workEmail": "Email công việc",
+      "capabilities": "Năng lực / máy móc",
+      "regions": "Khu vực có thể phục vụ",
+      "notes": "Ghi chú",
+      "submit": "Gửi hồ sơ nhà cung cấp"
+    }
+  },
+  "common": {
+    "status": {
+      "open": "Mở",
+      "inReview": "Đang review",
+      "closed": "Đã đóng"
+    }
+  }
+}
