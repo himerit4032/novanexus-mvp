@@ -1,15 +1,5 @@
 <!-- src/routes/+layout.svelte -->
 
-<script lang="ts" context="module">
-  /**
-   * ✅ 앱 시작 시(i.e. SSR 포함) i18n을 한 번만 초기화
-   *  - setupI18n은 반드시 여기서만 호출
-   *  - config.ts는 이전에 준 버전( setupI18n export 있는 버전 ) 그대로 사용
-   */
-  import { setupI18n } from '$lib/i18n/config';
-  setupI18n('en');
-</script>
-
 <script lang="ts">
   import '../app.css'; // Tailwind + 전역 CSS
 
@@ -18,11 +8,15 @@
   import { onMount } from 'svelte';
 
   import { t } from 'svelte-i18n';
+  import { setupI18n } from '$lib/i18n/config';
   import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+
+  // ✅ i18n 초기화 (config.ts 안에서 한 번만 동작하도록 이미 가드 있음)
+  setupI18n();
 
   let navigating = false;
 
-  const navLinks = [
+  const navLinks: { href: string; key: string }[] = [
     { href: '/how-it-works', key: 'nav.howItWorks' },
     { href: '/rfqs', key: 'nav.liveRFQs' },
     { href: '/suppliers', key: 'nav.forSuppliers' },
@@ -59,13 +53,13 @@
   <header class="nn-header">
     <div class="nn-header-inner">
       <!-- Logo -->
-      <a href="/" class="nn-logo">
+      <a href="/" class="nn-logo" aria-label="NovaNexus home">
         <span class="nn-logo-dot"></span>
         <span class="nn-logo-text">NovaNexus</span>
       </a>
 
       <!-- Main nav -->
-      <nav class="nn-nav">
+      <nav class="nn-nav" aria-label="Primary">
         {#each navLinks as link}
           <a
             href={link.href}
