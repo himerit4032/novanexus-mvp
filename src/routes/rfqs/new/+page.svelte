@@ -9,6 +9,7 @@
   import { fade, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
 
+  // ----- 옵션 상수들 -----
   const regions = ['Korea', 'USA', 'Europe', 'Japan', 'Vietnam', 'Middle East', 'Other'];
 
   const industries = [
@@ -30,6 +31,7 @@
   const budgets = ['<$200k', '$200k–$500k', '$500k–$1M', '$1M–$3M', '$3M+'];
   const timelines = ['<3 months', '3–6 months', '6–12 months', '12+ months'];
 
+  // ----- 상태 -----
   let mounted = false;
 
   let companyName = '';
@@ -51,7 +53,7 @@
   let errorMsg = '';
   let createdId = '';
 
-  // PocketBase 클라이언트 (동적 import로 SSR 안전하게)
+  // PocketBase 클라이언트 (동적 import로 SSR 안전)
   let pbClient: any = null;
 
   onMount(async () => {
@@ -63,12 +65,38 @@
       const mod = await import('$lib/pocketbase');
       pbClient = mod.pb;
     } catch (err) {
-      console.error('PocketBase client load failed in RFQ new page', err);
+      console.warn('PocketBase client load failed in RFQ new page', err);
     }
   });
 
-  const handleSubmit = async () => {
+  // ----- 헬퍼: 필수 필드 검증 -----
+  const validateRequired = () => {
+    if (!projectName.trim()) return 'Project name is required.';
+    if (!process.trim()) return 'Core process / line focus is required.';
+    if (!description.trim()) return 'Please describe what you are trying to build or upgrade.';
+    if (!contactName.trim()) return 'Contact name is required.';
+    if (!contactEmail.trim()) return 'Work email is required.';
+    return '';
+  };
+
+  // ----- 제출 핸들러 -----
+  const handleSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
     if (loading) return;
+
+    const form = event.currentTarget as HTMLFormElement;
+    // 브라우저 기본 검증도 같이 사용
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const requiredError = validateRequired();
+    if (requiredError) {
+      errorMsg = requiredError;
+      submitted = false;
+      return;
+    }
 
     loading = true;
     submitted = false;
@@ -76,7 +104,6 @@
     createdId = '';
 
     if (!pbClient) {
-      // 클라이언트 로드 실패 시도 명확한 메시지
       errorMsg =
         'RFQ backend is not reachable from this environment. Please check PocketBase URL and client config.';
       loading = false;
@@ -84,19 +111,19 @@
     }
 
     const payload = {
-      company_name: companyName,
-      project_name: projectName,
+      company_name: companyName.trim() || null,
+      project_name: projectName.trim(),
       role,
       region,
       industry,
-      process_focus: process,
-      annual_volume: annualVolume,
+      process_focus: process.trim(),
+      annual_volume: annualVolume.trim() || null,
       budget_range: budget,
       timeline,
-      description,
-      constraints,
-      contact_name: contactName,
-      contact_email: contactEmail,
+      description: description.trim(),
+      constraints: constraints.trim() || null,
+      contact_name: contactName.trim(),
+      contact_email: contactEmail.trim(),
       source: 'web_app'
     };
 
@@ -105,14 +132,14 @@
       createdId = record?.id ?? '';
       submitted = true;
 
-      // 핵심 필드만 리셋 (회사/연락처는 그대로 두기)
+      // 핵심 필드만 초기화 (회사/연락처는 그대로 유지)
       projectName = '';
       process = '';
       annualVolume = '';
       description = '';
       constraints = '';
     } catch (err) {
-      console.error('RFQ create failed', err);
+      console.warn('RFQ create failed', err);
       errorMsg =
         'There was an issue saving this RFQ. Please check the RFQ collection, API rules and PocketBase URL.';
     } finally {
@@ -179,7 +206,13 @@
   <!-- FORM CARD -->
   <section class="rfq-card" in:fade={{ duration: 260, delay: 80 }}>
     <div class="rfq-card-glow"></div>
-    <form class="rfq-form" on:submit|preventDefault={handleSubmit}>
+
+    <form
+      class="rfq-form"
+      on:submit={handleSubmit}
+      novalidate
+      aria-describedby={errorMsg ? 'rfq-error' : submitted ? 'rfq-success' : undefined}
+    >
       <!-- Project basics -->
       <div class="rfq-section">
         <div class="rfq-section-head">
@@ -192,37 +225,58 @@
 
         <div class="rfq-grid">
           <div class="field">
-            <label>Company / organization (optional)</label>
+            <label for="rfq-company">Company / organization (optional)</label>
             <input
+              id="rfq-company"
+              name="company_name"
               type="text"
               bind:value={companyName}
               placeholder="Example: tier-1 automotive supplier, 3PL warehouse, medtech OEM…"
+              autocomplete="organization"
             />
           </div>
 
           <div class="field">
-            <label>Project name *</label>
+            <label for="rfq-project">Project name *</label>
             <input
+              id="rfq-project"
+              name="project_name"
               type="text"
               bind:value={projectName}
               required
+              autocomplete="off"
               placeholder="Example: new aluminum extrusion line for building profiles"
             />
           </div>
 
           <div class="field field-role">
-            <label>Your role *</label>
-            <div class="radio-row">
+            <div class="field-label">Your role *</div>
+            <div class="radio-row" aria-label="Your role">
               <label>
-                <input type="radio" value="buyer" bind:group={role} />
+                <input
+                  type="radio"
+                  name="role"
+                  value="buyer"
+                  bind:group={role}
+                />
                 <span>Buyer / plant / engineering</span>
               </label>
               <label>
-                <input type="radio" value="supplier" bind:group={role} />
+                <input
+                  type="radio"
+                  name="role"
+                  value="supplier"
+                  bind:group={role}
+                />
                 <span>Supplier exploring partnership</span>
               </label>
               <label>
-                <input type="radio" value="other" bind:group={role} />
+                <input
+                  type="radio"
+                  name="role"
+                  value="other"
+                  bind:group={role}
+                />
                 <span>Other</span>
               </label>
             </div>
@@ -242,8 +296,8 @@
 
         <div class="rfq-grid">
           <div class="field">
-            <label>Preferred region *</label>
-            <select bind:value={region}>
+            <label for="rfq-region">Preferred region *</label>
+            <select id="rfq-region" name="region" bind:value={region} required>
               {#each regions as r}
                 <option value={r}>{r}</option>
               {/each}
@@ -251,8 +305,8 @@
           </div>
 
           <div class="field">
-            <label>Primary industry *</label>
-            <select bind:value={industry}>
+            <label for="rfq-industry">Primary industry *</label>
+            <select id="rfq-industry" name="industry" bind:value={industry} required>
               {#each industries as ind}
                 <option value={ind}>{ind}</option>
               {/each}
@@ -260,8 +314,10 @@
           </div>
 
           <div class="field">
-            <label>Core process or line focus *</label>
+            <label for="rfq-process">Core process or line focus *</label>
             <input
+              id="rfq-process"
+              name="process_focus"
               bind:value={process}
               required
               placeholder="Example: extrusion & hot saws, shuttle racking, palletizing cells…"
@@ -269,16 +325,18 @@
           </div>
 
           <div class="field">
-            <label>Annual volume / throughput (rough)</label>
+            <label for="rfq-volume">Annual volume / throughput (rough)</label>
             <input
+              id="rfq-volume"
+              name="annual_volume"
               bind:value={annualVolume}
               placeholder="Example: 15,000 tons/year, 500 pallets/day, 40 modules/hour…"
             />
           </div>
 
           <div class="field">
-            <label>Budget range *</label>
-            <select bind:value={budget}>
+            <label for="rfq-budget">Budget range *</label>
+            <select id="rfq-budget" name="budget_range" bind:value={budget} required>
               {#each budgets as b}
                 <option value={b}>{b}</option>
               {/each}
@@ -286,8 +344,8 @@
           </div>
 
           <div class="field">
-            <label>Target timeline *</label>
-            <select bind:value={timeline}>
+            <label for="rfq-timeline">Target timeline *</label>
+            <select id="rfq-timeline" name="timeline" bind:value={timeline} required>
               {#each timelines as t}
                 <option value={t}>{t}</option>
               {/each}
@@ -307,8 +365,10 @@
         </div>
 
         <div class="field">
-          <label>What are you trying to build or upgrade? *</label>
+          <label for="rfq-description">What are you trying to build or upgrade? *</label>
           <textarea
+            id="rfq-description"
+            name="description"
             rows="5"
             bind:value={description}
             required
@@ -319,8 +379,10 @@
         </div>
 
         <div class="field">
-          <label>Key constraints or must-haves</label>
+          <label for="rfq-constraints">Key constraints or must-haves</label>
           <textarea
+            id="rfq-constraints"
+            name="constraints"
             rows="3"
             bind:value={constraints}
             placeholder="- Existing building layout / ceiling height
@@ -342,20 +404,26 @@
 
         <div class="rfq-grid">
           <div class="field">
-            <label>Your name *</label>
+            <label for="rfq-contact-name">Your name *</label>
             <input
+              id="rfq-contact-name"
+              name="contact_name"
               bind:value={contactName}
               required
+              autocomplete="name"
               placeholder="Example: operations manager, project engineer…"
             />
           </div>
 
           <div class="field">
-            <label>Work email *</label>
+            <label for="rfq-contact-email">Work email *</label>
             <input
+              id="rfq-contact-email"
+              name="contact_email"
               type="email"
               bind:value={contactEmail}
               required
+              autocomplete="email"
               placeholder="name@company.com"
             />
           </div>
@@ -364,22 +432,30 @@
 
       <!-- Actions / status -->
       <div class="rfq-actions">
-        <button class="btn-primary" type="submit" disabled={loading}>
+        <button
+          class="btn-primary"
+          type="submit"
+          disabled={loading}
+          aria-busy={loading}
+        >
           {#if loading}
             Submitting…
           {:else}
             Create RFQ
           {/if}
         </button>
+
         <a href="/rfqs" class="btn-ghost-sm">Back to live RFQs</a>
       </div>
 
       {#if errorMsg}
-        <div class="rfq-error">{errorMsg}</div>
+        <div id="rfq-error" class="rfq-error">
+          {errorMsg}
+        </div>
       {/if}
 
       {#if submitted}
-        <div class="rfq-success">
+        <div id="rfq-success" class="rfq-success">
           <div class="rfq-success-title">Your RFQ has been created.</div>
           <p>
             It’s now in the review queue. You’ll hear back once it’s been structured and
@@ -632,6 +708,11 @@
   }
 
   .field label {
+    font-size: 11px;
+    color: #9ca3af;
+  }
+
+  .field-label {
     font-size: 11px;
     color: #9ca3af;
   }

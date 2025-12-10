@@ -1,11 +1,14 @@
 <!-- src/routes/suppliers/+page.svelte -->
 
 <svelte:head>
-  <title>NovaNexus ▢ Supplier onboarding</title>
+  <title>NovaNexus ▢ {$t('nav.forSuppliers')}</title>
 </svelte:head>
 
 <script lang="ts">
   import { fade, fly, scale } from 'svelte/transition';
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
+  import { t } from 'svelte-i18n';
 
   type Region = 'USA' | 'Korea' | 'EU' | 'MENA' | 'Other';
 
@@ -19,6 +22,13 @@
     notes: string;
   }
 
+  interface SupplierErrors {
+    company: string;
+    contact: string;
+    email: string;
+    capabilities: string;
+  }
+
   let form: SupplierForm = {
     company: '',
     contact: '',
@@ -29,7 +39,7 @@
     notes: ''
   };
 
-  let errors = {
+  let errors: SupplierErrors = {
     company: '',
     contact: '',
     email: '',
@@ -37,15 +47,78 @@
   };
 
   let submitted = false;
+  let loading = false;
+  let backendError = '';
+  let backendWarning = '';
 
-  function validate() {
-    errors = { company: '', contact: '', email: '', capabilities: '' };
+  // PocketBase 동적 로드 (있으면 사용, 없으면 데모 모드)
+  let pbClient: any = null;
 
-    if (!form.company.trim()) errors.company = '회사명을 입력해 주세요.';
-    if (!form.contact.trim()) errors.contact = '담당자 이름/직함을 입력해 주세요.';
-    if (!form.email.trim()) errors.email = '업무용 이메일을 입력해 주세요.';
-    if (!form.capabilities.trim())
-      errors.capabilities = '가능한 설비 / 공정을 간단히 적어 주세요.';
+  onMount(async () => {
+    if (!browser) return;
+
+    try {
+      const mod = await import('$lib/pocketbase');
+      pbClient = mod.pb;
+    } catch (err) {
+      console.warn(
+        '[suppliers] PocketBase client load failed. Running in demo mode (console only).',
+        err
+      );
+      backendWarning =
+        'Backend is not fully wired yet. Profile is stored for this session and will be connected to PocketBase in production.';
+    }
+  });
+
+  function resetForm() {
+    form = {
+      company: '',
+      contact: '',
+      email: '',
+      capabilities: '',
+      website: '',
+      region: 'USA',
+      notes: ''
+    };
+    errors = {
+      company: '',
+      contact: '',
+      email: '',
+      capabilities: ''
+    };
+  }
+
+  function validate(): boolean {
+    const nextErrors: SupplierErrors = {
+      company: '',
+      contact: '',
+      email: '',
+      capabilities: ''
+    };
+
+    if (!form.company.trim()) {
+      nextErrors.company = '회사명을 입력해 주세요.';
+    }
+
+    if (!form.contact.trim()) {
+      nextErrors.contact = '담당자 이름/직함을 입력해 주세요.';
+    }
+
+    if (!form.email.trim()) {
+      nextErrors.email = '업무용 이메일을 입력해 주세요.';
+    } else {
+      // 매우 느슨한 이메일 형식 체크
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(form.email.trim())) {
+        nextErrors.email = '유효한 이메일 형식을 입력해 주세요.';
+      }
+    }
+
+    if (!form.capabilities.trim()) {
+      nextErrors.capabilities = '가능한 설비 / 공정을 간단히 적어 주세요.';
+    }
+
+    errors = nextErrors;
 
     return (
       !errors.company &&
@@ -55,31 +128,70 @@
     );
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    if (loading) return;
+
+    backendError = '';
+    submitted = false;
+
     if (!validate()) return;
 
-    console.log('NovaNexus supplier submission:', form);
-    submitted = true;
+    loading = true;
+
+    const payload = {
+      company_name: form.company,
+      contact_name: form.contact,
+      work_email: form.email,
+      capabilities: form.capabilities,
+      website: form.website,
+      region: form.region,
+      notes: form.notes,
+      source: 'supplier_web_form'
+    };
+
+    try {
+      // 항상 콘솔에는 남겨두기 (MVP 디버깅용)
+      console.log('NovaNexus supplier submission:', payload);
+
+      if (pbClient) {
+        try {
+          await pbClient.collection('suppliers').create(payload);
+        } catch (err) {
+          console.warn(
+            '[suppliers] PocketBase create("suppliers") failed. Check collection & rules.',
+            err
+          );
+          backendError =
+            'Backend collection for suppliers is not reachable yet. Your profile was not persisted on the server. Please verify the PocketBase "suppliers" collection and API rules.';
+        }
+      }
+
+      submitted = true;
+      resetForm();
+    } finally {
+      loading = false;
+    }
+  }
+
+  function submitAnother() {
+    submitted = false;
+    backendError = '';
+    backendWarning = '';
+    resetForm();
   }
 </script>
 
-<section
-  class="nn-page"
-  in:fade={{ duration: 260 }}
->
+<section class="nn-page" in:fade={{ duration: 260 }}>
   <!-- 헤더 영역 -->
-  <header
-    class="sup-header"
-    in:fly={{ y: 18, duration: 340 }}
-  >
+  <header class="sup-header" in:fly={{ y: 18, duration: 340 }}>
     <div class="sup-header-kicker">SUPPLIER ONBOARDING</div>
+
     <h1 class="sup-title">
-      Become a vetted <span class="sup-title-gradient">NovaNexus supplier</span>
+      <span class="sup-title-gradient">{$t('suppliers.heroTitle')}</span>
     </h1>
+
     <p class="sup-sub">
-      We onboard a small number of serious factories in aluminum, racking and
-      automation. Tell us who you are and what you build – we’ll follow up with
-      drawings and RFQs that fit.
+      {$t('suppliers.heroSubtitle')}
     </p>
 
     <div class="sup-metrics">
@@ -96,13 +208,43 @@
         <div class="sup-metric-value">4</div>
       </div>
     </div>
+
+    <h2 class="sup-benefits-title">
+      {$t('suppliers.benefitsTitle')}
+    </h2>
+
+    <div class="sup-benefits-grid">
+      <article class="sup-benefit-card">
+        <h3 class="sup-benefit-heading">
+          {$t('suppliers.benefits.fitTitle')}
+        </h3>
+        <p class="sup-benefit-body">
+          {$t('suppliers.benefits.fitBody')}
+        </p>
+      </article>
+
+      <article class="sup-benefit-card">
+        <h3 class="sup-benefit-heading">
+          {$t('suppliers.benefits.contextTitle')}
+        </h3>
+        <p class="sup-benefit-body">
+          {$t('suppliers.benefits.contextBody')}
+        </p>
+      </article>
+
+      <article class="sup-benefit-card">
+        <h3 class="sup-benefit-heading">
+          {$t('suppliers.benefits.supportTitle')}
+        </h3>
+        <p class="sup-benefit-body">
+          {$t('suppliers.benefits.supportBody')}
+        </p>
+      </article>
+    </div>
   </header>
 
   <!-- 입력 카드 -->
-  <div
-    class="sup-card"
-    in:scale={{ duration: 320, start: 0.96 }}
-  >
+  <div class="sup-card" in:scale={{ duration: 320, start: 0.96 }}>
     <!-- 시각적 오비트 / 글로우 -->
     <div class="sup-orbit sup-orbit-outer"></div>
     <div class="sup-orbit sup-orbit-inner"></div>
@@ -115,8 +257,11 @@
       <form class="sup-form-grid" on:submit|preventDefault={handleSubmit}>
         <!-- 회사명 -->
         <div in:fade={{ duration: 220, delay: 40 }}>
-          <div class="sup-label">Company name <span>*</span></div>
+          <label class="sup-label" for="sup-company">
+            Company name <span>*</span>
+          </label>
           <input
+            id="sup-company"
             class="sup-input"
             type="text"
             placeholder="Youngshin, Nexlogitech, Speedrack, ..."
@@ -129,8 +274,11 @@
 
         <!-- 담당자 -->
         <div in:fade={{ duration: 220, delay: 80 }}>
-          <div class="sup-label">Main contact person <span>*</span></div>
+          <label class="sup-label" for="sup-contact">
+            Main contact person <span>*</span>
+          </label>
           <input
+            id="sup-contact"
             class="sup-input"
             type="text"
             placeholder="Name / role"
@@ -143,8 +291,11 @@
 
         <!-- 이메일 -->
         <div in:fade={{ duration: 220, delay: 120 }}>
-          <div class="sup-label">Work email <span>*</span></div>
+          <label class="sup-label" for="sup-email">
+            Work email <span>*</span>
+          </label>
           <input
+            id="sup-email"
             class="sup-input"
             type="email"
             placeholder="name@company.com"
@@ -157,8 +308,11 @@
 
         <!-- Capabilities -->
         <div in:fade={{ duration: 220, delay: 160 }}>
-          <div class="sup-label">Capabilities / machines <span>*</span></div>
+          <label class="sup-label" for="sup-capabilities">
+            Capabilities / machines <span>*</span>
+          </label>
           <textarea
+            id="sup-capabilities"
             class="sup-textarea"
             placeholder="Aluminum cutting lines, shuttle racks, conveyors, automation, etc."
             bind:value={form.capabilities}
@@ -170,8 +324,9 @@
 
         <!-- 웹사이트 -->
         <div in:fade={{ duration: 220, delay: 200 }}>
-          <div class="sup-label">Website or catalog URL</div>
+          <label class="sup-label" for="sup-website">Website or catalog URL</label>
           <input
+            id="sup-website"
             class="sup-input"
             type="text"
             placeholder="https://..."
@@ -180,13 +335,14 @@
         </div>
 
         <!-- Region + notes 2열 -->
-        <div
-          class="sup-two-col"
-          in:fade={{ duration: 240, delay: 220 }}
-        >
+        <div class="sup-two-col" in:fade={{ duration: 240, delay: 220 }}>
           <div>
-            <div class="sup-label">Region</div>
-            <select class="sup-select" bind:value={form.region}>
+            <label class="sup-label" for="sup-region">Region</label>
+            <select
+              id="sup-region"
+              class="sup-select"
+              bind:value={form.region}
+            >
               <option value="USA">USA</option>
               <option value="Korea">Korea</option>
               <option value="EU">EU</option>
@@ -199,8 +355,11 @@
           </div>
 
           <div>
-            <div class="sup-label">Anything else we should know?</div>
+            <label class="sup-label" for="sup-notes">
+              Anything else we should know?
+            </label>
             <textarea
+              id="sup-notes"
               class="sup-textarea sup-textarea-notes"
               placeholder="Existing export experience, certifications, target customers, etc."
               bind:value={form.notes}
@@ -208,36 +367,47 @@
           </div>
         </div>
 
-        <div
-          class="sup-actions"
-          in:fade={{ duration: 260, delay: 260 }}
-        >
-          <button class="sup-submit" type="submit">
-            <span>Submit supplier info</span>
+        <div class="sup-actions" in:fade={{ duration: 260, delay: 260 }}>
+          <button class="sup-submit" type="submit" disabled={loading}>
+            <span>{loading ? 'Submitting…' : $t('suppliers.ctaApply')}</span>
           </button>
           <div class="sup-footer-note">
-            MVP only: data is logged in the browser console. In production this
-            will store to PocketBase and trigger an internal review workflow.
+            MVP only: data is logged in the browser console.
+            {#if !backendError && !backendWarning}
+              In production this will store to PocketBase and trigger an internal review workflow.
+            {/if}
+            {#if backendWarning}
+              <br />{backendWarning}
+            {/if}
           </div>
+          {#if backendError}
+            <div class="sup-error" style="margin-top:4px">{backendError}</div>
+          {/if}
         </div>
       </form>
     {:else}
       <!-- 제출 완료 상태 -->
-      <div
-        class="sup-thankyou"
-        in:fade={{ duration: 260 }}
-      >
-        <div class="sup-thankyou-title">Thank you – we’ve received your info.</div>
+      <div class="sup-thankyou" in:fade={{ duration: 260 }}>
+        <div class="sup-thankyou-title">
+          Thank you – we’ve received your info.
+        </div>
         <p class="sup-thankyou-text">
-          We’ll review your capabilities and follow up with drawings and RFQs
-          that match. For urgent projects you can also reply directly to Jun’s
-          email with PDFs / layouts attached.
+          We’ll review your capabilities and follow up with drawings and RFQs that match.
+          For urgent projects you can also reply directly to Jun’s email with PDFs / layouts attached.
         </p>
         <p class="sup-note">
-          Our team will follow up with drawings, layouts, and RFQs that match your
-          machines. For urgent projects, you can also reply directly to the email
-          in our introduction message.
+          Our team filters for projects where your machines and region actually make sense –
+          no mass RFQ spam, just targeted opportunities.
         </p>
+
+        <button
+          class="sup-submit"
+          type="button"
+          style="margin-top:14px"
+          on:click={submitAnother}
+        >
+          <span>Submit another factory</span>
+        </button>
       </div>
     {/if}
   </div>
@@ -246,15 +416,14 @@
 <style>
   :global(body) {
     margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-      sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background:
       radial-gradient(circle at top left, #020617 0, #020617 55%, #020617 100%);
     color: #e5e7eb;
   }
 
   .nn-page {
-    max-width: 1120px; /* 다른 페이지와 동일 폭 */
+    max-width: 1120px;
     margin: 0 auto;
     padding: 96px 24px 120px;
     position: relative;
@@ -346,6 +515,44 @@
     color: #e5e7eb;
   }
 
+  .sup-benefits-title {
+    margin-top: 28px;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #f9fafb;
+  }
+
+  .sup-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .sup-benefit-card {
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    background: radial-gradient(
+      circle at top left,
+      rgba(56, 189, 248, 0.14),
+      rgba(15, 23, 42, 0.98)
+    );
+    padding: 12px 14px;
+  }
+
+  .sup-benefit-heading {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-bottom: 4px;
+  }
+
+  .sup-benefit-body {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+
   .sup-card {
     position: relative;
     margin-top: 12px;
@@ -435,6 +642,7 @@
     font-size: 12px;
     color: #e5e7eb;
     margin-bottom: 4px;
+    display: inline-block;
   }
 
   .sup-label span {
@@ -467,6 +675,11 @@
 
   .sup-textarea-notes {
     min-height: 96px;
+  }
+
+  .sup-input::placeholder,
+  .sup-textarea::placeholder {
+    color: #6b7280;
   }
 
   .sup-input:focus,
@@ -537,7 +750,13 @@
     transition:
       transform 0.18s ease,
       box-shadow 0.18s ease,
-      filter 0.18s ease;
+      filter 0.18s ease,
+      opacity 0.18s ease;
+  }
+
+  .sup-submit[disabled] {
+    opacity: 0.7;
+    cursor: wait;
   }
 
   .sup-submit span {
@@ -566,7 +785,7 @@
     transition: opacity 0.18s ease;
   }
 
-  .sup-submit:hover {
+  .sup-submit:hover:not([disabled]) {
     transform: translateY(-1px);
     box-shadow:
       0 24px 60px rgba(15, 23, 42, 1),
@@ -574,11 +793,11 @@
     filter: saturate(1.15);
   }
 
-  .sup-submit:hover::after {
+  .sup-submit:hover:not([disabled])::after {
     transform: translateX(2px);
   }
 
-  .sup-submit:hover::before {
+  .sup-submit:hover:not([disabled])::before {
     opacity: 1;
   }
 
@@ -618,6 +837,10 @@
     .sup-orbit-dot {
       opacity: 0.55;
       right: -120px;
+    }
+
+    .sup-benefits-grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 

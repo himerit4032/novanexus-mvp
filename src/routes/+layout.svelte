@@ -1,18 +1,23 @@
 <!-- src/routes/+layout.svelte -->
 
+<script lang="ts" context="module">
+  /**
+   * 레이아웃 모듈이 로드될 때 i18n을 가장 먼저 한 번만 초기화
+   * - SSR / 브라우저 둘 다 여기서 먼저 실행
+   */
+  import { setupI18n } from '$lib/i18n/config';
+  setupI18n();
+</script>
+
 <script lang="ts">
-  import '../app.css'; // Tailwind + 전역 CSS
+  import '../app.css';
 
   import { page } from '$app/stores';
   import { afterNavigate, beforeNavigate } from '$app/navigation';
   import { onMount } from 'svelte';
 
   import { t } from 'svelte-i18n';
-  import { setupI18n } from '$lib/i18n/config';
   import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-
-  // ✅ i18n 초기화 (config.ts 안에서 한 번만 동작하도록 이미 가드 있음)
-  setupI18n();
 
   let navigating = false;
 
@@ -167,6 +172,8 @@
     position: sticky;
     top: 0;
     z-index: 40;
+    /* Safari 호환성 */
+    -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
     background: linear-gradient(
       to bottom,
@@ -334,8 +341,6 @@
   .nn-main {
     flex: 1;
   }
-
-  /* FOOTER */
 
   .nn-footer {
     border-top: 1px solid rgba(15, 23, 42, 0.9);

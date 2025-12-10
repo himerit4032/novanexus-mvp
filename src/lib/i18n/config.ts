@@ -22,6 +22,8 @@ export type LocaleCode = (typeof SUPPORTED_LOCALES)[number]['code'];
 const DEFAULT_LOCALE: LocaleCode = 'en';
 const SUPPORTED_CODES = new Set<string>(SUPPORTED_LOCALES.map((l) => l.code));
 
+// ───────── 유틸 함수들 ─────────
+
 export function isSupportedLocale(
   code: string | null | undefined
 ): code is LocaleCode {
@@ -29,11 +31,12 @@ export function isSupportedLocale(
 }
 
 // ───────── JSON 번역 파일 lazy-load 등록 ─────────
-
+// Vite의 import.meta.glob 을 이용해서 각 언어의 JSON 파일을 lazy-load
 const messageFiles: Record<string, () => Promise<unknown>> = import.meta.glob(
   './locales/*.json'
 );
 
+// 코드 기반으로 안전하게 매핑
 for (const { code } of SUPPORTED_LOCALES) {
   const path = `./locales/${code}.json`;
   const loader = messageFiles[path];
@@ -50,68 +53,87 @@ for (const { code } of SUPPORTED_LOCALES) {
 
 // ───────── 초기 locale 결정 로직 ─────────
 
-function resolveInitialLocale(startLocale: LocaleCode = DEFAULT_LOCALE): LocaleCode {
-  // SSR 단계에서는 window/localStorage 접근 금지
-  if (!browser) {
-    return startLocale;
-  }
+function resolveInitialLocale(
+  startLocale: LocaleCode = DEFAULT_LOCALE
+): LocaleCode {
+  // SSR 환경에서는 window 를 쓸 수 없으니 바로 기본값
+  if (!browser) return startLocale;
 
-  // 1) localStorage에 저장된 값 우선
+  // 1) localStorage 우선
   const stored = window.localStorage.getItem('locale');
   if (isSupportedLocale(stored)) return stored;
 
-  // 2) 브라우저 언어 (예: en-US → en)
+  // 2) 브라우저 언어 (en-US → en)
   const nav = window.navigator?.language?.split?.('-')?.[0];
   if (isSupportedLocale(nav)) return nav;
 
-  // 3) 인자로 넘어온 startLocale 또는 기본값
+  // 3) 지정된 기본값
   return startLocale;
 }
 
-// 중복 초기화 방지 (클라이언트 컨텍스트 기준)
 let initialized = false;
+let initPromise: Promise<void> | null = null;
 
 // ───────── 외부에서 호출하는 초기화 함수 ─────────
 
-export function setupI18n(startLocale: LocaleCode = DEFAULT_LOCALE): void {
-  if (initialized) return;
+/**
+ * i18n 을 초기화한다.
+ * - 여러 번 호출되어도 실제 init 은 한 번만 수행됨.
+ * - 필요하면 await setupI18n() 으로 초기화 완료를 기다릴 수도 있다.
+ */
+export function setupI18n(startLocale: LocaleCode = DEFAULT_LOCALE): Promise<void> {
+  if (initialized && initPromise) return initPromise;
+
   initialized = true;
 
   const initial = resolveInitialLocale(startLocale);
 
-  // svelte-i18n 내부 스토어 초기 세팅
+  // svelte-i18n 의 init 은 동기지만, 인터페이스는 Promise 로 감싼다.
   init({
     fallbackLocale: DEFAULT_LOCALE,
     initialLocale: initial
   });
 
   if (browser) {
-    // Svelte store와 localStorage를 동기화
+    // 스토어 값을 명시적으로 세팅
     locale.set(initial);
     window.localStorage.setItem('locale', initial);
 
+    // locale 변경 시 localStorage 에도 반영
     locale.subscribe((value) => {
       if (isSupportedLocale(value)) {
         window.localStorage.setItem('locale', value);
       }
     });
   }
+
+  initPromise = Promise.resolve();
+  return initPromise;
 }
+
+// ───────── 모듈 로드 시점에서 한 번 자동 초기화 ─────────
+// 다른 컴포넌트가 setupI18n() 호출을 깜빡해도
+// 이 파일을 import 하기만 하면 기본 locale 은 항상 세팅된다.
+setupI18n().catch((err) => {
+  console.error('[i18n] Failed to initialize i18n:', err);
+});
 
 // ───────── 런타임에서 언어 변경 헬퍼 ─────────
 
-export function changeLocale(code: string): void {
+export async function changeLocale(code: string): Promise<void> {
   const next: LocaleCode = isSupportedLocale(code) ? code : DEFAULT_LOCALE;
-  // setupI18n가 아직 안 돌았으면 먼저 한 번 보장
+
+  // 혹시라도 아직 초기화 전이면 먼저 초기화
   if (!initialized) {
-    setupI18n(next);
+    await setupI18n(next);
   }
+
   locale.set(next);
+
+  if (browser) {
+    window.localStorage.setItem('locale', next);
+  }
 }
 
 // 다른 컴포넌트에서 바로 쓸 수 있도록 재-export
 export { locale };
-
-// 이 모듈이 import 되는 순간 한 번은 항상 초기화되도록 보장
-// (SSR과 클라이언트는 각각 한 번씩 별도 컨텍스트에서 실행됨)
-setupI18n();

@@ -1,206 +1,233 @@
 {
-  "layout": {
-    "nav": {
-      "howItWorks": "Cómo funciona",
-      "liveRfqs": "RFQ en vivo",
-      "forSuppliers": "Para proveedores",
-      "about": "Acerca de NovaNexus",
-      "logIn": "Iniciar sesión",
-      "joinBeta": "Unirse a la beta"
-    }
+  "nav": {
+    "howItWorks": "Cómo funciona",
+    "liveRFQs": "RFQs en vivo",
+    "forSuppliers": "Para proveedores",
+    "about": "Acerca de la plataforma",
+    "login": "Iniciar sesión",
+    "joinBeta": "Unirse a la beta"
   },
+
+  "footer": {
+    "tagline": "Convertimos proyectos CAPEX complejos en trabajo claro y cotizable a través de fronteras.",
+    "rights": "Todos los derechos reservados.",
+    "platform": "Plataforma",
+    "liveRFQs": "RFQs en vivo",
+    "becomeSupplier": "Convertirse en proveedor verificado",
+    "about": "Acerca de NovaNexus",
+    "forBuyers": "Para compradores",
+    "buyerDashboard": "Panel de comprador (previa)",
+    "contact": "Contacto",
+    "forSuppliers": "Para proveedores",
+    "supplierDashboard": "Panel de proveedor (previa)",
+    "joinBeta": "Unirse al programa beta"
+  },
+
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "ko": "Korean",
+    "ja": "Japanese",
+    "zh": "Chinese",
+    "vi": "Vietnamese",
+    "de": "German",
+    "fr": "French",
+    "es": "Spanish",
+    "it": "Italian",
+    "ar": "Arabic"
+  },
+
+  "common": {
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "learnMore": "Más información",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "loading": "Cargando…",
+    "optional": "Opcional",
+    "required": "Obligatorio"
+  },
+
   "home": {
     "hero": {
-      "kicker": "FABRICACIÓN ▢ AUTOMATIZACIÓN ▢ ABASTECIMIENTO GLOBAL",
-      "titleLine1": "Fabricación global,",
-      "titleHighlight": "sin niebla.",
-      "sub": "Convierte proyectos de producción complejos en trabajo claro y cotizable. NovaNexus actúa como una capa neutral entre compradores y fábricas verificadas, traduciendo planos, capacidad y riesgo en un mapa compartido desde el que ambos lados pueden trabajar.",
-      "primaryCta": "Enviar un RFQ",
-      "secondaryCta": "Convertirse en proveedor verificado",
-      "noteBuyers": "Para compradores y equipos de planta / proyecto",
-      "noteSuppliers": "Para fábricas, integradores y socios de automatización",
-      "footnote": "Pensado para gerentes de planta, ingenieros de proyecto y dueños cansados de cadenas de correos interminables.",
-      "scrollLabel": "Desplázate para ver el pipeline"
-    },
-    "orbit": {
-      "headerLabel": "Instantánea del flujo de RFQ",
-      "headerBadge": "Demo en vivo · solo lectura",
-      "steps": {
-        "1": {
-          "label": "01 · Recepción de RFQ",
-          "text": "Brief limpio con planos, throughput y normas en un solo lugar."
-        },
-        "2": {
-          "label": "02 · Bench y matching",
-          "text": "Lista corta de fábricas filtradas por proceso, región y sobre dimensional."
-        },
-        "3": {
-          "label": "03 · Capa de decisión",
-          "text": "Cotizaciones comparables, impacto arancelario y riesgos visibles en una sola vista."
-        }
-      },
-      "footerLabel": "Ciclo típico",
-      "footerValue": "5–12 días hábiles desde RFQ hasta adjudicación"
+      "badge": "Manufactura ▢ Automatización ▢ Abastecimiento global",
+      "titleMain": "Manufactura global sin niebla.",
+      "subtitle": "NovaNexus convierte hilos de proyecto desordenados en un mapa compartido y cotizable con el que compradores y fábricas verificadas pueden trabajar de verdad.",
+      "ctaBuyer": "Enviar un RFQ",
+      "ctaSupplier": "Ser proveedor verificado",
+      "buyerTagline": "Para compradores y equipos de planta / proyecto",
+      "supplierTagline": "Para fábricas, integradores de sistemas y socios de automatización",
+      "scrollHint": "Desplázate para ver el flujo"
     },
     "stats": {
-      "factories": "Fábricas e integradores verificados",
-      "industries": "Industrias cubiertas",
-      "regions": "Regiones activas"
+      "suppliersLabel": "Fábricas e integradores verificados",
+      "suppliersValue": "160+",
+      "industriesLabel": "Industrias cubiertas",
+      "industriesValue": "12+",
+      "regionsLabel": "Regiones activas",
+      "regionsValue": "4"
     },
-    "metricsNote": "NovaNexus conecta compradores de producción y fábricas verificadas en EE. UU., Europa, Corea y el resto de APAC en un solo bench cualificado.",
-    "pillars": {
-      "kicker": "PARA QUIÉN LO CONSTRUIMOS",
+    "pipeline": {
+      "title": "Instantánea del pipeline de RFQs",
+      "liveDemo": "Demo en vivo · solo lectura",
+      "step1Title": "01 · Ingreso del RFQ",
+      "step1Body": "Planos, capacidad y estándares capturados en un solo brief claro.",
+      "step2Title": "02 · Bench y matching",
+      "step2Body": "Lista corta de fábricas filtradas por proceso, región y marco comercial.",
+      "step3Title": "03 · Capa de decisión",
+      "step3Body": "Ofertas comparables, impacto arancelario y riesgos visibles en una misma vista.",
+      "cycleLabel": "Ciclo típico",
+      "cycleValue": "5–12 días hábiles desde el RFQ hasta la adjudicación"
+    },
+    "audience": {
+      "sectionLabel": "Para quién construimos",
       "title": "Un cockpit de abastecimiento para ambos lados de la mesa.",
-      "sub": "Los compradores obtienen claridad. Los proveedores obtienen señal. Todos ven la misma versión del proyecto en lugar de quince cadenas de correo.",
-      "buyer": {
-        "title": "Para compradores y equipos de planta",
-        "body": "Ingenieros, responsables de operaciones y dueños que dirigen líneas de producción reales, no proyectos hobby.",
-        "bullets": [
-          "RFQ limpios para que los proveedores vean el requerimiento real desde el primer día.",
-          "Expectativas realistas de presupuesto, plazo y aranceles antes de comprometerte.",
-          "Bench de fábricas que puedes reutilizar en proyectos futuros."
-        ],
-        "cta": "Ver cómo funcionan los flujos del comprador"
-      },
-      "supplier": {
-        "title": "Para proveedores e integradores",
-        "body": "Fábricas de Corea y APAC, integradores y equipos de automatización que realmente pueden enviar, instalar y dar soporte.",
-        "bullets": [
-          "RFQ que encajan con tus máquinas, certificaciones y ventana de instalación.",
-          "Menos tiempo limpiando planos desordenados y más tiempo cotizando.",
-          "Señales sobre lo que los compradores globales pedirán a continuación."
-        ],
-        "cta": "Ver el playbook del proveedor"
-      },
-      "both": {
-        "title": "Para ambos lados, a largo plazo",
-        "body": "Una superficie compartida en lugar de cadenas de correo enterradas y hojas de cálculo sueltas.",
-        "bullets": [
-          "Historial de proyectos que puedes reutilizar en el siguiente RFQ.",
-          "Contexto compartido para operaciones, finanzas y dirección.",
-          "Decisiones más claras sobre dónde construir tu próxima línea."
-        ],
-        "cta": "Recorrer todo el pipeline"
-      }
-    },
-    "flow": {
-      "kicker": "CÓMO FUNCIONA EL PIPELINE",
-      "title": "Del RFQ cargado a la orden de compra en tres pasos claros.",
-      "sub": "La misma estructura para cada proyecto, ya sea una sola sierra o una línea completa de shuttle rack.",
-      "link": "Ver flujo detallado",
-      "1": {
-        "title": "Cargar un RFQ estructurado",
-        "body": "Planos, throughput, normas y fechas objetivo en un formulario limpio."
-      },
-      "2": {
-        "title": "Hacemos match con las fábricas correctas",
-        "body": "Bench corto filtrado por proceso, región, sobre dimensional y certificación; no un correo masivo."
-      },
-      "3": {
-        "title": "Cotizaciones, aclaraciones, adjudicación",
-        "body": "Aclaraciones, cotizaciones y PO en un solo hilo para mantener alineadas operaciones, ingeniería y finanzas."
-      }
-    },
-    "capabilities": {
-      "kicker": "QUÉ HAY DENTRO DEL BENCH",
-      "title": "Líneas, procesos y regiones que realmente cubrimos.",
-      "sub": "Un bench curado en lugar de un directorio genérico. Cada fábrica e integrador está mapeado por proceso, certificación, capacidad y posibilidad de instalación.",
-      "link": "Explorar ejemplos de proveedores",
-      "production": {
-        "label": "Líneas de producción",
-        "detail": "Extrusión de aluminio, racking y AS/RS, líneas de prensa y bobina, transporte, empaquetado y fin de línea."
-      },
-      "precision": {
-        "label": "Precisión y ensamblajes",
-        "detail": "Piezas mecanizadas, útiles y fijaciones, equipos de sala limpia, componentes médicos y de vehículos eléctricos."
-      },
-      "regions": {
-        "label": "Regiones",
-        "detail": "Bench centrado en Corea con cobertura en EE. UU., UE y Sudeste Asiático para fabricación e instalación."
-      },
-      "note": "El bench es intencionalmente pequeño. Solo añadimos nuevos proveedores después de ejecutar proyectos reales juntos."
-    },
-    "final": {
-      "title": "¿Listo para enviar un RFQ real en lugar de otro correo de “solo haciendo seguimiento”?",
-      "sub": "Empieza con un proyecto de producción real. Te ayudamos a traducir planos, throughput y restricciones en un RFQ limpio y a dirigirlo a las fábricas adecuadas.",
-      "primaryCta": "Enviar un RFQ",
-      "secondaryCta": "Unirse a la beta privada"
+      "buyersTitle": "Los compradores obtienen claridad.",
+      "buyersBody": "Gerentes de planta, ingenieros de proyecto y propietarios ven la misma versión viva del proyecto, en lugar de archivos dispersos y cadenas infinitas de correos.",
+      "suppliersTitle": "Los proveedores reciben señal.",
+      "suppliersBody": "Las fábricas e integradores reciben RFQs enfocados que coinciden con sus capacidades reales, en lugar de envíos masivos genéricos y curiosos sin compromiso."
     }
   },
-  "how": {
-    "hero": {
-      "kicker": "FLUJO ▢ DEL BRIEF A LA DECISIÓN",
-      "title": "Cómo funciona NovaNexus, de la primera idea al proyecto en marcha.",
-      "sub": "Un RFQ estructurado entra, una lista corta de fábricas sale. Siempre la misma columna vertebral para que operaciones, ingeniería y finanzas estén alineadas.",
-      "primaryCta": "Crear RFQ",
-      "secondaryCta": "Vista general para compradores"
-    },
-    "steps": {
-      "kicker": "PASO A PASO",
-      "title": "Qué pasa realmente después de hacer clic en “Crear RFQ”.",
-      "sub": "Debajo hay matices, pero todos los proyectos pasan por la misma estructura para que las expectativas sean realistas.",
-      "items": {
-        "1": {
-          "title": "Describe la línea o el proyecto",
-          "body": "Brief conciso: proceso, materiales, volumen anual, región, presupuesto objetivo y plazo."
-        },
-        "2": {
-          "title": "El RFQ se limpia y estructura",
-          "body": "Se señalan datos faltantes, se aclara el alcance y el RFQ se convierte en un paquete que los proveedores pueden cotizar."
-        },
-        "3": {
-          "title": "Bench y emparejamiento",
-          "body": "El proyecto se envía solo a proveedores cuyo proceso, región y tamaño mínimo encajan con el trabajo."
-        },
-        "4": {
-          "title": "Conversaciones enfocadas",
-          "body": "Todos ven el mismo brief estructurado, así que las preguntas son sobre trade-offs y opciones, no sobre lo básico."
-        },
-        "5": {
-          "title": "Soporte a la decisión",
-          "body": "Contexto sobre drivers de costo, rangos de plazo y puntos de riesgo para elegir más que solo la oferta más barata."
-        }
-      }
-    },
-    "roles": {
-      "kicker": "A QUIÉN SIRVE",
-      "title": "Dos lados de la misma línea de producción.",
-      "buyerTitle": "Para compradores y operaciones",
-      "buyerPoints": [
-        "RFQ más limpios y menos ida y vuelta por correo.",
-        "Lista corta de proveedores realistas por proyecto.",
-        "Mejor sensación de rangos de costo / plazo antes de comprometerte."
-      ],
-      "supplierTitle": "Para proveedores e integradores",
-      "supplierPoints": [
-        "Solicitudes que encajan con tus procesos y tamaño mínimo de proyecto.",
-        "Información estructurada desde el principio en lugar de correos vagos.",
-        "Un lugar para mostrar profundidad de capacidades, no solo el logo."
-      ]
-    },
-    "final": {
-      "title": "Empieza con un solo proyecto.",
-      "sub": "Envía un RFQ, explora el bench de proveedores o utiliza el contenido solo para aclarar tus opciones.",
-      "primaryCta": "Crear RFQ",
-      "secondaryCta": "Vista general para compradores"
-    }
-  },
+
   "about": {
     "hero": {
-      "kicker": "SOBRE ESTA PLATAFORMA",
-      "title": "Fabricación global, sin la niebla.",
-      "sub": "NovaNexus es una capa neutral entre compradores y proveedores en fabricación de precisión y automatización industrial. El objetivo es simple: menos sorpresas antes de firmar una orden de compra.",
-      "primaryCta": "Enviar un RFQ",
-      "secondaryCta": "Convertirse en proveedor"
+      "badge": "ACERCA DE ESTA PLATAFORMA",
+      "titleStatic": "Manufactura global,",
+      "titleAccent": "sin niebla.",
+      "body": "NovaNexus actúa como una capa neutral entre compradores y proveedores en manufactura de precisión y automatización industrial. El objetivo es simple:",
+      "bodyStrong": "menos sorpresas antes de firmar una orden de compra.",
+      "ctaSubmit": "Enviar un RFQ",
+      "ctaBecomeSupplier": "Convertirse en proveedor",
+      "map": {
+        "usEurope": "EE. UU. · Europa",
+        "koreaApac": "Corea · APAC",
+        "linesAutomation": "Líneas y automatización",
+        "kicker": "SEÑAL POR ENCIMA DEL RUIDO",
+        "bodyPrefix": "Procesos, capacidad y riesgo traducidos en",
+        "bodyStrong": " un mapa compartido desde el que ambas partes pueden trabajar.",
+        "metricLiveRfqs": "RFQs vivos / en revisión",
+        "metricTypicalValue": "Valor típico de proyecto"
+      }
     },
-    "metrics": {
-      "suppliers": "Proveedores cualificados",
-      "verticals": "Verticales principales de fabricación",
-      "regions": "Regiones activas",
-      "liveRfqs": "RFQ activos / en revisión",
-      "typicalValue": "Valor típico de proyecto"
+
+    "stats": {
+      "qualifiedSuppliers": "Proveedores calificados",
+      "coreVerticals": "Verticales principales de manufactura",
+      "activeRegions": "Regiones activas"
     },
-    "behindTitle": "Qué hay realmente detrás de los listados.",
-    "behindSub": "La mayoría de los directorios industriales maximizan el número bruto de entradas. NovaNexus es deliberadamente estrecho, centrado en profundidad de capacidad, capacidad realista y el esfuerzo necesario para operar una línea, no solo en datos de contacto."
+
+    "pillars": {
+      "heading": "Lo que realmente hay detrás de los listados.",
+      "subheading": "La mayoría de directorios industriales maximizan el número bruto de listados. NovaNexus es deliberadamente estrecha: se centra en profundidad de capacidad, capacidad realista y el esfuerzo real de operar una línea, no solo en datos de contacto.",
+      "capability": {
+        "label": "Mapa de capacidades",
+        "title": "Procesos, no solo logotipos.",
+        "body": "Cada proveedor se ancla en procesos, materiales, tolerancias y certificaciones, para que los compradores busquen como piensan los ingenieros.",
+        "bullets": [
+          "Etiquetas de proceso para mecanizado, extrusión, automatización, salas limpias y más.",
+          "Cobertura de materiales y tolerancias típicas visibles desde el inicio.",
+          "Certificaciones y enfoque sectorial a simple vista."
+        ]
+      },
+      "rfqs": {
+        "label": "RFQs estructurados",
+        "title": "RFQs que se pueden cotizar bien a la primera.",
+        "body": "Un ingreso guiado del RFQ elimina conjeturas, de modo que los proveedores respondan con números reales en vez de \"llámanos para hablar\".",
+        "bullets": [
+          "Campos técnicos obligatorios para planos, volúmenes y requisitos de calidad.",
+          "Carga de planos, listas de materiales y fotos de referencia.",
+          "Avisos automáticos cuando falta un detalle crítico."
+        ]
+      },
+      "decision": {
+        "label": "Capa de decisión",
+        "title": "Playbooks encima de los listados.",
+        "body": "Guías ligeras viven junto a los proveedores, para que los equipos decidan más rápido y con menos política.",
+        "bullets": [
+          "Notas de make vs. buy y comparación de rutas para casos comunes.",
+          "Listas de verificación para primeras compras y nuevas geografías.",
+          "Señales sobre dónde cambian capacidad y tiempos de entrega."
+        ]
+      }
+    },
+
+    "buyers": {
+      "title": "Si eres comprador",
+      "copy": "Diseñado para equipos de operaciones, ingeniería y abastecimiento que necesitan un mapa compartido y realista antes de emitir una orden de compra.",
+      "overline": "Te llevarás",
+      "benefits": [
+        "Una lista corta de opciones realistas por proceso, región y rango económico.",
+        "RFQs más limpios que devuelven ofertas reales más rápido.",
+        "Alertas tempranas sobre riesgo, plazo de entrega y bandas de costo aproximadas."
+      ]
+    },
+
+    "suppliers": {
+      "title": "Si eres proveedor",
+      "copy": "Estar listado aquí pretende sentirse más ligero que un sitio corporativo completo, pero mucho más significativo que un simple logo en un directorio.",
+      "overline": "Entenderás mejor",
+      "benefits": [
+        "Una manera de mostrar profundidad sin contratar una agencia de marketing.",
+        "Contexto sobre lo que realmente piden los compradores globales este año.",
+        "Señales de dónde invertir capacidad y automatización a continuación."
+      ]
+    },
+
+    "roadmap": {
+      "heading": "Hacia dónde va esto.",
+      "copy": "La hoja de ruta se basa en cómo los equipos reales de CAPEX compran y construyen líneas, no en una lista de funciones brillantes. Cuantos más proyectos fluyan por NovaNexus, más precisas serán las guías y comparativas.",
+      "now": {
+        "phase": "AHORA · MVP",
+        "title": "Bench curado e ingreso estructurado",
+        "body": "Bench de proveedores curado, ingreso estructurado de RFQs y playbooks iniciales para que ambos lados sepan qué significa “bueno” desde el día uno."
+      },
+      "next": {
+        "phase": "SIGUIENTE",
+        "title": "Filtros más profundos, bandas más claras",
+        "body": "Filtros de descubrimiento más profundos, mayor cobertura de automatización y bandas de costo / plazo más claras para tipos comunes de proyectos."
+      },
+      "later": {
+        "phase": "MÁS ADELANTE",
+        "title": "Analítica, mapas de calor y field guides",
+        "body": "Analítica ligera para proveedores, mapas de calor regionales para compradores y guías de campo más ricas sobre \"cómo dimensionar\" basadas en datos de proyectos en vivo."
+      }
+    },
+
+    "cta": {
+      "heading": "Explora el ecosistema.",
+      "copy": "Explora proveedores, lee las guías y envía un RFQ de prueba. Incluso si solo quieres mapear opciones, deberías irte con una visión más clara y realista de lo que es posible para tu próxima línea o proyecto de automatización.",
+      "overline": "Empieza desde el lado que mejor encaje contigo.",
+      "primary": "Explorar proveedores",
+      "secondary": "Ver cómo funciona",
+      "note": "Sin tarifas ni compromisos por simplemente explorar."
+    }
+  },
+
+  "suppliers": {
+    "heroTitle": "Un flujo limpio de RFQs realistas en lugar de ruido.",
+    "heroSubtitle": "NovaNexus filtra los leads débiles para que fábricas e integradores solo vean proyectos que realmente pueden ganar y ejecutar.",
+    "benefitsTitle": "Lo que obtienen los proveedores verificados",
+    "benefits": {
+      "fitTitle": "Mejor encaje de proyecto",
+      "fitBody": "Los RFQs se emparejan por ventana de proceso, rango, certificaciones y alcance de instalación.",
+      "contextTitle": "Contexto que importa",
+      "contextBody": "Ves desde el inicio throughput, supuestos de aranceles y banderas de riesgo en lugar de adivinar por correo.",
+      "supportTitle": "Soporte práctico",
+      "supportBody": "Apoyo en alcance, cotización y planificación de instalación para que puedas concentrarte en la ejecución."
+    },
+    "ctaApply": "Postular como proveedor verificado"
+  },
+
+  "auth": {
+    "loginTitle": "Iniciar sesión",
+    "joinTitle": "Unirse a NovaNexus",
+    "nameLabel": "Nombre",
+    "emailLabel": "Correo corporativo",
+    "roleLabel": "Principalmente actúas como",
+    "roleBuyer": "Comprador / operador",
+    "roleSupplier": "Fábrica / proveedor",
+    "roleBoth": "Ambos lados",
+    "notesLabel": "¿Qué tipo de proyectos planeas o suministras?",
+    "successMessage": "Gracias — hemos recibido tus datos y te contactaremos pronto."
   }
 }

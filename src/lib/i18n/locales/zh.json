@@ -1,156 +1,233 @@
 {
   "nav": {
-    "howItWorks": "工作流程",
+    "howItWorks": "运行方式",
     "liveRFQs": "实时 RFQ",
     "forSuppliers": "供应商专区",
-    "about": "关于 NovaNexus"
+    "about": "关于",
+    "login": "登录",
+    "joinBeta": "加入 Beta"
   },
+
+  "footer": {
+    "tagline": "将复杂的设备投资项目转化为跨区域可清晰报价的工作包。",
+    "rights": "All rights reserved.",
+    "platform": "平台",
+    "liveRFQs": "实时 RFQ",
+    "becomeSupplier": "成为认证供应商",
+    "about": "关于 NovaNexus",
+    "forBuyers": "买家专区",
+    "buyerDashboard": "买家控制台（预览）",
+    "contact": "联系我们",
+    "forSuppliers": "供应商专区",
+    "supplierDashboard": "供应商控制台（预览）",
+    "joinBeta": "加入 Beta 计划"
+  },
+
+  "language": {
+    "label": "语言",
+    "en": "英语",
+    "ko": "韩语",
+    "ja": "日语",
+    "zh": "中文",
+    "vi": "越南语",
+    "de": "德语",
+    "fr": "法语",
+    "es": "西班牙语",
+    "it": "意大利语",
+    "ar": "阿拉伯语"
+  },
+
+  "common": {
+    "submit": "提交",
+    "cancel": "取消",
+    "learnMore": "了解更多",
+    "back": "返回",
+    "next": "下一步",
+    "loading": "加载中…",
+    "optional": "可选",
+    "required": "必填"
+  },
+
   "home": {
     "hero": {
-      "kicker": "制造 ▢ 自动化 ▢ 全球采购",
-      "titleLine1": "把复杂的生产项目，",
-      "titleLine2": "变成清晰、可报价的工作。",
-      "subtitle": "NovaNexus 是一个中立的平台，服务于从事真实生产线、自动化与精密制造的买家和供应商。平台聚焦能力深度、结构化 RFQ，并尽量减少双方的噪音与无效沟通。",
-      "ctaPrimary": "提交 RFQ",
-      "ctaSecondary": "浏览审核通过的供应商"
+      "badge": "制造 ▢ 自动化 ▢ 全球采购",
+      "titleMain": "全球制造，不再迷雾重重。",
+      "subtitle": "NovaNexus 将散乱的邮件与文件整合成买家与认证工厂可共同协作的清晰共享地图。",
+      "ctaBuyer": "提交 RFQ",
+      "ctaSupplier": "成为认证供应商",
+      "buyerTagline": "适用于买家与工厂/项目团队",
+      "supplierTagline": "适用于工厂、系统集成商与自动化合作伙伴",
+      "scrollHint": "向下滚动查看流程"
     },
-    "who": {
-      "kicker": "适用对象",
-      "title": "围绕真正推动项目落地的人而设计。",
-      "subtitle": "无论你负责运营、工程还是销售，这个平台都应该更像一张“地图”，而不是又一个普通名录。",
-      "pillars": {
-        "buyers": {
-          "title": "面向买家",
-          "body": "当你需要真正能交付生产线的工厂或集成商，而不是一串泛泛的联系方式时。",
-          "bullets": [
-            "引导式 RFQ 录入，减少来回反复",
-            "以能力为中心的供应商档案",
-            "在项目前期就给出基本成本与交期预期"
-          ],
-          "cta": "打开买家总览"
-        },
-        "suppliers": {
-          "title": "面向供应商",
-          "body": "适合希望专注高质量项目，而不是随机一次性询盘的工厂、系统集成商和自动化团队。",
-          "bullets": [
-            "围绕工艺与材料构建的详细档案",
-            "按地区与项目规模预先筛选的 RFQ",
-            "提供充足上下文，避免靠猜测和模糊邮件来报价"
-          ],
-          "cta": "打开供应商总览"
-        },
-        "both": {
-          "title": "服务双方",
-          "body": "作为一个强调清晰度而非噪音的中立层，减少错配，让需求更清楚、决策更可靠。",
-          "bullets": [
-            "在工艺和技术指标上的统一语言",
-            "关于成本与产能的轻量级市场信号",
-            "用通俗语言解释权衡与取舍的内容"
-          ],
-          "cta": "查看详细流程"
-        }
+    "stats": {
+      "suppliersLabel": "认证工厂与 SI",
+      "suppliersValue": "160+",
+      "industriesLabel": "覆盖行业",
+      "industriesValue": "12+",
+      "regionsLabel": "覆盖区域",
+      "regionsValue": "4"
+    },
+    "pipeline": {
+      "title": "RFQ 流程概览",
+      "liveDemo": "实时演示 · 只读",
+      "step1Title": "01 · RFQ 信息收集",
+      "step1Body": "将图纸、产能与标准整合为一份清晰简报。",
+      "step2Title": "02 · 供应商筛选与匹配",
+      "step2Body": "根据工艺、区域与商业条件筛选出可执行的工厂。",
+      "step3Title": "03 · 决策层",
+      "step3Body": "在同一视图中呈现可比较报价、关税影响与风险提示。",
+      "cycleLabel": "典型周期",
+      "cycleValue": "从 RFQ 到授标约 5–12 个工作日"
+    },
+    "audience": {
+      "sectionLabel": "适用对象",
+      "title": "为供应链两端打造的采购指挥舱。",
+      "buyersTitle": "买方获得清晰度。",
+      "buyersBody": "工厂经理、项目工程师与业主可共享统一的项目实时版本，不再依赖分散的文件与无尽邮件。",
+      "suppliersTitle": "供应商获得真实信号。",
+      "suppliersBody": "工厂与 SI 仅会收到与自身能力匹配的 RFQ，而非无差别群发的询问。"
+    }
+  },
+
+  "about": {
+    "hero": {
+      "badge": "平台介绍",
+      "titleStatic": "全球制造，",
+      "titleAccent": "不再迷雾。",
+      "body": "NovaNexus 在精密制造与工业自动化领域担任买家与供应商之间的中立层。目标很简单：",
+      "bodyStrong": "在签署 PO 之前减少所有意外。",
+      "ctaSubmit": "提交 RFQ",
+      "ctaBecomeSupplier": "成为供应商",
+      "map": {
+        "usEurope": "美国 · 欧洲",
+        "koreaApac": "韩国 · 亚太",
+        "linesAutomation": "生产线与自动化",
+        "kicker": "拒绝噪音，专注信号",
+        "bodyPrefix": "将工艺、产能与风险转化为",
+        "bodyStrong": " 双方可共同使用的共享地图。",
+        "metricLiveRfqs": "实时/审核中 RFQ",
+        "metricTypicalValue": "典型项目规模"
       }
     },
-    "flow": {
-      "kicker": "流程",
-      "title": "实际运作方式。",
-      "subtitle": "这里是高层概览；专门页面会展开更多细节。目标是保持闭环短、技术信息充分且表达清晰。",
-      "cta": "查看完整流程",
-      "steps": [
-        {
-          "step": "01",
-          "title": "描述产线或项目",
-          "body": "提供简要说明：工艺、材料、年需求量、目标地区和时间节点，并附上已有的布局图、工程图或现场照片。"
-        },
-        {
-          "step": "02",
-          "title": "结构化 RFQ 并完成匹配",
-          "body": "对 RFQ 进行整理与补充，检查缺失信息，随后只推送给真正具备相应能力、范围匹配的供应商，而不是随便找一个附近的。"
-        },
-        {
-          "step": "03",
-          "title": "聚焦的供应商沟通",
-          "body": "入选供应商会收到结构化资料包，从而能够基于真实数据而不是猜测和无休止的澄清邮件来回复报价。"
-        }
+
+    "stats": {
+      "qualifiedSuppliers": "合格供应商",
+      "coreVerticals": "核心制造领域",
+      "activeRegions": "活跃区域"
+    },
+
+    "pillars": {
+      "heading": "不仅仅是供应商列表背后的内容。",
+      "subheading": "大多数工业目录追求数量。NovaNexus 刻意聚焦于能力深度、实际产能与运行生产线所需的真实努力。",
+      "capability": {
+        "label": "能力地图",
+        "title": "关注工艺，而非公司 Logo。",
+        "body": "每家供应商都基于工艺、材料、允许偏差与认证进行结构化定义，让买方像工程师一样进行搜索。",
+        "bullets": [
+          "跨加工、挤压、自动化、洁净室等工艺标签。",
+          "材料覆盖与典型允差提前呈现。",
+          "认证与主要行业一目了然。"
+        ]
+      },
+      "rfqs": {
+        "label": "结构化 RFQ",
+        "title": "从一开始就可清晰报价的 RFQ。",
+        "body": "引导式 RFQ 填写避免模糊空间，使供应商能够提供真实数字，而非泛泛回复。",
+        "bullets": [
+          "图纸、产量、质量要求等技术字段。",
+          "支持上传图纸、BOM 与参考图片。",
+          "缺少关键信息时自动提醒。"
+        ]
+      },
+      "decision": {
+        "label": "决策层",
+        "title": "叠加在列表之上的现场 Playbook。",
+        "body": "轻量级决策指南紧邻供应商信息，帮助团队以更快、更客观的方式做出判断。",
+        "bullets": [
+          "典型场景下自制 vs 外包的比较说明。",
+          "首次采购或进入新区域的检查清单。",
+          "关于产能与交期变化的市场信号。"
+        ]
+      }
+    },
+
+    "buyers": {
+      "title": "为买家打造",
+      "copy": "为需要共享现实可行采购地图的运营、工程与采购团队设计。",
+      "overline": "您将获得",
+      "benefits": [
+        "依据工艺、区域与预算范围的现实选择列表。",
+        "更清晰的 RFQ → 更快且准确的报价。",
+        "关于风险、交期与成本区间的早期提示。"
       ]
     },
-    "supplierBench": {
-      "kicker": "SUPPLIER BENCH",
-      "title": "NovaNexus 上主要覆盖哪些类型的项目？",
-      "subtitle": "平台更偏向整线项目、自动化和持续生产，而不是一次性的打样或原型。下面是一些典型优势场景：",
-      "cta": "打开审核供应商列表",
-      "cards": [
-        {
-          "title": "生产线与自动化",
-          "body": "挤压生产线、热锯、货架系统、仓储自动化和机器人等，对产能与设备稼动率要求较高的项目。"
-        },
-        {
-          "title": "精密制造",
-          "body": "CNC、冲压与成形、洁净室生产线等，需要可追溯、验证与完善文档的行业。"
-        },
-        {
-          "title": "区域覆盖",
-          "body": "覆盖韩国、东南亚以及美国和欧盟的部分地区，适合需要在成本、服务支持和风险之间平衡的团队。"
-        }
-      ],
-      "note": "想进一步了解？供应商页面展示了典型行业、区域、项目起订规模以及认证信息。"
+
+    "suppliers": {
+      "title": "为供应商打造",
+      "copy": "在这里展示更轻量，但比仅放 Logo 的目录更具实际意义。",
+      "overline": "您将更好理解",
+      "benefits": [
+        "无需营销团队即可展示自身能力的深度。",
+        "理解全球买家今年真正要求的技术标准。",
+        "关于未来应投资哪类产能与自动化的行业信号。"
+      ]
     },
-    "final": {
-      "title": "从一个项目开始。",
-      "sub": "你可以提交 RFQ、浏览供应商库，或者仅仅利用这些内容来理清自己的选项。即使只是为了“摸清可能性”，离开平台时你也应该比来时看得更清楚。",
-      "ctaPrimary": "创建 RFQ",
-      "ctaSecondary": "打开买家总览"
-    }
-  },
-  "rfqs": {
-    "hero": {
-      "kicker": "实时 RFQ · 预先筛选项目",
-      "title": "覆盖生产线、机器人与自动化的实时 RFQ。",
-      "subtitle": "以下是流经 NovaNexus 的真实 RFQ 示例：CNC 与压力机生产线、工业机器人、仓储系统、洁净室与医疗设备以及大型自动化项目，在这些项目中，工程品质比最低报价更重要。",
-      "stats": {
-        "live": "实时 / 审核中的 RFQ",
-        "avgValue": "平均项目金额",
-        "vettedFactories": "已审核工厂数"
+
+    "roadmap": {
+      "heading": "未来发展方向",
+      "copy": "路线图基于真实 capex 团队的采购与建设方式，而非表面功能列表。随着更多项目流经 NovaNexus，指导性内容与基准将更精准。",
+      "now": {
+        "phase": "NOW · MVP",
+        "title": "精选供应商 & 结构化 RFQ",
+        "body": "精选供应商池、结构化 RFQ 输入与基础 Playbook，使双方从 Day 1 就共享“良好状态”的标准。"
       },
-      "sampleNotice": "按地区展示具有代表性的示例项目，新的实时 RFQ 上线后会自动出现在此处。"
-    },
-    "regions": {
-      "us": {
-        "title": "美国及美洲",
-        "summary": "家供应商 · 范围内的在册 / 示例 RFQ 数"
+      "next": {
+        "phase": "NEXT",
+        "title": "更深层过滤器，更清晰区间",
+        "body": "更强的发现过滤器、更广泛的自动化覆盖与常见项目类型的成本/交期区间。"
       },
-      "eu": {
-        "title": "欧洲",
-        "summary": "家供应商 · 范围内的在册 / 示例 RFQ 数"
-      },
-      "apac": {
-        "title": "亚太地区",
-        "summary": "家供应商 · 范围内的在册 / 示例 RFQ 数"
+      "later": {
+        "phase": "LATER",
+        "title": "分析、热力图与现场指南",
+        "body": "供应商轻量分析、买家区域热力图与基于真实项目数据的采购指南。"
       }
     },
-    "tableNote": "此处仅为筛选视图。在后台，所有项目都是范围完整、买家匿名且预算真实的 RFQ。"
+
+    "cta": {
+      "heading": "探索整个生态系统",
+      "copy": "浏览供应商、阅读指南并提交试用 RFQ。即使仅在调研阶段，也能对下一个项目的真实可能性有更清晰认识。",
+      "overline": "从适合你的那一侧开始。",
+      "primary": "浏览供应商",
+      "secondary": "查看运行方式",
+      "note": "查看与测试均无需费用或承诺。"
+    }
   },
+
   "suppliers": {
-    "hero": {
-      "kicker": "供应商入驻",
-      "title": "成为 NovaNexus 审核通过的供应商",
-      "subtitle": "我们只为铝材、货架系统和自动化相关领域的小部分严肃工厂开放入驻。请告诉我们你是谁、擅长什么，我们会根据匹配度推送相应图纸和 RFQ。"
+    "heroTitle": "拒绝噪音，只接收真实且可执行的 RFQ。",
+    "heroSubtitle": "NovaNexus 过滤弱线索，让工厂 & SI 专注于真正能赢下并交付的项目。",
+    "benefitsTitle": "认证供应商可获得的价值",
+    "benefits": {
+      "fitTitle": "更高的项目匹配度",
+      "fitBody": "RFQ 会根据工艺窗口、规模、认证与安装服务范围进行匹配。",
+      "contextTitle": "真正重要的上下文",
+      "contextBody": "提供产能、关税假设与风险标记，让您不再凭猜测回应。",
+      "supportTitle": "贴近现场的支持",
+      "supportBody": "从 scoping、报价到安装规划提供协助，让团队专注执行。"
     },
-    "form": {
-      "companyName": "公司名称",
-      "mainContact": "主要联系人",
-      "workEmail": "工作邮箱",
-      "capabilities": "能力 / 设备",
-      "regions": "可服务区域",
-      "notes": "备注",
-      "submit": "提交供应商档案"
-    }
+    "ctaApply": "申请成为认证供应商"
   },
-  "common": {
-    "status": {
-      "open": "开放",
-      "inReview": "审核中",
-      "closed": "已关闭"
-    }
+
+  "auth": {
+    "loginTitle": "登录",
+    "joinTitle": "加入 NovaNexus",
+    "nameLabel": "姓名",
+    "emailLabel": "工作邮箱",
+    "roleLabel": "主要角色",
+    "roleBuyer": "买家 / 运营",
+    "roleSupplier": "工厂 / 供应商",
+    "roleBoth": "两者皆是",
+    "notesLabel": "您正在规划或供应哪些项目？",
+    "successMessage": "信息已收到，我们将尽快联系您。"
   }
 }

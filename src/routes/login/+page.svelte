@@ -1,3 +1,4 @@
+<!-- src/routes/login/+page.svelte (예시 경로) -->
 <script lang="ts">
   import { pb } from '$lib/pocketbase';
   import { goto } from '$app/navigation';
@@ -45,9 +46,9 @@
 </svelte:head>
 
 <main class="auth-page">
-  <section class="auth-card">
+  <section class="auth-card" aria-labelledby="login-heading">
     <header class="auth-header">
-      <h1 class="auth-title">Log in</h1>
+      <h1 class="auth-title" id="login-heading">Log in</h1>
       <p class="auth-sub">
         Access your NovaNexus portal to track RFQs, supplier conversations and
         project status.
@@ -55,26 +56,34 @@
     </header>
 
     {#if errorMsg}
-      <div class="auth-error">
+      <div class="auth-error" role="alert" aria-live="assertive">
         {errorMsg}
       </div>
     {/if}
 
-    <form class="auth-form" on:submit={handleSubmit}>
-      <label>
-        <span>Email</span>
+    <form class="auth-form" on:submit={handleSubmit} novalidate>
+      <div class="auth-field">
+        <label for="email">
+          <span>Email</span>
+        </label>
         <input
+          id="email"
+          name="email"
           type="email"
           bind:value={email}
           placeholder="you@company.com"
           autocomplete="email"
           required
         />
-      </label>
+      </div>
 
-      <label>
-        <span>Password</span>
+      <div class="auth-field">
+        <label for="password">
+          <span>Password</span>
+        </label>
         <input
+          id="password"
+          name="password"
           type="password"
           bind:value={password}
           placeholder="••••••••"
@@ -82,12 +91,13 @@
           minlength="6"
           required
         />
-      </label>
+      </div>
 
       <div class="auth-actions">
         <button
           type="submit"
           class="btn-primary auth-submit"
+          name="login"
           disabled={loading}
         >
           {#if loading}
@@ -100,6 +110,7 @@
         <button
           type="button"
           class="btn-secondary auth-create"
+          name="createAccount"
           on:click={goToCreateAccount}
         >
           Create account
@@ -162,7 +173,11 @@
     font-size: 12px;
     border-radius: 12px;
     border: 1px solid rgba(248, 113, 113, 0.85);
-    background: radial-gradient(circle at top left, rgba(248, 113, 113, 0.18), rgba(127, 29, 29, 0.8));
+    background: radial-gradient(
+      circle at top left,
+      rgba(248, 113, 113, 0.18),
+      rgba(127, 29, 29, 0.8)
+    );
     color: #fee2e2;
   }
 
@@ -173,10 +188,13 @@
     margin-top: 8px;
   }
 
-  .auth-form label {
+  .auth-field {
     display: flex;
     flex-direction: column;
     gap: 4px;
+  }
+
+  .auth-form label {
     font-size: 12px;
     color: #d1d5db;
   }
@@ -194,14 +212,17 @@
     font-size: 13px;
     color: #e5e7eb;
     outline: none;
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+    transition:
+      border-color 0.16s ease,
+      box-shadow 0.16s ease,
+      background-color 0.16s.ease;
   }
 
   .auth-form input::placeholder {
     color: #6b7280;
   }
 
-  .auth-form input:focus {
+  .auth-form input:focus-visible {
     border-color: rgba(129, 140, 248, 1);
     box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.7);
     background: rgba(15, 23, 42, 0.98);

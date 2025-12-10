@@ -71,13 +71,23 @@
       </h1>
       <p class="how-sub">
         One RFQ in, one clear pipeline out. The goal is simple: fewer email chains,
-        fewer “what are we actually doing?” calls, and more production lines that start up on time.
+        fewer “what are we actually doing?” calls, and more production lines that
+        start up on time.
       </p>
 
       <div class="how-anchor-nav">
-        <a href="#buyer-workflows">Buyer workflows</a>
-        <a href="#supplier-playbook">Supplier playbook</a>
-        <a href="#full-pipeline">Full pipeline</a>
+        <a href="#buyer-workflows">
+          <span class="anchor-dot"></span>
+          <span>Buyer workflows</span>
+        </a>
+        <a href="#supplier-playbook">
+          <span class="anchor-dot"></span>
+          <span>Supplier playbook</span>
+        </a>
+        <a href="#full-pipeline">
+          <span class="anchor-dot"></span>
+          <span>Full pipeline</span>
+        </a>
       </div>
 
       <div class="how-cta-row">
@@ -89,10 +99,16 @@
       </div>
     </div>
 
-    <div class="how-hero-orbit" in:scale={{ duration: 260, start: 0.92 }}>
+    <!-- ORBIT / TIMELINE 카드 -->
+    <div class="how-hero-orbit" in:scale={{ duration: 260, start: 0.9 }}>
       <div class="orbit-glow"></div>
+
       <div class="orbit-core">
-        <div class="orbit-label">RFQ pipeline</div>
+        <div class="orbit-label-row">
+          <span class="orbit-label">RFQ pipeline</span>
+          <span class="orbit-chip">NovaNexus spine</span>
+        </div>
+
         <div class="orbit-stat-row">
           <div class="orbit-stat">
             <div class="orbit-stat-value">1 → 3–7</div>
@@ -102,6 +118,20 @@
             <div class="orbit-stat-value">3 stages</div>
             <div class="orbit-stat-label">intake · matching · award</div>
           </div>
+        </div>
+
+        <div class="orbit-timeline">
+          {#each steps as s, i}
+            <div class="orbit-step">
+              <div class="orbit-step-index">{s.step}</div>
+              <div class="orbit-step-body">
+                <div class="orbit-step-title">{s.title}</div>
+                <div class="orbit-step-bar">
+                  <span class="orbit-step-fill" style={`--i:${i}`}></span>
+                </div>
+              </div>
+            </div>
+          {/each}
         </div>
       </div>
 
@@ -130,8 +160,8 @@
         <p class="section-kicker">STEP-BY-STEP</p>
         <h2 class="section-title">What actually happens after you click “Create RFQ”.</h2>
         <p class="section-sub">
-          Under the hood there’s nuance, but every project passes through the same backbone so
-          expectations stay aligned across plants, regions and suppliers.
+          Under the hood there’s nuance, but every project passes through the same backbone
+          so expectations stay aligned across plants, regions and suppliers.
         </p>
       </div>
     </div>
@@ -140,7 +170,7 @@
       {#each steps as s, i}
         <article
           class="step-card"
-          in:fly={{ y: 12, duration: 260, delay: 60 + i * 60 }}
+          in:fly={{ y: 12, duration: 260, delay: 60 + i * 70 }}
         >
           <div class="step-header">
             <span class="step-number">{s.step}</span>
@@ -171,7 +201,7 @@
       {#each roles as r, i}
         <article
           class="role-card"
-          in:fly={{ y: 14, duration: 260, delay: 60 + i * 80 }}
+          in:fly={{ y: 14, duration: 260, delay: 60 + i * 90 }}
         >
           <h3 class="role-title">{r.title}</h3>
           <ul>
@@ -191,8 +221,9 @@
         <p class="detail-kicker">BUYER WORKFLOWS</p>
         <h2 class="detail-title">How NovaNexus fits into a buyer’s week.</h2>
         <p class="section-sub">
-          NovaNexus is not another system you have to “roll out”. It’s a structured workspace
-          your team can drop projects into when you need a clean RFQ and a realistic bench of factories.
+          NovaNexus is not another system you have to “roll out”. It’s a structured
+          workspace your team can drop projects into when you need a clean RFQ and a
+          realistic bench of factories.
         </p>
       </div>
     </div>
@@ -247,7 +278,8 @@
         <h2 class="detail-title">What “good” looks like for factories on NovaNexus.</h2>
         <p class="section-sub">
           The best suppliers behave like engineering partners, not quote machines.
-          This is how high-performing factories use NovaNexus to protect capacity and win the right work.
+          This is how high-performing factories use NovaNexus to protect capacity and
+          win the right work.
         </p>
       </div>
     </div>
@@ -309,7 +341,8 @@
       <div class="detail-summary-card">
         <p class="detail-summary-label">Partnership</p>
         <p class="detail-summary-body">
-          Show buyers you can own fabrication, installation and long-term support – not just the first shipment.
+          Show buyers you can own fabrication, installation and long-term support –
+          not just the first shipment.
         </p>
       </div>
     </div>
@@ -434,6 +467,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
+    z-index: 2;
   }
 
   .how-kicker {
@@ -466,6 +501,9 @@
   }
 
   .how-anchor-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 4px 10px;
     border-radius: 999px;
     border: 1px solid rgba(148, 163, 184, 0.7);
@@ -474,10 +512,38 @@
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.12em;
+    position: relative;
+    overflow: hidden;
   }
 
-  .how-anchor-nav a:hover {
-    border-color: rgba(248, 250, 252, 0.9);
+  .how-anchor-nav a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(56, 189, 248, 0.35),
+      transparent
+    );
+    transform: translateX(-120%);
+    opacity: 0;
+    transition:
+      transform 0.4s ease,
+      opacity 0.4s ease;
+  }
+
+  .how-anchor-nav a:hover::after {
+    transform: translateX(120%);
+    opacity: 1;
+  }
+
+  .anchor-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #22c55e;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
   }
 
   .how-cta-row {
@@ -538,8 +604,8 @@
     text-decoration: none;
     transition:
       background 0.15s ease,
-      border-color 0.15s ease,
-      transform 0.15s ease;
+      border-color 0.15s.ease,
+      transform 0.15s.ease;
   }
 
   .btn-ghost:hover {
@@ -581,18 +647,34 @@
     z-index: 2;
   }
 
+  .orbit-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
   .orbit-label {
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: #bfdbfe;
-    margin-bottom: 6px;
+  }
+
+  .orbit-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    color: #e5e7eb;
+    background: rgba(15, 23, 42, 0.96);
   }
 
   .orbit-stat-row {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    margin-bottom: 10px;
   }
 
   .orbit-stat {
@@ -611,6 +693,66 @@
     font-size: 11px;
   }
 
+  .orbit-timeline {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .orbit-step {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+  }
+
+  .orbit-step-index {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+
+  .orbit-step-title {
+    font-size: 11px;
+    color: #e5e7eb;
+  }
+
+  .orbit-step-bar {
+    position: relative;
+    width: 100%;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(30, 64, 175, 0.7);
+    overflow: hidden;
+    margin-top: 3px;
+  }
+
+  .orbit-step-fill {
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, #38bdf8, #22c55e, #a855f7);
+    animation: orbit-fill 5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.4s);
+  }
+
+  @keyframes orbit-fill {
+    0% {
+      transform: translateX(-100%);
+    }
+    40% {
+      transform: translateX(0);
+    }
+    80% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
   .orbit-ring {
     position: absolute;
     inset: 26px 18px 18px 18px;
@@ -618,12 +760,24 @@
     border: 1px dashed rgba(148, 163, 184, 0.45);
     z-index: 1;
     pointer-events: none;
+    animation: orbit-ring-spin 26s linear infinite;
   }
 
   .orbit-ring-inner {
     inset: 36px 32px 32px 32px;
     opacity: 0.6;
     border-style: solid;
+    animation-duration: 36s;
+    animation-direction: reverse;
+  }
+
+  @keyframes orbit-ring-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .orbit-node {
@@ -633,6 +787,7 @@
     gap: 6px;
     font-size: 11px;
     color: #e5e7eb;
+    animation: orbit-node-float 6s ease-in-out infinite;
   }
 
   .orbit-node-dot {
@@ -646,16 +801,19 @@
   .orbit-node-1 {
     top: 16px;
     left: 22px;
+    animation-delay: 0.2s;
   }
 
   .orbit-node-2 {
     bottom: 20px;
     left: 26px;
+    animation-delay: 0.8s;
   }
 
   .orbit-node-3 {
     top: 32px;
     right: 24px;
+    animation-delay: 1.4s;
   }
 
   .orbit-node-label {
@@ -665,31 +823,17 @@
     border: 1px solid rgba(148, 163, 184, 0.6);
   }
 
-  /* subtle orbit motion */
-  .how-hero-orbit::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.15), transparent 55%);
-    mix-blend-mode: screen;
-    opacity: 0.8;
-    animation: orbit-sweep 10s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes orbit-sweep {
-    0% {
-      transform: translate(-20%, -10%);
+  @keyframes orbit-node-float {
+    0%,
+    100% {
+      transform: translateY(0);
     }
     50% {
-      transform: translate(10%, 6%);
-    }
-    100% {
-      transform: translate(-20%, -10%);
+      transform: translateY(-4px);
     }
   }
 
-  /* SECTION HEAD */
+  /* 상단 STEP 요약 */
 
   .section-head {
     display: flex;
@@ -718,8 +862,6 @@
     color: #9ca3af;
     max-width: 560px;
   }
-
-  /* 상단 STEP 요약 */
 
   .how-steps {
     margin-bottom: 44px;
@@ -853,9 +995,9 @@
     font-size: 12px;
     box-shadow: 0 18px 42px rgba(15, 23, 42, 1);
     transition:
-      transform 0.18s ease,
-      box-shadow 0.18s ease,
-      border-color 0.18s ease;
+      transform 0.18s.ease,
+      box-shadow 0.18s.ease,
+      border-color 0.18s.ease;
   }
 
   .role-card:hover {
@@ -919,9 +1061,9 @@
     position: relative;
     overflow: hidden;
     transition:
-      transform 0.18s ease,
-      box-shadow 0.18s ease,
-      border-color 0.18s ease;
+      transform 0.18s.ease,
+      box-shadow 0.18s.ease,
+      border-color 0.18s.ease;
   }
 
   .detail-card::after {
