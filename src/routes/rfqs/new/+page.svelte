@@ -7,12 +7,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import PocketBase from 'pocketbase';
-
-  // PocketBase 엔드포인트 (원하면 .env 로 뺄 수 있게)
-  const pb = new PocketBase(import.meta.env.VITE_PB_URL || 'http://127.0.0.1:8090');
+  import { browser } from '$app/environment';
 
   const regions = ['Korea', 'USA', 'Europe', 'Japan', 'Vietnam', 'Middle East', 'Other'];
+
   const industries = [
     'Aluminum extrusion & finishing',
     'CNC machining & fabrication',
@@ -28,8 +26,11 @@
     'EV & battery production lines',
     'Other'
   ];
+
   const budgets = ['<$200k', '$200k–$500k', '$500k–$1M', '$1M–$3M', '$3M+'];
   const timelines = ['<3 months', '3–6 months', '6–12 months', '12+ months'];
+
+  let mounted = false;
 
   let companyName = '';
   let projectName = '';
@@ -44,18 +45,44 @@
   let constraints = '';
   let contactName = '';
   let contactEmail = '';
+
   let loading = false;
   let submitted = false;
   let errorMsg = '';
   let createdId = '';
 
+  // PocketBase 클라이언트 (동적 import로 SSR 안전하게)
+  let pbClient: any = null;
+
+  onMount(async () => {
+    mounted = true;
+
+    if (!browser) return;
+
+    try {
+      const mod = await import('$lib/pocketbase');
+      pbClient = mod.pb;
+    } catch (err) {
+      console.error('PocketBase client load failed in RFQ new page', err);
+    }
+  });
+
   const handleSubmit = async () => {
+    if (loading) return;
+
     loading = true;
     submitted = false;
     errorMsg = '';
     createdId = '';
 
-    // RFQ payload – PocketBase collection 필드로 사용
+    if (!pbClient) {
+      // 클라이언트 로드 실패 시도 명확한 메시지
+      errorMsg =
+        'RFQ backend is not reachable from this environment. Please check PocketBase URL and client config.';
+      loading = false;
+      return;
+    }
+
     const payload = {
       company_name: companyName,
       project_name: projectName,
@@ -74,60 +101,94 @@
     };
 
     try {
-      // PocketBase 에 'rfqs' 콜렉션이 있다고 가정
-      // (컬렉션 이름/필드는 필요에 따라 맞춰서 수정하면 됨)
-      const record = await pb.collection('rfqs').create(payload);
-      createdId = record?.id || '';
+      const record = await pbClient.collection('rfqs').create(payload);
+      createdId = record?.id ?? '';
       submitted = true;
 
-      // 폼 리셋 (원하면 유지하도록 바꿔도 됨)
+      // 핵심 필드만 리셋 (회사/연락처는 그대로 두기)
       projectName = '';
       process = '';
       annualVolume = '';
       description = '';
       constraints = '';
-    } catch (err: any) {
-      console.error(err);
+    } catch (err) {
+      console.error('RFQ create failed', err);
       errorMsg =
-        'RFQ 저장 중 오류가 발생했습니다. PocketBase 주소, 컬렉션 이름, 권한 설정을 확인해주세요.';
+        'There was an issue saving this RFQ. Please check the RFQ collection, API rules and PocketBase URL.';
     } finally {
       loading = false;
     }
   };
 </script>
 
-{#if true}
+{#if mounted}
 <main class="rfq-page" in:fade={{ duration: 220 }}>
-  <section class="rfq-hero" in:fly={{ y: 16, duration: 240 }}>
-    <div>
-      <p class="rfq-kicker">CREATE RFQ</p>
-      <h1 class="rfq-title">Start with one project.</h1>
+  <!-- HERO -->
+  <section class="rfq-hero" in:fly={{ y: 16, duration: 260 }}>
+    <div class="rfq-hero-glow"></div>
+
+    <div class="rfq-hero-left" in:fade={{ duration: 260, delay: 40 }}>
+      <p class="rfq-kicker">CREATE RFQ ▢ PRODUCTION-GRADE ONLY</p>
+      <h1 class="rfq-title">Start with one real project.</h1>
       <p class="rfq-sub">
-        Use this form for real work: new lines, expansions, retrofits, or automation.
-        Keep it high-signal and concrete. You can always follow up with more detail later.
+        Use this form for lines, cells, retrofits and automation where a wrong supplier
+        actually hurts. Keep it concrete: what you’re running today, what needs to be
+        different and where the line will live.
       </p>
-    </div>
-    <div class="rfq-hero-note">
-      <div class="rfq-dot"></div>
-      <div class="rfq-hero-note-text">
-        <div class="rfq-hero-note-title">What happens next?</div>
-        <p>
-          RFQs are reviewed, structured, and matched to suitable suppliers. The directory
-          is curated – there is no open self-serve blast.
-        </p>
+
+      <div class="rfq-steps">
+        <div class="step-pill">
+          <span class="step-index">1</span>
+          <span>Basics</span>
+        </div>
+        <div class="step-pill">
+          <span class="step-index">2</span>
+          <span>Scope & region</span>
+        </div>
+        <div class="step-pill">
+          <span class="step-index">3</span>
+          <span>Technical description</span>
+        </div>
+        <div class="step-pill">
+          <span class="step-index">4</span>
+          <span>Contact</span>
+        </div>
       </div>
     </div>
+
+    <aside class="rfq-hero-note" in:fade={{ duration: 260, delay: 120 }}>
+      <div class="rfq-dot-wrapper">
+        <div class="rfq-dot-ping"></div>
+        <div class="rfq-dot"></div>
+      </div>
+      <div class="rfq-hero-note-text">
+        <div class="rfq-hero-note-title">What happens after you submit?</div>
+        <p>
+          RFQs are reviewed, cleaned up and matched against a curated bench of factories
+          and integrators. There is no bulk “blast all suppliers” button – every project
+          is routed intentionally.
+        </p>
+        <p class="rfq-hero-note-foot">
+          If something is confidential, you can keep names generic here and share drawings
+          under NDA later.
+        </p>
+      </div>
+    </aside>
   </section>
 
-  <section class="rfq-card" in:fade={{ duration: 240, delay: 60 }}>
+  <!-- FORM CARD -->
+  <section class="rfq-card" in:fade={{ duration: 260, delay: 80 }}>
+    <div class="rfq-card-glow"></div>
     <form class="rfq-form" on:submit|preventDefault={handleSubmit}>
-      <!-- 프로젝트 & 회사 정보 -->
+      <!-- Project basics -->
       <div class="rfq-section">
-        <h2>Project basics</h2>
-        <p class="rfq-section-sub">
-          Enough context so a technical salesperson or engineer immediately understands
-          what kind of line or cell you’re talking about.
-        </p>
+        <div class="rfq-section-head">
+          <h2>Project basics</h2>
+          <p class="rfq-section-sub">
+            Enough context so a technical salesperson or engineer immediately understands
+            what kind of line or cell we’re talking about.
+          </p>
+        </div>
 
         <div class="rfq-grid">
           <div class="field">
@@ -135,7 +196,7 @@
             <input
               type="text"
               bind:value={companyName}
-              placeholder="Example: tier-1 automotive supplier, 3PL warehouse, etc."
+              placeholder="Example: tier-1 automotive supplier, 3PL warehouse, medtech OEM…"
             />
           </div>
 
@@ -149,12 +210,12 @@
             />
           </div>
 
-          <div class="field">
+          <div class="field field-role">
             <label>Your role *</label>
             <div class="radio-row">
               <label>
                 <input type="radio" value="buyer" bind:group={role} />
-                <span>Buyer / operations / engineering</span>
+                <span>Buyer / plant / engineering</span>
               </label>
               <label>
                 <input type="radio" value="supplier" bind:group={role} />
@@ -169,13 +230,15 @@
         </div>
       </div>
 
-      <!-- 범위 & 지역 -->
+      <!-- Scope & region -->
       <div class="rfq-section">
-        <h2>Scope & location</h2>
-        <p class="rfq-section-sub">
-          Region and industry help narrow the bench. If you are flexible, mention it in
-          the notes below.
-        </p>
+        <div class="rfq-section-head">
+          <h2>Scope & location</h2>
+          <p class="rfq-section-sub">
+            Region and industry help narrow the bench. If you’re flexible, mention it in
+            the constraints section below.
+          </p>
+        </div>
 
         <div class="rfq-grid">
           <div class="field">
@@ -206,7 +269,7 @@
           </div>
 
           <div class="field">
-            <label>Annual volume or throughput target (rough)</label>
+            <label>Annual volume / throughput (rough)</label>
             <input
               bind:value={annualVolume}
               placeholder="Example: 15,000 tons/year, 500 pallets/day, 40 modules/hour…"
@@ -233,13 +296,15 @@
         </div>
       </div>
 
-      <!-- 상세 설명 -->
+      <!-- Technical description -->
       <div class="rfq-section">
-        <h2>Technical description</h2>
-        <p class="rfq-section-sub">
-          Bullet points are fine. Focus on what must be true (layout constraints, safety
-          requirements, interfaces with existing lines, etc.).
-        </p>
+        <div class="rfq-section-head">
+          <h2>Technical description</h2>
+          <p class="rfq-section-sub">
+            Bullet points are perfect. Focus on what must be true – layout, interfaces
+            with existing equipment, safety, clean-room, local service, certifications.
+          </p>
+        </div>
 
         <div class="field">
           <label>What are you trying to build or upgrade? *</label>
@@ -247,9 +312,9 @@
             rows="5"
             bind:value={description}
             required
-            placeholder="- New extrusion line to replace existing equipment
+            placeholder="- New extrusion line to replace aging equipment
 - Integrate shuttle racking with existing WMS
-- Upgrade press line with robotics & safety guarding…"
+- Add robotic palletizing cell after existing case packer…"
           ></textarea>
         </div>
 
@@ -259,19 +324,21 @@
             rows="3"
             bind:value={constraints}
             placeholder="- Existing building layout / ceiling height
-- Local service coverage in specific country
+- Local service needed in specific country
 - Cleanroom / validation / certification requirements…"
           ></textarea>
         </div>
       </div>
 
-      <!-- 연락처 -->
+      <!-- Contact -->
       <div class="rfq-section">
-        <h2>Contact</h2>
-        <p class="rfq-section-sub">
-          Used only to follow up on this RFQ. In the MVP, there is no public profile tied
-          to this form.
-        </p>
+        <div class="rfq-section-head">
+          <h2>Contact</h2>
+          <p class="rfq-section-sub">
+            Used only to follow up on this RFQ. In the MVP there is no public profile tied
+            to this form.
+          </p>
+        </div>
 
         <div class="rfq-grid">
           <div class="field">
@@ -295,7 +362,7 @@
         </div>
       </div>
 
-      <!-- 버튼 & 상태 -->
+      <!-- Actions / status -->
       <div class="rfq-actions">
         <button class="btn-primary" type="submit" disabled={loading}>
           {#if loading}
@@ -313,11 +380,14 @@
 
       {#if submitted}
         <div class="rfq-success">
-          RFQ has been created in the system.
-          {#if createdId}
-            <span class="rfq-id">ID: {createdId}</span>
-          {/if}
-          You’ll be contacted after review.
+          <div class="rfq-success-title">Your RFQ has been created.</div>
+          <p>
+            It’s now in the review queue. You’ll hear back once it’s been structured and
+            matched to a realistic bench of factories.
+            {#if createdId}
+              <span class="rfq-id">Internal ID: {createdId}</span>
+            {/if}
+          </p>
         </div>
       {/if}
     </form>
@@ -331,7 +401,10 @@
     margin: 0 auto;
     padding: 88px 24px 72px;
     color: #e5e7eb;
+    position: relative;
   }
+
+  /* HERO */
 
   .rfq-hero {
     display: flex;
@@ -339,6 +412,26 @@
     gap: 32px;
     align-items: flex-start;
     margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rfq-hero-glow {
+    position: absolute;
+    inset: -140px -80px auto auto;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.35), transparent 55%),
+      radial-gradient(circle at 80% 70%, rgba(129, 140, 248, 0.3), transparent 55%);
+    opacity: 0.7;
+    filter: blur(18px);
+    pointer-events: none;
+    animation: orbitDrift 18s ease-in-out infinite alternate;
+  }
+
+  .rfq-hero-left {
+    flex: 1.5;
+    position: relative;
+    z-index: 1;
   }
 
   .rfq-kicker {
@@ -358,10 +451,42 @@
   .rfq-sub {
     font-size: 13px;
     color: #9ca3af;
-    max-width: 520px;
+    max-width: 540px;
+  }
+
+  .rfq-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 11px;
+  }
+
+  .step-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(55, 65, 81, 1);
+    background: rgba(15, 23, 42, 0.96);
+    color: #cbd5f5;
+  }
+
+  .step-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    font-size: 9px;
+    background: linear-gradient(135deg, #3b82f6, #a855f7);
+    color: #f9fafb;
   }
 
   .rfq-hero-note {
+    flex: 1;
     display: flex;
     gap: 10px;
     padding: 14px 16px;
@@ -370,7 +495,23 @@
     background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.98));
     box-shadow: 0 18px 40px rgba(15, 23, 42, 1);
     font-size: 11px;
-    max-width: 320px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .rfq-dot-wrapper {
+    position: relative;
+    width: 14px;
+    margin-top: 2px;
+  }
+
+  .rfq-dot-ping {
+    position: absolute;
+    inset: 1px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.2);
+    animation: pingDot 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
   }
 
   .rfq-dot {
@@ -379,7 +520,8 @@
     border-radius: 999px;
     background: #22c55e;
     box-shadow: 0 0 18px rgba(34, 197, 94, 0.9);
-    margin-top: 4px;
+    position: relative;
+    z-index: 1;
   }
 
   .rfq-hero-note-title {
@@ -393,14 +535,22 @@
     line-height: 1.5;
   }
 
+  .rfq-hero-note-foot {
+    margin-top: 6px;
+    color: #9ca3af;
+  }
+
   @media (max-width: 900px) {
     .rfq-hero {
       flex-direction: column;
     }
+
     .rfq-hero-note {
       max-width: none;
     }
   }
+
+  /* FORM CARD */
 
   .rfq-card {
     border-radius: 18px;
@@ -409,15 +559,40 @@
     box-shadow: 0 24px 60px rgba(15, 23, 42, 1);
     padding: 20px 22px 22px;
     font-size: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rfq-card-glow {
+    position: absolute;
+    inset: -40px 40% auto -40px;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.26), transparent 55%),
+      radial-gradient(circle at 90% 60%, rgba(79, 70, 229, 0.22), transparent 55%);
+    opacity: 0.7;
+    filter: blur(22px);
+    pointer-events: none;
   }
 
   .rfq-form {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     gap: 22px;
   }
 
-  .rfq-section h2 {
+  .rfq-section {
+    border-top: 1px solid rgba(31, 41, 55, 1);
+    padding-top: 16px;
+  }
+
+  .rfq-section:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .rfq-section-head h2 {
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 4px;
@@ -436,9 +611,17 @@
     gap: 14px 18px;
   }
 
+  .field-role {
+    grid-column: 1 / -1;
+  }
+
   @media (max-width: 800px) {
     .rfq-grid {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .field-role {
+      grid-column: auto;
     }
   }
 
@@ -463,6 +646,10 @@
     font-size: 12px;
     color: #e5e7eb;
     outline: none;
+    transition:
+      border-color 0.16s ease,
+      box-shadow 0.16s ease,
+      background 0.16s ease;
   }
 
   .field textarea {
@@ -474,6 +661,14 @@
   .field input::placeholder,
   .field textarea::placeholder {
     color: #6b7280;
+  }
+
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible {
+    border-color: rgba(59, 130, 246, 0.9);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.9);
+    background: rgba(15, 23, 42, 0.98);
   }
 
   .radio-row {
@@ -498,6 +693,8 @@
     accent-color: #3b82f6;
   }
 
+  /* Actions / status */
+
   .rfq-actions {
     display: flex;
     align-items: center;
@@ -518,7 +715,10 @@
     color: #e5e7eb;
     box-shadow: 0 14px 36px rgba(15, 23, 42, 0.95);
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      opacity 0.15s ease;
   }
 
   .btn-primary:hover:enabled {
@@ -565,9 +765,41 @@
     padding: 8px 10px;
   }
 
-  .rfq-id {
-    margin-left: 6px;
-    font-family: monospace;
+  .rfq-success-title {
     font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .rfq-id {
+    margin-left: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      'Liberation Mono', 'Courier New', monospace;
+    font-weight: 600;
+  }
+
+  /* KEYFRAMES */
+
+  @keyframes orbitDrift {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-18px, 10px, 0);
+    }
+  }
+
+  @keyframes pingDot {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    70% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
   }
 </style>

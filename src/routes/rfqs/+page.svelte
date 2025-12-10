@@ -6,7 +6,9 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { pb } from '$lib/pocketbase';
+  import { browser } from '$app/environment';
+  import { fade, fly, scale } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
 
   type RFQStatus = 'Open' | 'In review' | 'Closed';
 
@@ -29,7 +31,12 @@
     suppliers: number;
   };
 
-  // ░░ 고퀄 샘플 RFQ 데이터 (국가, 산업 다 섞어서) ░░
+  const baseSupplierCounts: Record<RegionKey, number> = {
+    americas: 132,
+    europe: 96,
+    apac: 118
+  };
+
   const demoRfqs: RFQ[] = [
     {
       id: 'NN-24027',
@@ -39,7 +46,7 @@
       region: 'USA / Alabama',
       budget: '$600k–$1.2M',
       status: 'Open',
-      due: '2025-03-10'
+      due: '2026-03-10'
     },
     {
       id: 'NN-24018',
@@ -49,7 +56,7 @@
       region: 'USA / California',
       budget: '$400k–$800k',
       status: 'Open',
-      due: '2025-03-22'
+      due: '2026-03-22'
     },
     {
       id: 'NN-24041',
@@ -59,7 +66,7 @@
       region: 'Germany',
       budget: '$900k–$1.6M',
       status: 'Open',
-      due: '2025-04-05'
+      due: '2026-04-05'
     },
     {
       id: 'NN-24052',
@@ -69,7 +76,7 @@
       region: 'USA / Michigan',
       budget: '$1.4M–$2.3M',
       status: 'Open',
-      due: '2025-04-18'
+      due: '2026-04-18'
     },
     {
       id: 'NN-24063',
@@ -79,7 +86,7 @@
       region: 'Korea / Busan',
       budget: '$3.0M–$4.8M',
       status: 'Open',
-      due: '2025-05-02'
+      due: '2026-05-02'
     },
     {
       id: 'NN-24075',
@@ -88,7 +95,7 @@
       process: 'Robotics · Palletizer + conveyors',
       region: 'Vietnam / Ho Chi Minh City',
       budget: '$350k–$650k',
-      status: 'Open',
+      status: 'In review',
       due: '2025-04-29'
     },
     {
@@ -98,7 +105,7 @@
       process: 'EV · Assembly + EOL test',
       region: 'USA / Texas',
       budget: '$4.0M–$6.5M',
-      status: 'Open',
+      status: 'Closed',
       due: '2025-05-30'
     },
     {
@@ -153,9 +160,8 @@
     }
   ];
 
-  // ░░ 공통 상태값 ░░
-  let rfqs: RFQ[] = []; // 화면에 실제로 보여줄 RFQs (라이브 or 데모)
-  let rfqRecords: any[] = []; // PocketBase 원본
+  let rfqs: RFQ[] = [];
+  let rfqRecords: any[] = [];
   let hasLiveData = false;
 
   let supplierCount = 0;
@@ -172,12 +178,11 @@
   let filteredRfqs: RFQ[] = [];
 
   let regionStats: Record<RegionKey, RegionStat> = {
-    americas: { label: 'US & Americas', rfqs: 0, suppliers: 0 },
-    europe: { label: 'Europe', rfqs: 0, suppliers: 0 },
-    apac: { label: 'Asia–Pacific', rfqs: 0, suppliers: 0 }
+    americas: { label: 'US & Americas', rfqs: 0, suppliers: baseSupplierCounts.americas },
+    europe: { label: 'Europe', rfqs: 0, suppliers: baseSupplierCounts.europe },
+    apac: { label: 'Asia–Pacific', rfqs: 0, suppliers: baseSupplierCounts.apac }
   };
 
-  // ░░ PocketBase record → RFQ 매핑 ░░
   function mapRecordToRFQ(rec: any): RFQ {
     return {
       id: rec.code ?? rec.id,
@@ -226,10 +231,8 @@
     return 'americas';
   }
 
-  // ░░ RFQ / 메트릭 / 지역 통계 재계산 ░░
   function recomputeView() {
     if (rfqRecords.length === 0) {
-      // PocketBase 에 아직 RFQ 없음 → 데모 모드
       hasLiveData = false;
       rfqs = demoRfqs;
       liveCount = demoRfqs.filter(
@@ -266,14 +269,12 @@
       }
     }
 
-    // vetted factories 라벨
     vettedFactoriesLabel = supplierCount ? `${supplierCount}+` : '160+';
 
-    // 지역별 통계 (RFQ 개수 기준으로 supplier 분배)
     const baseStats: Record<RegionKey, RegionStat> = {
-      americas: { label: 'US & Americas', rfqs: 0, suppliers: 0 },
-      europe: { label: 'Europe', rfqs: 0, suppliers: 0 },
-      apac: { label: 'Asia–Pacific', rfqs: 0, suppliers: 0 }
+      americas: { label: 'US & Americas', rfqs: 0, suppliers: baseSupplierCounts.americas },
+      europe: { label: 'Europe', rfqs: 0, suppliers: baseSupplierCounts.europe },
+      apac: { label: 'Asia–Pacific', rfqs: 0, suppliers: baseSupplierCounts.apac }
     };
 
     for (const r of rfqs) {
@@ -281,23 +282,27 @@
       baseStats[key].rfqs += 1;
     }
 
-    const totalRfqs = rfqs.length || 1;
-    const totalSuppliers = supplierCount || 160;
-
-    (['americas', 'europe', 'apac'] as RegionKey[]).forEach((key) => {
-      baseStats[key].suppliers = Math.max(
-        1,
-        Math.round((totalSuppliers * baseStats[key].rfqs) / totalRfqs)
-      );
-    });
-
-    regionStats = baseStats;
+    regionStats = {
+      americas: {
+        label: 'US & Americas',
+        rfqs: baseStats.americas.rfqs,
+        suppliers: baseSupplierCounts.americas
+      },
+      europe: {
+        label: 'Europe',
+        rfqs: baseStats.europe.rfqs,
+        suppliers: baseSupplierCounts.europe
+      },
+      apac: {
+        label: 'Asia–Pacific',
+        rfqs: baseStats.apac.rfqs,
+        suppliers: baseSupplierCounts.apac
+      }
+    };
   }
 
-  // ░░ 필터링은 Svelte 반응식으로 분리 ░░
   $: filteredRfqs = rfqs.filter((r) => {
-    const byStatus =
-      statusFilter === 'All' ? true : r.status === statusFilter;
+    const byStatus = statusFilter === 'All' ? true : r.status === statusFilter;
 
     const byRegion =
       regionFilter === 'All'
@@ -318,9 +323,15 @@
     return byStatus && byRegion;
   });
 
-  // ░░ 최초 진입 시: PocketBase → 실데이터, 없으면 데모로 자동 fallback ░░
+  // 초기에는 데모 기준으로 렌더
+  recomputeView();
+
   onMount(async () => {
+    if (!browser) return;
+
     try {
+      const { pb } = await import('$lib/pocketbase');
+
       const [rfqList, supplierList] = await Promise.all([
         pb.collection('rfqs').getFullList({
           sort: '-created',
@@ -336,7 +347,6 @@
       supplierCount = supplierList.length;
       recomputeView();
 
-      // RFQ 실시간 구독
       pb.collection('rfqs').subscribe('*', (e) => {
         if (e.action === 'create') {
           rfqRecords = [e.record, ...rfqRecords];
@@ -350,7 +360,6 @@
         recomputeView();
       });
 
-      // Supplier 개수 실시간 업데이트 (메트릭용)
       pb.collection('suppliers').subscribe('*', (e) => {
         if (e.action === 'create') supplierCount += 1;
         else if (e.action === 'delete')
@@ -358,68 +367,84 @@
         recomputeView();
       });
     } catch (err) {
-      console.error(
-        'PocketBase load failed, using demo RFQs instead.',
-        err
-      );
+      console.error('PocketBase load failed, using demo RFQs instead.', err);
       rfqRecords = [];
       supplierCount = 160;
       recomputeView();
     }
   });
-
-  // 초기에는 데모 데이터 기준으로 바로 그려지게
-  recomputeView();
 </script>
 
 <main class="rfqs-page">
   <!-- 상단 헤더 / 카피 -->
-  <section class="rfqs-hero">
-    <div>
-      <p class="rfqs-kicker">LIVE RFQs · PRE-QUALIFIED PROJECTS</p>
+  <section
+    class="rfqs-hero"
+    in:fly={{ y: 18, duration: 380 }}
+  >
+    <div class="rfqs-hero-orbit"></div>
+
+    <div class="rfqs-hero-left" in:fade={{ duration: 320, delay: 40 }}>
+      <p class="rfqs-kicker">
+        LIVE RFQS ▢ PRODUCTION-GRADE PROJECTS
+      </p>
 
       <h1 class="title">
-        Live RFQs across production lines, robotics, and automation.
+        Live RFQs across lines, robotics and industrial automation.
       </h1>
 
       <p class="sub">
-        Examples of real-world RFQs flowing through NovaNexus — CNC &amp; press
-        lines, industrial robotics, warehouse systems, clean-room and medical
-        devices, and large-scale automation where engineering quality matters
-        more than the lowest quote.
+        A rotating, anonymised snapshot of RFQs running through NovaNexus –
+        CNC and press lines, warehouse systems, EV cells, medical and clean-room projects
+        where engineering quality matters more than the lowest quote.
       </p>
 
-      <div class="mode-pill" class:mode-live={hasLiveData}>
+      <div
+        class:mode-live={hasLiveData}
+        class="mode-pill"
+        in:scale={{ duration: 260, delay: 140 }}
+      >
         {#if hasLiveData}
-          Live data from the NovaNexus network — updating in real time.
+          Live data from the NovaNexus network – updating in real time.
         {:else}
-          Representative sample projects by region — live RFQs will appear
-          here automatically as they go live.
+          Representative sample projects by region. Live RFQs will appear here automatically as
+          they go live.
         {/if}
       </div>
     </div>
 
     <!-- 상단 메트릭 카드 -->
-    <div class="metrics-card">
-      <div>
-        <div class="metric-value">{liveCount}</div>
-        <div class="metric-label">Live / in-review RFQs</div>
-      </div>
-      <div>
-        <div class="metric-value">{avgBudgetLabel}</div>
-        <div class="metric-label">Avg. project value</div>
-      </div>
-      <div>
-        <div class="metric-value">{vettedFactoriesLabel}</div>
-        <div class="metric-label">Vetted factories</div>
+    <div
+      class="rfqs-hero-right"
+      in:fly={{ y: 10, duration: 320, delay: 80 }}
+    >
+      <div class="metrics-glow"></div>
+      <div class="metrics-card">
+        <div>
+          <div class="metric-value">{liveCount}</div>
+          <div class="metric-label">Live / in-review RFQs</div>
+        </div>
+        <div>
+          <div class="metric-value">{avgBudgetLabel}</div>
+          <div class="metric-label">Typical project value</div>
+        </div>
+        <div>
+          <div class="metric-value">{vettedFactoriesLabel}</div>
+          <div class="metric-label">Vetted factories</div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- 지역별 네트워크 스냅샷 -->
-  <section class="network-strip">
-    {#each Object.values(regionStats) as stat}
-      <div class="network-pill">
+  <section
+    class="network-strip"
+    in:fade={{ duration: 320, delay: 220 }}
+  >
+    {#each Object.values(regionStats) as stat, i}
+      <div
+        class="network-pill"
+        style={`animation-delay: ${i * 120}ms`}
+      >
         <div class="np-label">{stat.label}</div>
         <div class="np-main">
           <span class="np-number">{stat.suppliers}</span>
@@ -433,7 +458,10 @@
   </section>
 
   <!-- 필터 바 -->
-  <section class="rfqs-filters">
+  <section
+    class="rfqs-filters"
+    in:fade={{ duration: 260, delay: 260 }}
+  >
     <div class="filter-group">
       <label>Status</label>
       <select bind:value={statusFilter}>
@@ -453,13 +481,16 @@
     </div>
 
     <div class="filter-note">
-      Filter view only. Under the hood, all projects are fully scoped RFQs
-      with masked buyers and realistic budgets.
+      Filters change the view only. Under the hood every row is a fully-scoped RFQ with drawings,
+      throughput and standards filled in.
     </div>
   </section>
 
   <!-- RFQ 리스트 -->
-  <section class="rfqs-list">
+  <section
+    class="rfqs-list"
+    in:scale={{ duration: 300, delay: 300 }}
+  >
     {#if filteredRfqs.length === 0}
       <div class="rfqs-empty">
         No RFQs found for the current filter. Try switching status or region.
@@ -473,11 +504,15 @@
           <div>Region</div>
           <div>Budget</div>
           <div>Status</div>
-          <div>Due</div>
+          <div>Decision date</div>
         </div>
 
-        {#each filteredRfqs as r}
-          <div class="rfqs-row">
+        {#each filteredRfqs as r, i (r.id)}
+          <div
+            class="rfqs-row"
+            in:fade={{ duration: 220, delay: 40 + i * 18 }}
+            animate:flip={{ duration: 220 }}
+          >
             <div class="rfqs-cell-id">{r.id}</div>
             <div class="rfqs-cell-title">
               <div class="rfqs-title-main">{r.title}</div>
@@ -501,6 +536,25 @@
       </div>
     {/if}
   </section>
+
+  <!-- 하단 CTA -->
+  <section
+    class="rfqs-final"
+    in:fly={{ y: 8, duration: 260, delay: 260 }}
+  >
+    <h3>Want your next RFQ to live here instead of in an email chain?</h3>
+    <p>
+      Start with one production-grade project. We’ll help you translate drawings, throughput and
+      constraints into a clean RFQ and route it to a realistic bench of factories.
+    </p>
+    <div class="rfqs-final-cta-row">
+      <a href="/rfqs/new" class="btn-primary">
+        <span>Submit an RFQ</span>
+        <span class="btn-arrow">→</span>
+      </a>
+      <a href="/how-it-works" class="btn-ghost">See how the pipeline works</a>
+    </div>
+  </section>
 </main>
 
 <style>
@@ -509,14 +563,35 @@
     margin: 0 auto;
     padding: 96px 24px 72px;
     color: #e5e7eb;
+    position: relative;
   }
 
   .rfqs-hero {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
     gap: 40px;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rfqs-hero-orbit {
+    position: absolute;
+    inset: -160px -120px auto auto;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.35), transparent 55%),
+      radial-gradient(circle at 80% 60%, rgba(129, 140, 248, 0.28), transparent 55%);
+    opacity: 0.6;
+    filter: blur(16px);
+    pointer-events: none;
+    animation: orbitDrift 18s ease-in-out infinite alternate;
+  }
+
+  .rfqs-hero-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .rfqs-kicker {
@@ -524,40 +599,76 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: #38bdf8;
-    margin-bottom: 8px;
   }
 
   .title {
-    font-size: 32px;
+    font-size: 30px;
     line-height: 1.2;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 4px;
   }
 
   .sub {
     font-size: 14px;
     color: #9ca3af;
-    max-width: 540px;
-    margin-bottom: 10px;
+    max-width: 560px;
   }
 
   .mode-pill {
     margin-top: 6px;
     font-size: 11px;
-    padding: 5px 12px;
+    padding: 6px 12px 6px 10px;
     border-radius: 999px;
     border: 1px solid rgba(148, 163, 184, 0.6);
     color: #e5e7eb;
     background: radial-gradient(
       circle at top left,
-      rgba(56, 189, 248, 0.25),
-      rgba(15, 23, 42, 0.96)
+      rgba(56, 189, 248, 0.22),
+      rgba(15, 23, 42, 0.98)
     );
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
   }
 
-  .mode-pill.mode-live {
+  .mode-pill::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.8);
+  }
+
+  .mode-live {
     border-color: rgba(34, 197, 94, 0.7);
     box-shadow: 0 0 18px rgba(34, 197, 94, 0.45);
+  }
+
+  .mode-live::before {
+    background: #22c55e;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    animation: pingDot 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .rfqs-hero-right {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .metrics-glow {
+    position: absolute;
+    inset: -40px -40px 0 0;
+    background:
+      radial-gradient(circle at top, rgba(56, 189, 248, 0.4), transparent 55%),
+      radial-gradient(circle at bottom, rgba(15, 23, 42, 1), rgba(15, 23, 42, 1));
+    filter: blur(20px);
+    opacity: 0.9;
+    border-radius: 999px;
+    z-index: -1;
+    animation: pulseGlow 5s ease-in-out infinite;
   }
 
   .metrics-card {
@@ -574,6 +685,8 @@
     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
     font-size: 11px;
     min-width: 260px;
+    animation: floatCard 6s ease-in-out infinite alternate;
+    backdrop-filter: blur(8px);
   }
 
   .metric-value {
@@ -588,14 +701,19 @@
 
   @media (max-width: 900px) {
     .rfqs-hero {
-      flex-direction: column;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
       align-items: flex-start;
+    }
+
+    .rfqs-hero-orbit {
+      inset: -120px -40px auto auto;
     }
 
     .metrics-card {
       width: 100%;
       justify-content: space-between;
-      margin-top: 18px;
+      margin-top: 4px;
     }
   }
 
@@ -620,6 +738,24 @@
     );
     padding: 12px 16px;
     font-size: 11px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .network-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(248, 250, 252, 0.18),
+      transparent
+    );
+    transform: translateX(-100%);
+    animation: shimmer 8s linear infinite;
+    opacity: 0.7;
+    pointer-events: none;
   }
 
   .np-label {
@@ -649,6 +785,8 @@
     color: #9ca3af;
   }
 
+  /* 필터 바 */
+
   .rfqs-filters {
     display: flex;
     align-items: center;
@@ -676,13 +814,26 @@
     font-size: 12px;
     color: #e5e7eb;
     outline: none;
+    transition:
+      box-shadow 0.18s ease,
+      border-color 0.18s ease,
+      background 0.18s ease;
+  }
+
+  .filter-group select:focus-visible {
+    border-color: rgba(59, 130, 246, 0.9);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.9);
+    background: rgba(15, 23, 42, 0.98);
   }
 
   .filter-note {
     font-size: 11px;
     color: #6b7280;
     margin-left: auto;
+    max-width: 320px;
   }
+
+  /* RFQ 리스트 */
 
   .rfqs-list {
     border-radius: 18px;
@@ -708,6 +859,10 @@
     padding: 12px 18px;
     align-items: flex-start;
     border-top: 1px solid rgba(31, 41, 55, 1);
+    transition:
+      background 0.18s ease,
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
   }
 
   .rfqs-row-head {
@@ -720,7 +875,13 @@
   }
 
   .rfqs-row:not(.rfqs-row-head):hover {
-    background: rgba(15, 23, 42, 0.85);
+    background: radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.28),
+      rgba(15, 23, 42, 0.98)
+    );
+    transform: translateY(-1px);
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.85);
   }
 
   .rfqs-cell-id {
@@ -776,16 +937,188 @@
     color: #9ca3af;
   }
 
+  /* 하단 CTA */
+
+  .rfqs-final {
+    margin-top: 32px;
+    text-align: center;
+    border-top: 1px solid rgba(31, 41, 55, 1);
+    padding-top: 22px;
+  }
+
+  .rfqs-final h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #f9fafb;
+  }
+
+  .rfqs-final p {
+    font-size: 13px;
+    color: #9ca3af;
+    max-width: 520px;
+    margin: 0 auto 14px;
+  }
+
+  .rfqs-final-cta-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 20px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #3b82f6, #22c1c3, #a855f7);
+    color: #e5e7eb;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    text-decoration: none;
+    box-shadow:
+      0 14px 36px rgba(15, 23, 42, 0.9),
+      0 0 0 1px rgba(148, 163, 184, 0.25);
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      opacity 0.18s ease,
+      filter 0.18s ease;
+  }
+
+  .btn-arrow {
+    margin-left: 4px;
+    font-size: 13px;
+    transition: transform 0.18s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 20px 56px rgba(15, 23, 42, 1),
+      0 0 0 1px rgba(248, 250, 252, 0.7);
+    opacity: 0.97;
+    filter: saturate(1.15);
+  }
+
+  .btn-primary:hover .btn-arrow {
+    transform: translateX(2px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.9);
+    background: radial-gradient(circle at top, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.98));
+    color: #e5e7eb;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      background 0.18s ease,
+      border-color 0.18s ease,
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .btn-ghost:hover {
+    background: radial-gradient(circle at top, rgba(30, 64, 175, 0.6), rgba(15, 23, 42, 0.98));
+    border-color: rgba(209, 213, 219, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 1);
+  }
+
   @media (max-width: 900px) {
     .rfqs-row,
     .rfqs-row-head {
-      grid-template-columns: 1.1fr 2.2fr 1.8fr 1.6fr;
-      grid-auto-rows: auto;
+      grid-template-columns: 1.1fr 2.4fr 1.8fr 1.6fr;
     }
 
     .rfqs-row-head div:nth-child(n + 5),
     .rfqs-row div:nth-child(n + 5) {
       display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .rfqs-page {
+      padding-inline: 16px;
+    }
+
+    .title {
+      font-size: 24px;
+    }
+
+    .rfqs-row,
+    .rfqs-row-head {
+      grid-template-columns: 1.2fr 2.6fr 1.6fr;
+    }
+
+    .rfqs-row-head div:nth-child(3),
+    .rfqs-row div:nth-child(3) {
+      display: none;
+    }
+  }
+
+  /* KEYFRAMES */
+
+  @keyframes floatCard {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, -6px, 0);
+    }
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 0.95;
+    }
+    100% {
+      opacity: 0.55;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes orbitDrift {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-18px, 10px, 0);
+    }
+  }
+
+  @keyframes pingDot {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    70% {
+      transform: scale(1.4);
+      opacity: 0.1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 </style>
