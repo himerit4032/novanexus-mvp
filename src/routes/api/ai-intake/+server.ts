@@ -1,143 +1,211 @@
-// src/routes/api/ai-intake/+server.ts
-import type { RequestHandler } from "./$types";
+﻿import type { RequestHandler } from "./$types";
+import { json } from "@sveltejs/kit";
 import {
-  analyzeIntake,
-  type IntakeRequest,
-  type UploadedFileMeta,
-} from "$lib/ai/intakeLogic";
+    buildDocumentCorpus,
+    extractRfqDocuments
+} from "$lib/server/rfq/documentReader";
+import { analyzeRfqIntake } from "$lib/ai/rfqIntelligence";
+import { getPbAdmin } from "$lib/server/pbAdmin";
 
-// enum 파싱 헬퍼들
-const asRegion = (
-  value: FormDataEntryValue | null,
-): IntakeRequest["targetRegion"] => {
-  const v = String(value || "").toUpperCase();
-  if (v === "EU") return "EU";
-  if (v === "KR_APAC" || v === "KR-APAC" || v === "KOREA" || v === "APAC")
-    return "KR_APAC";
-  return "US";
+const asRegion = (value: FormDataEntryValue | null): "US" | "EU" | "KR_APAC" => {
+    const v = String(value || "").toUpperCase();
+    if (v === "EU") return "EU";
+    if (v === "KR_APAC" || v === "KR-APAC" || v === "KOREA" || v === "APAC") return "KR_APAC";
+    return "US";
 };
 
-const asVolumeBand = (
-  value: FormDataEntryValue | null,
-): IntakeRequest["annualVolumeBand"] => {
-  const v = String(value || "").toLowerCase();
-  if (v === "mid" || v === "medium") return "mid";
-  if (v === "high") return "high";
-  return "low";
+const asVolumeBand = (value: FormDataEntryValue | null): "low" | "mid" | "high" => {
+    const v = String(value || "").toLowerCase();
+    if (v === "mid" || v === "medium") return "mid";
+    if (v === "high") return "high";
+    return "low";
 };
 
-const asComplexityBand = (
-  value: FormDataEntryValue | null,
-): IntakeRequest["complexityBand"] => {
-  const v = String(value || "").toLowerCase();
-  if (v === "medium" || v === "mid") return "medium";
-  if (v === "complex") return "complex";
-  return "simple";
+const asComplexityBand = (value: FormDataEntryValue | null): "simple" | "medium" | "complex" => {
+    const v = String(value || "").toLowerCase();
+    if (v === "medium" || v === "mid") return "medium";
+    if (v === "complex") return "complex";
+    return "simple";
 };
 
-/**
- * POST /api/ai-intake
- *
- * 기대 FormData:
- *  - projectName      (string, required)
- *  - description      (string, required)
- *  - targetRegion     (US | EU | KR_APAC)
- *  - annualVolumeBand (low | mid | high)
- *  - complexityBand   (simple | medium | complex)
- *  - certifications   (string, "ISO 9001, CE, UL" 형태, optional)
- *  - drawings         (File[], optional)
- */
-export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const formData = await request.formData();
+function collectFiles(formData: FormData): File[] {
+    const keys = ["drawings", "files", "documents", "rfqFiles", "attachments"];
+    const files: File[] = [];
 
-    const projectName = String(formData.get("projectName") || "").trim();
-    const description = String(formData.get("description") || "").trim();
-
-    if (!projectName || !description) {
-      return jsonError(
-        400,
-        "projectName과 description은 필수입니다. 최소 한 줄 이상 입력해주세요.",
-      );
+    for (const key of keys) {
+        for (const entry of formData.getAll(key)) {
+            if (entry instanceof File && entry.size > 0) {
+                files.push(entry);
+            }
+        }
     }
 
-    const targetRegion = asRegion(formData.get("targetRegion"));
-    const annualVolumeBand = asVolumeBand(formData.get("annualVolumeBand"));
-    const complexityBand = asComplexityBand(formData.get("complexityBand"));
+    const deduped = new Map<string, File>();
 
-    const certRaw = String(formData.get("certifications") || "").trim();
-    const certifications = certRaw
-      ? certRaw
-          .split(",")
-          .map((c) => c.trim())
-          .filter(Boolean)
-      : [];
+    for (const file of files) {
+        const signature = `${file.name}:${file.size}:${file.type}`;
+        if (!deduped.has(signature)) deduped.set(signature, file);
+    }
 
-    // 업로드된 도면 파일 메타정보 추출
-    const drawingFiles: UploadedFileMeta[] = [];
-    const fileEntries = formData.getAll("drawings");
+    return [...deduped.values()].slice(0, 6);
+}
 
-    for (const entry of fileEntries) {
-      if (entry instanceof File && entry.size > 0) {
-        drawingFiles.push({
-          filename: entry.name,
-          mimetype: entry.type || "application/octet-stream",
-          size: entry.size,
+function parseCertifications(raw: string): string[] {
+    return raw
+        .split(/[,\n;]/)
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .slice(0, 20);
+}
+
+async function trySaveAiCheck(input: {
+    userId?: string;
+    projectName: string;
+    description: string;
+    targetRegion: string;
+    annualVolumeBand: string;
+    complexityBand: string;
+    certifications: string[];
+    analysis: unknown;
+    documents: unknown;
+}) {
+    try {
+        const pb = await getPbAdmin();
+
+        const record = await pb.collection("ai_checks").create({
+            user: input.userId || null,
+            projectName: input.projectName,
+            description: input.description,
+            targetRegion: input.targetRegion,
+            annualVolumeBand: input.annualVolumeBand,
+            complexityBand: input.complexityBand,
+            certifications: input.certifications,
+            analysis: input.analysis,
+            documents: input.documents,
+            status: "completed"
         });
 
-        // TODO (Vision 연동):
-        //  여기서 tmp 디렉토리에 저장하거나,
-        //  OpenAI GPT-4o Vision 엔드포인트로 스트리밍해서
-        //  도면에서 공정/치수/재질/용접부 등을 추출한 뒤
-        //  그 결과를 IntakeRequest에 추가해도 됨.
-      }
+        return {
+            saved: true,
+            collection: "ai_checks",
+            id: record.id
+        };
+    } catch (error) {
+        return {
+            saved: false,
+            collection: "ai_checks",
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "PocketBase save failed. Confirm ai_checks collection and server credentials."
+        };
     }
-
-    const intake: IntakeRequest = {
-      projectName,
-      description,
-      targetRegion,
-      annualVolumeBand,
-      complexityBand,
-      certifications,
-      drawingFiles,
-    };
-
-    const analysis = analyzeIntake(intake);
-
-    return new Response(
-      JSON.stringify({
-        ok: true,
-        intake: {
-          projectName,
-          targetRegion,
-          annualVolumeBand,
-          complexityBand,
-          certifications,
-          drawingFileCount: drawingFiles.length,
-        },
-        analysis,
-      }),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-        },
-      },
-    );
-  } catch (err) {
-    console.error("AI Intake API error:", err);
-    return jsonError(500, "AI RFQ Check 처리 중 내부 오류가 발생했습니다.");
-  }
-};
-
-function jsonError(status: number, message: string): Response {
-  return new Response(JSON.stringify({ ok: false, error: message }), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-store",
-    },
-  });
 }
+
+export const POST: RequestHandler = async ({ request, locals }) => {
+    try {
+        const formData = await request.formData();
+
+        const projectName = String(formData.get("projectName") || "").trim();
+        const description = String(formData.get("description") || "").trim();
+
+        if (!projectName || projectName.length < 2) {
+            return json(
+                { ok: false, error: "Project name is required." },
+                { status: 400 }
+            );
+        }
+
+        if (!description || description.length < 20) {
+            return json(
+                {
+                    ok: false,
+                    error:
+                        "Description is too short. Add project scope, material, quantity, target region or uploaded RFQ documents."
+                },
+                { status: 400 }
+            );
+        }
+
+        const targetRegion = asRegion(formData.get("targetRegion"));
+        const annualVolumeBand = asVolumeBand(formData.get("annualVolumeBand"));
+        const complexityBand = asComplexityBand(formData.get("complexityBand"));
+        const certifications = parseCertifications(String(formData.get("certifications") || ""));
+
+        const uploadedFiles = collectFiles(formData);
+        const documents = await extractRfqDocuments(uploadedFiles);
+        const documentCorpus = buildDocumentCorpus(documents);
+
+        const analysis = analyzeRfqIntake({
+            projectName,
+            description,
+            targetRegion,
+            annualVolumeBand,
+            complexityBand,
+            certifications,
+            documentCorpus,
+            documents
+        });
+
+        const storage = await trySaveAiCheck({
+            userId: locals.user?.id,
+            projectName,
+            description,
+            targetRegion,
+            annualVolumeBand,
+            complexityBand,
+            certifications,
+            analysis,
+            documents: documents.map((doc) => ({
+                filename: doc.filename,
+                mimetype: doc.mimetype,
+                size: doc.size,
+                extension: doc.extension,
+                status: doc.status,
+                charCount: doc.charCount,
+                warnings: doc.warnings
+            }))
+        });
+
+        return json(
+            {
+                ok: true,
+                intake: {
+                    projectName,
+                    targetRegion,
+                    annualVolumeBand,
+                    complexityBand,
+                    certifications,
+                    uploadedFileCount: uploadedFiles.length
+                },
+                documents: documents.map((doc) => ({
+                    filename: doc.filename,
+                    mimetype: doc.mimetype,
+                    size: doc.size,
+                    extension: doc.extension,
+                    status: doc.status,
+                    charCount: doc.charCount,
+                    warnings: doc.warnings
+                })),
+                analysis,
+                storage
+            },
+            {
+                status: 200,
+                headers: {
+                    "cache-control": "no-store"
+                }
+            }
+        );
+    } catch (error) {
+        console.error("[api/ai-intake] error:", error);
+
+        return json(
+            {
+                ok: false,
+                error: "AI RFQ Check failed while reading or analyzing the RFQ package."
+            },
+            { status: 500 }
+        );
+    }
+};
