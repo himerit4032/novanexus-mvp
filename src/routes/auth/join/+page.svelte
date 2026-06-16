@@ -1,8 +1,9 @@
-<!-- src/routes/auth/join/+page.svelte -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { pb } from '$lib/pocketbase';
   import { goto } from '$app/navigation';
+  import { pb } from '$lib/pocketbase';
+  import { t } from 'svelte-i18n';
+  import { get } from 'svelte/store';
 
   let mounted = false;
 
@@ -22,15 +23,47 @@
     mounted = true;
   });
 
+  // i18n helper (JS 안에서 쓸 때)
+  const tr = (key: string) => {
+    const $t = get(t);
+    return ($t(key) as string) ?? key;
+  };
+
   const validate = () => {
-    if (!name.trim()) return 'Name is required.';
-    if (!email.trim()) return 'Work email is required.';
+    if (!name.trim()) return tr('auth.join.errors.nameRequired');
+    if (!email.trim()) return tr('auth.join.errors.emailRequired');
     if (!password.trim() || !passwordConfirm.trim())
-      return 'Password is required.';
+      return tr('auth.join.errors.passwordRequired');
     if (password.length < 8)
-      return 'Password must be at least 8 characters.';
-    if (password !== passwordConfirm) return 'Passwords do not match.';
+      return tr('auth.join.errors.passwordTooShort');
+    if (password !== passwordConfirm)
+      return tr('auth.join.errors.passwordMismatch');
     return '';
+  };
+
+  const normalizeError = (err: any) => {
+    // PocketBase 에러 구조가 다양해서 최대한 안전하게
+    const msg =
+      err?.data?.message ||
+      err?.message ||
+      err?.response?.message ||
+      null;
+
+    // 이메일 중복 같은 필드 에러가 있으면 더 친절하게
+    const fieldErr =
+      err?.data?.data?.email?.message ||
+      err?.data?.data?.password?.message ||
+      err?.data?.data?.passwordConfirm?.message ||
+      null;
+
+    return fieldErr || msg || tr('auth.join.errors.generic');
+  };
+
+  const afterJoinRoute = () => {
+    // 필요하면 여기서 role 기반 분기
+    if (role === 'supplier') return '/dashboard/supplier';
+    if (role === 'both') return '/dashboard';
+    return '/dashboard/buyer';
   };
 
   const handleSubmit = async () => {
@@ -49,50 +82,46 @@
 
     try {
       const payload = {
-        email,
+        email: email.trim(),
         password,
         passwordConfirm,
-        name,
+        name: name.trim(),
         role,
-        notes
+        notes: notes?.trim() || ''
       };
 
-      // users 컬렉션에 계정 생성
       await pb.collection('users').create(payload);
+      await pb.collection('users').authWithPassword(payload.email, password);
 
-      // 자동 로그인
-      await pb.collection('users').authWithPassword(email, password);
-
-      success = 'Account created. Redirecting to your NovaNexus portal…';
+      success = tr('auth.join.successMessage');
 
       setTimeout(() => {
-        goto('/dashboard/buyer');
-      }, 700);
+        goto(afterJoinRoute());
+      }, 650);
     } catch (err: any) {
       console.error(err);
-      error =
-        err?.message ??
-        'Could not create your account. Please check your details and try again.';
+      error = normalizeError(err);
     } finally {
       submitting = false;
     }
   };
 
-  const buyerSignals = [
-    'Plant / OEM teams planning real capex (lines, cells, warehouses, automation).',
-    'RFQs where drawings, throughput and budget bands are already roughly defined.',
-    'Projects where Korea · APAC factories are a realistic option, not an afterthought.'
+  // 신호 텍스트는 i18n 키만 들고 있고, 실제 문구는 JSON에서 가져옴
+  const buyerSignalKeys = [
+    'auth.join.buyerSignals.0',
+    'auth.join.buyerSignals.1',
+    'auth.join.buyerSignals.2'
   ];
 
-  const supplierSignals = [
-    'Factories with proven export track record or installation partners in-region.',
-    'Shops that can own both fabrication and on-site commissioning, not just machine sales.',
-    'Teams comfortable working from structured RFQs, drawings and target standards.'
+  const supplierSignalKeys = [
+    'auth.join.supplierSignals.0',
+    'auth.join.supplierSignals.1',
+    'auth.join.supplierSignals.2'
   ];
 </script>
 
 <svelte:head>
-  <title>Create account ▢ NovaNexus</title>
+  <title>{ $t('auth.join.metaTitle') }</title>
 </svelte:head>
 
 <main class="join-page" class:join-page--hidden={!mounted}>
@@ -101,30 +130,29 @@
     <header class="join-card__header">
       <div>
         <div class="join-chip">
-          <span class="join-chip__dot"></span>
-          <span class="join-chip__label">BETA ACCESS · PORTAL ACCOUNT</span>
+          <span class="join-chip__dot" aria-hidden="true"></span>
+          <span class="join-chip__label">{ $t('auth.join.badge') }</span>
         </div>
+
         <h1 class="join-title">
-          Create your NovaNexus
-          <span class="join-title__gradient">buyer / supplier account</span>.
+          { $t('auth.join.titlePrefix') }
+          <span class="join-title__gradient">{ $t('auth.join.titleHighlight') }</span>.
         </h1>
+
         <p class="join-sub">
-          One secure login for RFQs, proposals and project status. Join as a buyer,
-          supplier or both – and connect live projects with the right factories.
+          { $t('auth.join.subtitle') }
         </p>
       </div>
 
-      <div class="join-meta">
+      <div class="join-meta" aria-label="Join page meta">
         <div>
-          <p class="join-meta__label">TYPICAL RESPONSE</p>
-          <p class="join-meta__value">3–5 business days</p>
+          <p class="join-meta__label">{ $t('auth.join.metaTypicalLabel') }</p>
+          <p class="join-meta__value">{ $t('auth.join.metaTypicalValue') }</p>
         </div>
-        <div class="join-meta__divider"></div>
+        <div class="join-meta__divider" aria-hidden="true"></div>
         <div>
-          <p class="join-meta__label">REGION FOCUS</p>
-          <p class="join-meta__value">
-            Cross-border projects across North America, Europe and Korea · APAC hubs.
-          </p>
+          <p class="join-meta__label">{ $t('auth.join.metaRegionLabel') }</p>
+          <p class="join-meta__value">{ $t('auth.join.metaRegionValue') }</p>
         </div>
       </div>
     </header>
@@ -134,107 +162,128 @@
       <!-- LEFT: FORM -->
       <div class="join-form">
         {#if error}
-          <div class="join-alert join-alert--error">
+          <div class="join-alert join-alert--error" role="alert" aria-live="polite">
             {error}
           </div>
         {/if}
 
         {#if success}
-          <div class="join-alert join-alert--success">
+          <div class="join-alert join-alert--success" role="status" aria-live="polite">
             {success}
           </div>
         {/if}
 
         <div class="join-form__intro">
-          <h2>Set up your creator account for NovaNexus.</h2>
-          <p>
-            This login will own RFQs, proposals and project threads. You can add plant,
-            engineering or sourcing teammates later inside the portal.
-          </p>
+          <h2>{ $t('auth.join.formIntroTitle') }</h2>
+          <p>{ $t('auth.join.formIntroBody') }</p>
         </div>
 
         <form class="join-form__grid" on:submit|preventDefault={handleSubmit}>
+          <!-- NAME -->
           <div class="join-field join-field--half">
-            <label>Name</label>
+            <label for="join_name">{ $t('auth.nameLabel') }</label>
             <input
+              id="join_name"
               class="join-input"
+              name="name"
+              autocomplete="name"
               bind:value={name}
               required
-              placeholder="Your full name"
+              placeholder={ $t('auth.join.placeholders.name') }
             />
           </div>
 
+          <!-- EMAIL -->
           <div class="join-field join-field--half">
-            <label>Work email</label>
+            <label for="join_email">{ $t('auth.emailLabel') }</label>
             <input
+              id="join_email"
               class="join-input"
+              name="email"
               type="email"
+              autocomplete="email"
               bind:value={email}
               required
-              placeholder="name@company.com"
+              placeholder={ $t('auth.join.placeholders.email') }
             />
           </div>
 
+          <!-- PASSWORD -->
           <div class="join-field join-field--half">
-            <label>Password</label>
+            <label for="join_password">{ $t('auth.join.passwordLabel') }</label>
             <input
+              id="join_password"
               class="join-input"
+              name="password"
               type="password"
+              autocomplete="new-password"
               bind:value={password}
               required
-              placeholder="At least 8 characters"
+              placeholder={ $t('auth.join.placeholders.password') }
             />
           </div>
 
+          <!-- CONFIRM -->
           <div class="join-field join-field--half">
-            <label>Confirm password</label>
+            <label for="join_password_confirm">{ $t('auth.join.passwordConfirmLabel') }</label>
             <input
+              id="join_password_confirm"
               class="join-input"
+              name="passwordConfirm"
               type="password"
+              autocomplete="new-password"
               bind:value={passwordConfirm}
               required
-              placeholder="Re-enter password"
+              placeholder={ $t('auth.join.placeholders.passwordConfirm') }
             />
           </div>
 
+          <!-- ROLE -->
           <div class="join-field">
-            <label>Your main role today</label>
-            <div class="join-role-row">
+            <label id="join_role_label">{ $t('auth.roleLabel') }</label>
+
+            <div class="join-role-row" role="group" aria-labelledby="join_role_label">
               <button
                 type="button"
                 class={`join-role ${role === 'buyer' ? 'join-role--active' : ''}`}
+                aria-pressed={role === 'buyer'}
                 on:click={() => (role = 'buyer')}
               >
-                Buyer / operator
+                { $t('auth.roleBuyer') }
               </button>
+
               <button
                 type="button"
                 class={`join-role ${role === 'supplier' ? 'join-role--active' : ''}`}
+                aria-pressed={role === 'supplier'}
                 on:click={() => (role = 'supplier')}
               >
-                Supplier / manufacturer
+                { $t('auth.roleSupplier') }
               </button>
+
               <button
                 type="button"
                 class={`join-role ${role === 'both' ? 'join-role--active' : ''}`}
+                aria-pressed={role === 'both'}
                 on:click={() => (role = 'both')}
               >
-                Buyer &amp; supplier
+                { $t('auth.roleBoth') }
               </button>
             </div>
-            <p class="join-helper">
-              This just guides onboarding. You can still use NovaNexus on both sides of a
-              project.
-            </p>
+
+            <p class="join-helper">{ $t('auth.join.roleHelper') }</p>
           </div>
 
+          <!-- NOTES -->
           <div class="join-field">
-            <label>What lines / projects are you thinking about?</label>
+            <label for="join_notes">{ $t('auth.notesLabel') }</label>
             <textarea
+              id="join_notes"
               class="join-textarea"
+              name="notes"
               rows="4"
               bind:value={notes}
-              placeholder="Examples: EV battery module line in US, AS/RS warehouse in EU, extrusion + machining for building profiles in APAC…"
+              placeholder={ $t('auth.join.placeholders.notes') }
             />
           </div>
 
@@ -243,48 +292,50 @@
               type="submit"
               class="join-btn-primary"
               disabled={submitting}
+              aria-busy={submitting}
             >
               {#if submitting}
-                Creating your account…
+                { $t('auth.join.submittingLabel') }
               {:else}
-                Create NovaNexus account
+                { $t('auth.join.submitLabel') }
               {/if}
             </button>
+
+            <p class="join-small">{ $t('auth.join.primaryAccountNote') }</p>
+
             <p class="join-small">
-              This is your primary creator account. You can invite teammates or
-              integrators later from inside the portal.
-            </p>
-            <p class="join-small">
-              Already have an account?
-              <a href="/login" class="join-link">Log in instead</a>
+              { $t('auth.join.alreadyHaveAccount') }
+              <a href="/auth/login" class="join-link">
+                { $t('auth.join.loginInstead') }
+              </a>
             </p>
           </div>
         </form>
       </div>
 
       <!-- RIGHT: CONTEXT -->
-      <aside class="join-side">
+      <aside class="join-side" aria-label="Join context panel">
         <div class="join-side__block">
-          <p class="join-side__label">Strong fits on the buyer side</p>
+          <p class="join-side__label">{ $t('auth.join.buyerSideLabel') }</p>
           <ul>
-            {#each buyerSignals as item}
+            {#each buyerSignalKeys as key}
               <li>
-                <span class="join-dot"></span>
-                <span>{item}</span>
+                <span class="join-dot" aria-hidden="true"></span>
+                <span>{ $t(key) }</span>
               </li>
             {/each}
           </ul>
         </div>
 
-        <div class="join-side__divider"></div>
+        <div class="join-side__divider" aria-hidden="true"></div>
 
         <div class="join-side__block">
-          <p class="join-side__label">What we look for on the supplier side</p>
+          <p class="join-side__label">{ $t('auth.join.supplierSideLabel') }</p>
           <ul>
-            {#each supplierSignals as item}
+            {#each supplierSignalKeys as key}
               <li>
-                <span class="join-square">▢</span>
-                <span>{item}</span>
+                <span class="join-square" aria-hidden="true">▢</span>
+                <span>{ $t(key) }</span>
               </li>
             {/each}
           </ul>
@@ -292,17 +343,12 @@
 
         <div class="join-side__bottom">
           <div>
-            <p class="join-side__meta-label">What this login controls</p>
-            <p class="join-side__meta-body">
-              RFQs, proposals, project history and key files across your lines and
-              warehouses.
-            </p>
+            <p class="join-side__meta-label">{ $t('auth.join.loginControlsTitle') }</p>
+            <p class="join-side__meta-body">{ $t('auth.join.loginControlsBody') }</p>
           </div>
           <div>
-            <p class="join-side__meta-label">Access &amp; safety</p>
-            <p class="join-side__meta-body">
-              Each teammate gets their own login. You can revoke or rotate access any time.
-            </p>
+            <p class="join-side__meta-label">{ $t('auth.join.accessTitle') }</p>
+            <p class="join-side__meta-body">{ $t('auth.join.accessBody') }</p>
           </div>
         </div>
       </aside>
@@ -380,6 +426,7 @@
   .join-title__gradient {
     background: linear-gradient(120deg, #38bdf8, #22c1c3, #a855f7);
     -webkit-background-clip: text;
+    background-clip: text;
     color: transparent;
   }
 

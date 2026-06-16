@@ -1,6 +1,6 @@
 // src/lib/i18n/tr.ts
-import { t } from 'svelte-i18n';
-import { get } from 'svelte/store';
+import { t } from "svelte-i18n";
+import { get } from "svelte/store";
 
 export function tr(key: string, fallback: string): string {
   if (!key) return fallback;

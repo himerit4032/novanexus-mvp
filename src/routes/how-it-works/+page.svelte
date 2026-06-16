@@ -1,60 +1,58 @@
 <!-- src/routes/how-it-works/+page.svelte -->
 
 <svelte:head>
-  <title>How it works ▢ NovaNexus flow</title>
+  <title>{$t('nav.howItWorks')} ▢ NovaNexus flow</title>
 </svelte:head>
 
 <script lang="ts">
   import { fade, fly, scale } from 'svelte/transition';
+  import { t } from 'svelte-i18n';
 
+  // ▸ steps.* : howItWorks.steps.01.title / body … 05까지
   const steps = [
     {
       step: '01',
-      title: 'Describe the line or project',
-      body:
-        'Share a concise brief: process, materials, annual volume, region, target budget and timeline. Upload layouts, drawings or photos if you have them.'
+      titleKey: 'howItWorks.steps.01.title',
+      bodyKey: 'howItWorks.steps.01.body'
     },
     {
       step: '02',
-      title: 'RFQ is cleaned up & structured',
-      body:
-        'Missing details are flagged, scope is clarified and the RFQ is turned into a structured package that suppliers can actually quote from.'
+      titleKey: 'howItWorks.steps.02.title',
+      bodyKey: 'howItWorks.steps.02.body'
     },
     {
       step: '03',
-      title: 'Bench & matching',
-      body:
-        'The project is routed only to suppliers whose capabilities, region and minimum project size line up with the work – not just whoever is nearby.'
+      titleKey: 'howItWorks.steps.03.title',
+      bodyKey: 'howItWorks.steps.03.body'
     },
     {
       step: '04',
-      title: 'Focused conversations',
-      body:
-        'Suppliers see the same structured brief, so questions are about trade-offs and options, not “what exactly are you asking for?”.'
+      titleKey: 'howItWorks.steps.04.title',
+      bodyKey: 'howItWorks.steps.04.body'
     },
     {
       step: '05',
-      title: 'Decision support',
-      body:
-        'You get context on cost drivers, lead-time bands and risk points so you can choose a path that fits your plant, not just the cheapest quote.'
+      titleKey: 'howItWorks.steps.05.title',
+      bodyKey: 'howItWorks.steps.05.body'
     }
   ];
 
+  // ▸ roles.* : howItWorks.roles.buyers / suppliers.*
   const roles = [
     {
-      title: 'For buyers & operations',
-      points: [
-        'Cleaner RFQs and fewer back-and-forth emails.',
-        'A short-list of realistic suppliers per project.',
-        'Better feel for cost / lead-time bands before you commit.'
+      titleKey: 'howItWorks.roles.buyers.title',
+      pointKeys: [
+        'howItWorks.roles.buyers.point1',
+        'howItWorks.roles.buyers.point2',
+        'howItWorks.roles.buyers.point3'
       ]
     },
     {
-      title: 'For suppliers & integrators',
-      points: [
-        'Requests that fit your processes and minimum project size.',
-        'Structured information upfront instead of vague one-liners.',
-        'A place to showcase capability depth, not just a logo.'
+      titleKey: 'howItWorks.roles.suppliers.title',
+      pointKeys: [
+        'howItWorks.roles.suppliers.point1',
+        'howItWorks.roles.suppliers.point2',
+        'howItWorks.roles.suppliers.point3'
       ]
     }
   ];
@@ -64,38 +62,40 @@
   <!-- HERO -->
   <section class="how-hero" in:fade={{ duration: 260 }}>
     <div class="how-hero-left" in:fly={{ y: 16, duration: 260 }}>
-      <p class="how-kicker">FLOW ▢ FROM BRIEF TO DECISION</p>
+      <p class="how-kicker">
+        {$t('howItWorks.hero.flowBadge')}
+      </p>
       <h1 class="how-title">
-        How NovaNexus works<br />
-        from first idea to live project.
+        {$t('howItWorks.hero.titleLine1')}<br />
+        {$t('howItWorks.hero.titleLine2')}
       </h1>
       <p class="how-sub">
-        One RFQ in, one clear pipeline out. The goal is simple: fewer email chains,
-        fewer “what are we actually doing?” calls, and more production lines that
-        start up on time.
+        {$t('howItWorks.hero.subtitle')}
       </p>
 
       <div class="how-anchor-nav">
         <a href="#buyer-workflows">
           <span class="anchor-dot"></span>
-          <span>Buyer workflows</span>
+          <span>{$t('howItWorks.hero.anchorBuyer')}</span>
         </a>
         <a href="#supplier-playbook">
           <span class="anchor-dot"></span>
-          <span>Supplier playbook</span>
+          <span>{$t('howItWorks.hero.anchorSupplier')}</span>
         </a>
         <a href="#full-pipeline">
           <span class="anchor-dot"></span>
-          <span>Full pipeline</span>
+          <span>{$t('howItWorks.hero.anchorPipeline')}</span>
         </a>
       </div>
 
       <div class="how-cta-row">
         <a href="/rfqs/new" class="btn-primary">
-          <span>Create RFQ</span>
+          <span>{$t('howItWorks.hero.ctaPrimary')}</span>
           <span class="btn-arrow">→</span>
         </a>
-        <a href="/buyers" class="btn-ghost">Open buyer overview</a>
+        <a href="/buyers" class="btn-ghost">
+          {$t('howItWorks.hero.ctaSecondary')}
+        </a>
       </div>
     </div>
 
@@ -105,18 +105,30 @@
 
       <div class="orbit-core">
         <div class="orbit-label-row">
-          <span class="orbit-label">RFQ pipeline</span>
-          <span class="orbit-chip">NovaNexus spine</span>
+          <span class="orbit-label">
+            {$t('howItWorks.orbit.pipelineLabel')}
+          </span>
+          <span class="orbit-chip">
+            {$t('howItWorks.orbit.spineLabel')}
+          </span>
         </div>
 
         <div class="orbit-stat-row">
           <div class="orbit-stat">
-            <div class="orbit-stat-value">1 → 3–7</div>
-            <div class="orbit-stat-label">curated factories per project</div>
+            <div class="orbit-stat-value">
+              {$t('howItWorks.orbit.factoriesStatValue')}
+            </div>
+            <div class="orbit-stat-label">
+              {$t('howItWorks.orbit.factoriesStatLabel')}
+            </div>
           </div>
           <div class="orbit-stat">
-            <div class="orbit-stat-value">3 stages</div>
-            <div class="orbit-stat-label">intake · matching · award</div>
+            <div class="orbit-stat-value">
+              {$t('howItWorks.orbit.stagesStatValue')}
+            </div>
+            <div class="orbit-stat-label">
+              {$t('howItWorks.orbit.stagesStatLabel')}
+            </div>
           </div>
         </div>
 
@@ -125,7 +137,7 @@
             <div class="orbit-step">
               <div class="orbit-step-index">{s.step}</div>
               <div class="orbit-step-body">
-                <div class="orbit-step-title">{s.title}</div>
+                <div class="orbit-step-title">{$t(s.titleKey)}</div>
                 <div class="orbit-step-bar">
                   <span class="orbit-step-fill" style={`--i:${i}`}></span>
                 </div>
@@ -140,15 +152,21 @@
 
       <div class="orbit-node orbit-node-1">
         <span class="orbit-node-dot"></span>
-        <span class="orbit-node-label">RFQ intake</span>
+        <span class="orbit-node-label">
+          {$t('howItWorks.orbit.nodeIntake')}
+        </span>
       </div>
       <div class="orbit-node orbit-node-2">
         <span class="orbit-node-dot"></span>
-        <span class="orbit-node-label">Bench & matching</span>
+        <span class="orbit-node-label">
+          {$t('howItWorks.orbit.nodeBench')}
+        </span>
       </div>
       <div class="orbit-node orbit-node-3">
         <span class="orbit-node-dot"></span>
-        <span class="orbit-node-label">Award & rollout</span>
+        <span class="orbit-node-label">
+          {$t('howItWorks.orbit.nodeAward')}
+        </span>
       </div>
     </div>
   </section>
@@ -157,11 +175,14 @@
   <section class="how-steps" in:fade={{ duration: 260, delay: 60 }}>
     <div class="section-head">
       <div>
-        <p class="section-kicker">STEP-BY-STEP</p>
-        <h2 class="section-title">What actually happens after you click “Create RFQ”.</h2>
+        <p class="section-kicker">
+          {$t('howItWorks.stepsSection.kicker')}
+        </p>
+        <h2 class="section-title">
+          {$t('howItWorks.stepsSection.title')}
+        </h2>
         <p class="section-sub">
-          Under the hood there’s nuance, but every project passes through the same backbone
-          so expectations stay aligned across plants, regions and suppliers.
+          {$t('howItWorks.stepsSection.subtitle')}
         </p>
       </div>
     </div>
@@ -174,10 +195,12 @@
         >
           <div class="step-header">
             <span class="step-number">{s.step}</span>
-            <span class="step-pill">Flow</span>
+            <span class="step-pill">
+              {$t('howItWorks.stepsSection.flowPill')}
+            </span>
           </div>
-          <h3 class="step-title">{s.title}</h3>
-          <p class="step-body">{s.body}</p>
+          <h3 class="step-title">{$t(s.titleKey)}</h3>
+          <p class="step-body">{$t(s.bodyKey)}</p>
         </article>
       {/each}
     </div>
@@ -192,8 +215,12 @@
   <section class="how-roles" in:fade={{ duration: 260, delay: 60 }}>
     <div class="section-head">
       <div>
-        <p class="section-kicker">WHO IT SERVES</p>
-        <h2 class="section-title">Two sides of the same production line.</h2>
+        <p class="section-kicker">
+          {$t('howItWorks.rolesSection.kicker')}
+        </p>
+        <h2 class="section-title">
+          {$t('howItWorks.rolesSection.title')}
+        </h2>
       </div>
     </div>
 
@@ -203,10 +230,12 @@
           class="role-card"
           in:fly={{ y: 14, duration: 260, delay: 60 + i * 90 }}
         >
-          <h3 class="role-title">{r.title}</h3>
+          <h3 class="role-title">
+            {$t(r.titleKey)}
+          </h3>
           <ul>
-            {#each r.points as p}
-              <li>▢ {p}</li>
+            {#each r.pointKeys as key}
+              <li>▢ {$t(key)}</li>
             {/each}
           </ul>
         </article>
@@ -218,53 +247,70 @@
   <section id="buyer-workflows" class="detail-section" in:fade={{ duration: 260 }}>
     <div class="section-head">
       <div>
-        <p class="detail-kicker">BUYER WORKFLOWS</p>
-        <h2 class="detail-title">How NovaNexus fits into a buyer’s week.</h2>
+        <p class="detail-kicker">
+          {$t('howItWorks.buyerSection.kicker')}
+        </p>
+        <h2 class="detail-title">
+          {$t('howItWorks.buyerSection.title')}
+        </h2>
         <p class="section-sub">
-          NovaNexus is not another system you have to “roll out”. It’s a structured
-          workspace your team can drop projects into when you need a clean RFQ and a
-          realistic bench of factories.
+          {$t('howItWorks.buyerSection.subtitle')}
         </p>
       </div>
     </div>
 
     <div class="detail-grid">
+      <!-- Buyer · Step 1 -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">Step 1 · Scoping</span>
+          <span class="detail-pill">
+            {$t('howItWorks.buyerSection.step1.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Capture the real requirement once, cleanly.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.buyerSection.step1.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ Upload layouts, drawings, photos and existing line data you already have.</li>
-          <li>▢ Tag the RFQ by plant, line, process, safety standard and target go-live.</li>
-          <li>▢ Add throughput targets, budget bands and duty / FTA constraints up front.</li>
-          <li>▢ Share the workspace with operations, maintenance and finance in one link.</li>
+          <li>▢ {$t('howItWorks.buyerSection.step1.point1')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step1.point2')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step1.point3')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step1.point4')}</li>
         </ul>
       </article>
 
+      <!-- Buyer · Step 2 -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260, delay: 60 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">Step 2 · Shortlisting</span>
+          <span class="detail-pill">
+            {$t('howItWorks.buyerSection.step2.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Get a bench of factories that can actually ship.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.buyerSection.step2.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ NovaNexus filters suppliers by process capability, certification and region.</li>
-          <li>▢ You see a short list of 3–7 realistic options, not a directory of hundreds.</li>
-          <li>▢ Each candidate shows reference projects, typical lead times and cost bands.</li>
-          <li>▢ Internal comments stay inside your team; suppliers only see what they need.</li>
+          <li>▢ {$t('howItWorks.buyerSection.step2.point1')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step2.point2')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step2.point3')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step2.point4')}</li>
         </ul>
       </article>
 
+      <!-- Buyer · Step 3 -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260, delay: 110 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">Step 3 · Decision</span>
+          <span class="detail-pill">
+            {$t('howItWorks.buyerSection.step3.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Make a call with less noise and more context.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.buyerSection.step3.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ Quotes arrive in the same structure, so comparisons take minutes, not days.</li>
-          <li>▢ See how duty, freight and local installation change the true landed cost.</li>
-          <li>▢ Record why a supplier was selected or rejected for future audits and repeats.</li>
-          <li>▢ Export a clean summary for capex reviews and leadership approval.</li>
+          <li>▢ {$t('howItWorks.buyerSection.step3.point1')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step3.point2')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step3.point3')}</li>
+          <li>▢ {$t('howItWorks.buyerSection.step3.point4')}</li>
         </ul>
       </article>
     </div>
@@ -274,75 +320,97 @@
   <section id="supplier-playbook" class="detail-section" in:fade={{ duration: 260 }}>
     <div class="section-head">
       <div>
-        <p class="detail-kicker">SUPPLIER PLAYBOOK</p>
-        <h2 class="detail-title">What “good” looks like for factories on NovaNexus.</h2>
+        <p class="detail-kicker">
+          {$t('howItWorks.supplierSection.kicker')}
+        </p>
+        <h2 class="detail-title">
+          {$t('howItWorks.supplierSection.title')}
+        </h2>
         <p class="section-sub">
-          The best suppliers behave like engineering partners, not quote machines.
-          This is how high-performing factories use NovaNexus to protect capacity and
-          win the right work.
+          {$t('howItWorks.supplierSection.subtitle')}
         </p>
       </div>
     </div>
 
     <div class="detail-grid">
+      <!-- Supplier · Before RFQs -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">Before RFQs</span>
+          <span class="detail-pill">
+            {$t('howItWorks.supplierSection.before.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Tune your profile so the right jobs find you.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.supplierSection.before.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ Define your “sweet spot”: processes, tonnage, materials and minimum order size.</li>
-          <li>▢ Upload reference lines with photos, videos and real throughput numbers.</li>
-          <li>▢ Keep certifications, safety standards and country-of-origin details current.</li>
-          <li>▢ Block out capacity windows so buyers only see realistic lead times.</li>
+          <li>▢ {$t('howItWorks.supplierSection.before.point1')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.before.point2')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.before.point3')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.before.point4')}</li>
         </ul>
       </article>
 
+      <!-- Supplier · When RFQs land -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260, delay: 60 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">When RFQs land</span>
+          <span class="detail-pill">
+            {$t('howItWorks.supplierSection.during.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Qualify quickly and quote without chaos.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.supplierSection.during.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ Score each RFQ on fit: process match, volume, timeline and strategic value.</li>
-          <li>▢ Use structured questions to clarify drawings instead of long email chains.</li>
-          <li>▢ Quote with a clear breakdown: equipment, options, installation and training.</li>
-          <li>▢ Call out technical risks early so there are no surprises at FAT or SAT.</li>
+          <li>▢ {$t('howItWorks.supplierSection.during.point1')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.during.point2')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.during.point3')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.during.point4')}</li>
         </ul>
       </article>
 
+      <!-- Supplier · After you win -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260, delay: 110 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">After you win</span>
+          <span class="detail-pill">
+            {$t('howItWorks.supplierSection.after.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Deliver cleanly and earn the next project.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.supplierSection.after.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ Lock in milestones: design freeze, FAT, shipment, installation, commissioning.</li>
-          <li>▢ Share on-site requirements, checklists and drawings in the project workspace.</li>
-          <li>▢ Log change orders with reasons so buyer finance and leadership stay aligned.</li>
-          <li>▢ Capture lessons learned to improve hit rate on similar future RFQs.</li>
+          <li>▢ {$t('howItWorks.supplierSection.after.point1')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.after.point2')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.after.point3')}</li>
+          <li>▢ {$t('howItWorks.supplierSection.after.point4')}</li>
         </ul>
       </article>
     </div>
 
     <div class="detail-summary-grid">
       <div class="detail-summary-card">
-        <p class="detail-summary-label">Signal</p>
+        <p class="detail-summary-label">
+          {$t('howItWorks.supplierSection.summary.signalLabel')}
+        </p>
         <p class="detail-summary-body">
-          See which industries and regions are heating up based on live RFQ volume, not hearsay.
+          {$t('howItWorks.supplierSection.summary.signalBody')}
         </p>
       </div>
       <div class="detail-summary-card">
-        <p class="detail-summary-label">Focus</p>
+        <p class="detail-summary-label">
+          {$t('howItWorks.supplierSection.summary.focusLabel')}
+        </p>
         <p class="detail-summary-body">
-          Spend time on fewer, better-qualified RFQs that match your lines and margin targets.
+          {$t('howItWorks.supplierSection.summary.focusBody')}
         </p>
       </div>
       <div class="detail-summary-card">
-        <p class="detail-summary-label">Partnership</p>
+        <p class="detail-summary-label">
+          {$t('howItWorks.supplierSection.summary.partnershipLabel')}
+        </p>
         <p class="detail-summary-body">
-          Show buyers you can own fabrication, installation and long-term support –
-          not just the first shipment.
+          {$t('howItWorks.supplierSection.summary.partnershipBody')}
         </p>
       </div>
     </div>
@@ -352,73 +420,97 @@
   <section id="full-pipeline" class="detail-section" in:fade={{ duration: 260 }}>
     <div class="section-head">
       <div>
-        <p class="detail-kicker">END-TO-END PIPELINE</p>
-        <h2 class="detail-title">From RFQ upload to awarded PO in three clean stages.</h2>
+        <p class="detail-kicker">
+          {$t('howItWorks.pipeline.kicker')}
+        </p>
+        <h2 class="detail-title">
+          {$t('howItWorks.pipeline.title')}
+        </h2>
         <p class="section-sub">
-          Every project follows the same backbone, whether you are speccing a single saw
-          or a full shuttle rack system. That consistency is what keeps programs on track.
+          {$t('howItWorks.pipeline.subtitle')}
         </p>
       </div>
     </div>
 
     <div class="detail-grid">
+      <!-- Stage 1 -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">Stage 1 · RFQ intake</span>
+          <span class="detail-pill">
+            {$t('howItWorks.pipeline.stage1.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Upload once, structure automatically.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.pipeline.stage1.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ Upload drawings, BOMs, photos and existing line data in common formats.</li>
-          <li>▢ Tag safety standards, certifications, region and target start-up date.</li>
-          <li>▢ Auto-generate a clean RFQ summary that suppliers can quote from immediately.</li>
-          <li>▢ Invite internal stakeholders to comment before anything goes out to vendors.</li>
+          <li>▢ {$t('howItWorks.pipeline.stage1.point1')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage1.point2')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage1.point3')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage1.point4')}</li>
         </ul>
       </article>
 
+      <!-- Stage 2 -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260, delay: 60 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">Stage 2 · Matching & quotes</span>
+          <span class="detail-pill">
+            {$t('howItWorks.pipeline.stage2.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Match with the right factories and align on scope.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.pipeline.stage2.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ NovaNexus proposes a curated bench that fits your process, scale and region.</li>
-          <li>▢ Suppliers confirm feasibility and highlight trade-offs instead of guessing.</li>
-          <li>▢ Quotes arrive in a comparable format with options and lead-time scenarios.</li>
-          <li>▢ All clarifications and revisions stay tied to the project, not buried in inboxes.</li>
+          <li>▢ {$t('howItWorks.pipeline.stage2.point1')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage2.point2')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage2.point3')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage2.point4')}</li>
         </ul>
       </article>
 
+      <!-- Stage 3 -->
       <article class="detail-card" in:fly={{ y: 14, duration: 260, delay: 110 }}>
         <div class="detail-pill-row">
-          <span class="detail-pill">Stage 3 · Award & rollout</span>
+          <span class="detail-pill">
+            {$t('howItWorks.pipeline.stage3.pill')}
+          </span>
         </div>
-        <h3 class="detail-card-title">Make the decision and keep execution visible.</h3>
+        <h3 class="detail-card-title">
+          {$t('howItWorks.pipeline.stage3.title')}
+        </h3>
         <ul class="detail-list">
-          <li>▢ Select a supplier and capture the decision logic for future audits and repeats.</li>
-          <li>▢ Track key milestones against the agreed schedule and responsibilities.</li>
-          <li>▢ Store FAT reports, installation photos and SAT sign-offs in one workspace.</li>
-          <li>▢ Use post-project reviews to refine your preferred supplier bench over time.</li>
+          <li>▢ {$t('howItWorks.pipeline.stage3.point1')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage3.point2')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage3.point3')}</li>
+          <li>▢ {$t('howItWorks.pipeline.stage3.point4')}</li>
         </ul>
       </article>
     </div>
 
     <div class="detail-summary-grid">
       <div class="detail-summary-card">
-        <p class="detail-summary-label">One spine</p>
+        <p class="detail-summary-label">
+          {$t('howItWorks.pipeline.summary.oneSpineLabel')}
+        </p>
         <p class="detail-summary-body">
-          Every RFQ follows the same structure, whether it’s a pilot line or a full plant expansion.
+          {$t('howItWorks.pipeline.summary.oneSpineBody')}
         </p>
       </div>
       <div class="detail-summary-card">
-        <p class="detail-summary-label">Shared context</p>
+        <p class="detail-summary-label">
+          {$t('howItWorks.pipeline.summary.contextLabel')}
+        </p>
         <p class="detail-summary-body">
-          Engineering, operations, finance and leadership all see the same live picture.
+          {$t('howItWorks.pipeline.summary.contextBody')}
         </p>
       </div>
       <div class="detail-summary-card">
-        <p class="detail-summary-label">Reusable knowledge</p>
+        <p class="detail-summary-label">
+          {$t('howItWorks.pipeline.summary.knowledgeLabel')}
+        </p>
         <p class="detail-summary-body">
-          Past projects become templates instead of disappearing into inbox archives.
+          {$t('howItWorks.pipeline.summary.knowledgeBody')}
         </p>
       </div>
     </div>
@@ -426,17 +518,20 @@
 
   <!-- FINAL CTA -->
   <section class="how-final" in:fade={{ duration: 260 }}>
-    <h2 class="how-final-title">Start with one project.</h2>
+    <h2 class="how-final-title">
+      {$t('howItWorks.finalCta.title')}
+    </h2>
     <p class="how-final-sub">
-      Submit an RFQ, browse the supplier bench or just use the content to clarify your options.
-      You should leave with a clearer picture than when you arrived.
+      {$t('howItWorks.finalCta.subtitle')}
     </p>
     <div class="how-final-cta-row">
       <a href="/rfqs/new" class="btn-primary">
-        <span>Create RFQ</span>
+        <span>{$t('howItWorks.finalCta.ctaPrimary')}</span>
         <span class="btn-arrow">→</span>
       </a>
-      <a href="/auth/join" class="btn-ghost">Join the private beta</a>
+      <a href="/auth/join" class="btn-ghost">
+        {$t('howItWorks.finalCta.ctaSecondary')}
+      </a>
     </div>
   </section>
 </main>
@@ -604,8 +699,8 @@
     text-decoration: none;
     transition:
       background 0.15s ease,
-      border-color 0.15s.ease,
-      transform 0.15s.ease;
+      border-color 0.15s ease,
+      transform 0.15s ease;
   }
 
   .btn-ghost:hover {
@@ -620,7 +715,11 @@
     position: relative;
     border-radius: 24px;
     border: 1px solid rgba(148, 163, 184, 0.7);
-    background: radial-gradient(circle at top, rgba(56, 189, 248, 0.24), rgba(15, 23, 42, 0.98));
+    background: radial-gradient(
+      circle at top,
+      rgba(56, 189, 248, 0.24),
+      rgba(15, 23, 42, 0.98)
+    );
     padding: 18px 18px 20px;
     overflow: hidden;
     box-shadow: 0 22px 52px rgba(15, 23, 42, 1);
@@ -642,7 +741,11 @@
     position: relative;
     border-radius: 18px;
     border: 1px solid rgba(148, 163, 184, 0.9);
-    background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 1));
+    background: radial-gradient(
+      circle at top,
+      rgba(15, 23, 42, 0.98),
+      rgba(2, 6, 23, 1)
+    );
     padding: 14px 14px 12px;
     z-index: 2;
   }
@@ -878,7 +981,11 @@
     position: relative;
     border-radius: 18px;
     border: 1px solid rgba(31, 41, 55, 1);
-    background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 1));
+    background: radial-gradient(
+      circle at top,
+      rgba(15, 23, 42, 0.98),
+      rgba(2, 6, 23, 1)
+    );
     padding: 16px 18px 18px;
     font-size: 12px;
     box-shadow: 0 18px 42px rgba(15, 23, 42, 1);
@@ -896,7 +1003,11 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at top, rgba(56, 189, 248, 0.16), transparent 60%);
+    background: radial-gradient(
+      circle at top,
+      rgba(56, 189, 248, 0.16),
+      transparent 60%
+    );
     opacity: 0;
     transition: opacity 0.18s ease;
   }
@@ -952,14 +1063,23 @@
   .steps-track-line {
     height: 1px;
     margin-inline: 8px;
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.6), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(56, 189, 248, 0.6),
+      transparent
+    );
     opacity: 0.5;
   }
 
   .steps-track-glow {
     height: 14px;
     margin-inline: 32px;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.45), transparent 65%);
+    background: radial-gradient(
+      circle,
+      rgba(56, 189, 248, 0.45),
+      transparent 65%
+    );
     filter: blur(10px);
     opacity: 0.7;
     animation: steps-pulse 4s ease-in-out infinite;
@@ -990,14 +1110,18 @@
   .role-card {
     border-radius: 18px;
     border: 1px solid rgba(31, 41, 55, 1);
-    background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 1));
+    background: radial-gradient(
+      circle at top,
+      rgba(15, 23, 42, 0.98),
+      rgba(2, 6, 23, 1)
+    );
     padding: 16px 18px 18px;
     font-size: 12px;
     box-shadow: 0 18px 42px rgba(15, 23, 42, 1);
     transition:
-      transform 0.18s.ease,
-      box-shadow 0.18s.ease,
-      border-color 0.18s.ease;
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      border-color 0.18s ease;
   }
 
   .role-card:hover {
@@ -1054,23 +1178,31 @@
   .detail-card {
     border-radius: 18px;
     border: 1px solid rgba(31, 41, 55, 1);
-    background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 1));
+    background: radial-gradient(
+      circle at top,
+      rgba(15, 23, 42, 0.98),
+      rgba(2, 6, 23, 1)
+    );
     padding: 16px 18px 18px;
     font-size: 12px;
     box-shadow: 0 18px 42px rgba(15, 23, 42, 1);
     position: relative;
     overflow: hidden;
     transition:
-      transform 0.18s.ease,
-      box-shadow 0.18s.ease,
-      border-color 0.18s.ease;
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      border-color 0.18s ease;
   }
 
   .detail-card::after {
     content: '';
     position: absolute;
     inset: -20%;
-    background: radial-gradient(circle at top, rgba(56, 189, 248, 0.16), transparent 60%);
+    background: radial-gradient(
+      circle at top,
+      rgba(56, 189, 248, 0.16),
+      transparent 60%
+    );
     opacity: 0;
     transition: opacity 0.18s ease;
   }
@@ -1131,7 +1263,11 @@
     border-radius: 14px;
     border: 1px solid rgba(31, 41, 55, 1);
     padding: 10px 12px;
-    background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 1));
+    background: radial-gradient(
+      circle at top,
+      rgba(15, 23, 42, 0.98),
+      rgba(2, 6, 23, 1)
+    );
   }
 
   .detail-summary-label {

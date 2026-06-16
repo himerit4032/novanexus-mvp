@@ -8,68 +8,69 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { t } from 'svelte-i18n';
-  import { get } from 'svelte/store';
 
   let mounted = false;
   onMount(() => (mounted = true));
 
   /**
-   * tr(key, fallback)
-   * - locales JSON에 key가 있으면 번역 사용
-   * - 없으면 fallback(영문 카피) 사용
-   * => 키가 비어 있거나 없어도 화면에 home.xxx 같은 게 절대 안 뜸
+   * ✅ 핵심 개선
+   * - get(t) 제거: locale 변경 시 UI가 자동으로 다시 그려지도록 $t를 사용 (store auto-subscribe)
+   * - 키가 없거나 잘못되면 fallback 사용 (home.xxx 같은 키 문자열이 화면에 안 뜨게 방지)
    */
   const tr = (key: string, fallback: string) => {
     if (!key) return fallback;
-    const translate = get(t);
-    const value = translate(key);
+    const value = $t(key); // ✅ locale 변경에도 반응
     return value === key ? fallback : value;
   };
 
-  // 통계 카드
+  // ✅ 통계 카드 (요청: 25,000+ → 13,700+ 권장 / 원하시면 13,720+로 바꾸면 됨)
   const stats = [
     {
-      value: '160+',
+      value: '13,700+',
       labelKey: 'home.stats.factories',
-      fallbackLabel: 'Vetted factories & SIs'
+      fallbackLabel: 'Vetted factories & system integrators'
     },
     {
-      value: '12+',
+      value: '60+',
       labelKey: 'home.stats.industries',
-      fallbackLabel: 'Industries covered'
+      fallbackLabel: 'Covered industries'
     },
     {
-      value: '4',
+      value: '35+',
       labelKey: 'home.stats.regions',
-      fallbackLabel: 'Regions live'
+      fallbackLabel: 'Active regions'
     }
   ];
 
-  // 플로우 단계
+  /**
+   * ✅ FLOW 단계
+   * - 중요: 당신 ko.json 구조는 home.flows.1.title / home.flows.1.body 입니다.
+   * - 기존 코드의 home.flow.1.title 은 번역이 절대 매칭되지 않습니다.
+   */
   const flows = [
     {
       step: '01',
-      titleKey: 'home.flow.1.title',
-      fallbackTitle: 'Upload one structured RFQ',
-      bodyKey: 'home.flow.1.body',
+      titleKey: 'home.flows.1.title',
+      fallbackTitle: 'Upload a structured RFQ',
+      bodyKey: 'home.flows.1.body',
       fallbackBody:
-        'Drawings, throughput, standards and target dates in a single, clean intake form.'
+        'Drawings, layouts, throughput, standards and target dates in a clean intake instead of scattered attachments.'
     },
     {
       step: '02',
-      titleKey: 'home.flow.2.title',
-      fallbackTitle: 'We match to the right factories',
-      bodyKey: 'home.flow.2.body',
+      titleKey: 'home.flows.2.title',
+      fallbackTitle: 'Match to the right factories',
+      bodyKey: 'home.flows.2.body',
       fallbackBody:
-        'Short-listed benches filtered by process, region, envelope and certification – not a bulk email blast.'
+        'Curated bench filtered by process, industry, region, certifications and installation envelope — no mass blast to random vendors.'
     },
     {
       step: '03',
-      titleKey: 'home.flow.3.title',
-      fallbackTitle: 'Quotes, clarifications, award',
-      bodyKey: 'home.flow.3.body',
+      titleKey: 'home.flows.3.title',
+      fallbackTitle: 'Clarify, compare, award',
+      bodyKey: 'home.flows.3.body',
       fallbackBody:
-        'Clarifications, quotes and PO kept in one thread so operations, engineering and finance stay aligned.'
+        'Clarifications, quotes and award decisions live in one thread so operations, engineering, finance and leadership stay aligned.'
     }
   ];
 
@@ -80,60 +81,61 @@
       fallbackTitle: 'For buyers & plant teams',
       bodyKey: 'home.pillars.buyer.body',
       fallbackBody:
-        'Engineers, operations leads and owners running real production lines – not hobby projects.',
+        'Operations, engineering and project teams that run real production lines — not test rigs.',
       bulletKeys: [
         'home.pillars.buyer.bullets.0',
         'home.pillars.buyer.bullets.1',
         'home.pillars.buyer.bullets.2'
       ],
       fallbackBullets: [
-        'Clean RFQs so suppliers see the real requirement on day one.',
-        'Realistic budget, lead time and duty expectations before you commit.',
-        'Bench of factories you can reuse across future projects.'
+        'Structured RFQs so suppliers see the real requirement from day one.',
+        'More realistic expectations on budget, lead time, duty and installation scope before you commit.',
+        'A reusable bench of factories for plant expansions and follow-on projects.'
       ],
       href: '/how-it-works#buyer-workflows',
       ctaKey: 'home.pillars.buyer.cta',
-      fallbackCta: 'See how buyer workflows look'
+      fallbackCta: 'See buyer workflows'
     },
     {
       titleKey: 'home.pillars.supplier.title',
       fallbackTitle: 'For suppliers & integrators',
       bodyKey: 'home.pillars.supplier.body',
+      // ✅ Korea/APAC 편향 제거: 글로벌/중립 톤으로 교체
       fallbackBody:
-        'Korean & APAC factories, SIs and automation teams who can actually ship, install and support.',
+        'Factories, system integrators, automation groups and installation teams that can build, install and support real production lines globally.',
       bulletKeys: [
         'home.pillars.supplier.bullets.0',
         'home.pillars.supplier.bullets.1',
         'home.pillars.supplier.bullets.2'
       ],
       fallbackBullets: [
-        'RFQs that match your machines, certifications and install envelope.',
-        'Less time cleaning messy drawings and more time quoting.',
-        'Signal on what global buyers are asking for next.'
+        'RFQs that fit your machines, certifications, regulatory class and installation envelope.',
+        'Less time cleaning chaotic drawings — more time quoting and executing.',
+        'Early signal on what global buyers will ask next across EV, medtech, F&B and more.'
       ],
       href: '/how-it-works#supplier-playbook',
       ctaKey: 'home.pillars.supplier.cta',
-      fallbackCta: 'View supplier playbook'
+      fallbackCta: 'Open supplier playbook'
     },
     {
       titleKey: 'home.pillars.both.title',
-      fallbackTitle: 'For both sides, long term',
+      fallbackTitle: 'For both sides — long term',
       bodyKey: 'home.pillars.both.body',
       fallbackBody:
-        'One shared surface instead of buried email chains and random spreadsheets.',
+        'A shared surface instead of buried emails and scattered spreadsheets.',
       bulletKeys: [
         'home.pillars.both.bullets.0',
         'home.pillars.both.bullets.1',
         'home.pillars.both.bullets.2'
       ],
       fallbackBullets: [
-        'Project history you can reference on the next RFQ.',
-        'Shared context for operations, finance and leadership.',
-        'Clearer decisions on where to build your next line.'
+        'Project history you can plug straight into the next RFQ or facility build.',
+        'Shared context for operations, finance and leadership on a single thread.',
+        'Clearer decisions on where you should actually build your next line.'
       ],
       href: '/how-it-works#full-pipeline',
       ctaKey: 'home.pillars.both.cta',
-      fallbackCta: 'Walk through the full pipeline'
+      fallbackCta: 'Walk the full pipeline'
     }
   ];
 
@@ -144,359 +146,336 @@
       fallbackLabel: 'Production lines',
       detailKey: 'home.capabilities.production.detail',
       fallbackDetail:
-        'Aluminum extrusion, racking & AS/RS, press & coil, conveying, packaging and end-of-line.'
+        'Aluminum extrusion, racking & AS/RS, shuttle systems, press & coil lines, conveyors, filling, packaging, palletizing and end-of-line automation.'
     },
     {
       labelKey: 'home.capabilities.precision.label',
       fallbackLabel: 'Precision & assemblies',
       detailKey: 'home.capabilities.precision.detail',
       fallbackDetail:
-        'Machined parts, jigs & fixtures, cleanroom equipment, medical and EV components.'
+        'Machined parts, fixtures & tooling, cleanroom equipment, medical devices, lab systems, EV components, electronics and high-precision assemblies.'
     },
     {
       labelKey: 'home.capabilities.regions.label',
       fallbackLabel: 'Regions',
       detailKey: 'home.capabilities.regions.detail',
+      // ✅ Korea-led 표현 제거 (중립 톤)
       fallbackDetail:
-        'Korea-centric bench with coverage across U.S., EU and SE Asia for fabrication and installation.'
+        'A global bench supporting projects across North America, Europe and Asia-Pacific, with partner coverage for build, installation and after-support.'
     }
   ];
 </script>
 
 {#if mounted}
-<main class="home-page" in:fade={{ duration: 220 }}>
-  <!-- HERO -->
-  <section class="home-hero" in:fly={{ y: 18, duration: 260 }}>
-    <div class="home-hero-left">
-      <div class="home-hero-pill-row">
-        <p class="home-hero-kicker">
+  <main class="home-page" in:fade={{ duration: 220 }}>
+    <!-- HERO -->
+    <section class="home-hero" in:fly={{ y: 18, duration: 260 }}>
+      <div class="home-hero-left">
+        <div class="home-hero-pill-row">
+          <p class="home-hero-kicker">
+            {tr('home.hero.kicker', 'MANUFACTURING ▢ AUTOMATION ▢ GLOBAL SOURCING')}
+          </p>
+        </div>
+
+        <h1 class="home-title">
+          {tr('home.hero.titleLine1', 'Global manufacturing,')}
+          <br />
+          <span class="home-title-highlight">
+            {tr('home.hero.titleHighlight', 'without the fog.')}
+          </span>
+        </h1>
+
+        <p class="home-sub">
           {tr(
-            'home.hero.kicker',
-            'MANUFACTURING ▢ AUTOMATION ▢ GLOBAL SOURCING'
+            'home.hero.sub',
+            'NovaNexus turns complex, multi-industry production projects into clear, structured work packages that suppliers can actually quote from. The platform acts as a neutral layer between global buyers and vetted factories, translating drawings, specs, certifications, capacity and risk into a shared view both sides can work from.'
           )}
         </p>
-      </div>
 
-      <h1 class="home-title">
-        {tr('home.hero.titleLine1', 'Global manufacturing,')}
-        <br />
-        <span class="home-title-highlight">
-          {tr('home.hero.titleHighlight', 'without the fog.')}
-        </span>
-      </h1>
-
-      <p class="home-sub">
-        {tr(
-          'home.hero.sub',
-          'Turn complex production projects into clear, quotable work. NovaNexus sits as a neutral layer between buyers and vetted factories, translating drawings, capacity and risk into a shared map both sides can work from.'
-        )}
-      </p>
-
-      <div class="home-cta-row">
-        <a href="/rfqs/new" class="btn-primary">
-          <span>{tr('home.hero.primaryCta', 'Submit an RFQ')}</span>
-          <span class="btn-arrow">→</span>
-        </a>
-        <a href="/suppliers" class="btn-ghost">
-          {tr('home.hero.secondaryCta', 'Become a vetted supplier')}
-        </a>
-      </div>
-
-      <div class="home-cta-notes">
-        <span class="cta-note">
-          {tr(
-            'home.hero.noteBuyers',
-            'For buyers & plant / project teams'
-          )}
-        </span>
-        <span class="cta-note-divider"></span>
-        <span class="cta-note">
-          {tr(
-            'home.hero.noteSuppliers',
-            'For factories, SIs & automation partners'
-          )}
-        </span>
-      </div>
-
-      <div class="home-hero-footnote-row">
-        <p class="home-hero-footnote">
-          {tr(
-            'home.hero.footnote',
-            'Built for plant managers, project engineers and owners tired of endless email chains.'
-          )}
-        </p>
-        <div class="scroll-hint">
-          <span class="scroll-dot"></span>
-          <span class="scroll-label">
-            {tr('home.hero.scrollLabel', 'Scroll to see the pipeline')}
-          </span>
+        <div class="home-cta-row">
+          <a href="/rfqs/new" class="btn-primary">
+            <span>{tr('home.hero.primaryCta', 'Submit an RFQ')}</span>
+            <span class="btn-arrow">→</span>
+          </a>
+          <a href="/suppliers" class="btn-ghost">
+            {tr('home.hero.secondaryCta', 'Become a vetted supplier')}
+          </a>
         </div>
-      </div>
-    </div>
 
-    <div class="home-hero-right">
-      <!-- 배경 애니메이션 레이어 -->
-      <div class="hero-grid"></div>
-      <div class="home-hero-glow"></div>
-      <div class="home-hero-orbit"></div>
-
-      <!-- 파이프라인 카드 -->
-      <div class="home-orbit-card">
-        <div class="orbit-card-header">
-          <span class="orbit-chip">
-            {tr('home.orbit.headerLabel', 'RFQ pipeline snapshot')}
+        <div class="home-cta-notes">
+          <span class="cta-note">
+            {tr('home.hero.noteBuyers', 'For buyers & plant / project teams')}
           </span>
-          <span class="orbit-badge">
-            {tr('home.orbit.headerBadge', 'Live demo · read-only')}
+          <span class="cta-note-divider"></span>
+          <span class="cta-note">
+            {tr('home.hero.noteSuppliers', 'For factories, SIs & automation partners')}
           </span>
         </div>
 
-        <div class="orbit-body">
-          <div class="orbit-timeline">
-            <span class="orbit-line"></span>
-            <span class="orbit-dot orbit-dot-1"></span>
-            <span class="orbit-dot orbit-dot-2"></span>
-            <span class="orbit-dot orbit-dot-3"></span>
-            <!-- 움직이는 액티브 점 -->
-            <span class="orbit-dot-active"></span>
-          </div>
-
-          <div class="orbit-steps">
-            <div class="orbit-step">
-              <p class="orbit-step-label">
-                {tr('home.orbit.steps.1.label', '01 · RFQ intake')}
-              </p>
-              <p class="orbit-step-text">
-                {tr(
-                  'home.orbit.steps.1.text',
-                  'Clean brief with drawings, throughput and standards in one place.'
-                )}
-              </p>
-            </div>
-            <div class="orbit-step">
-              <p class="orbit-step-label">
-                {tr('home.orbit.steps.2.label', '02 · Bench & matching')}
-              </p>
-              <p class="orbit-step-text">
-                {tr(
-                  'home.orbit.steps.2.text',
-                  'Short list of factories filtered by process, region and envelope.'
-                )}
-              </p>
-            </div>
-            <div class="orbit-step">
-              <p class="orbit-step-label">
-                {tr('home.orbit.steps.3.label', '03 · Decision layer')}
-              </p>
-              <p class="orbit-step-text">
-                {tr(
-                  'home.orbit.steps.3.text',
-                  'Comparable quotes, duty impact and risk calls surfaced in one view.'
-                )}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="orbit-foot">
-          <span class="orbit-foot-label">
-            {tr('home.orbit.footerLabel', 'Typical cycle')}
-          </span>
-          <span class="orbit-foot-value">
+        <div class="home-hero-footnote-row">
+          <p class="home-hero-footnote">
             {tr(
-              'home.orbit.footerValue',
-              '5–12 business days from RFQ to award'
+              'home.hero.footnote',
+              'Built for plant managers, project engineers and owners tired of endless email chains.'
             )}
-          </span>
+          </p>
+          <div class="scroll-hint">
+            <span class="scroll-dot"></span>
+            <span class="scroll-label">
+              {tr('home.hero.scrollLabel', 'Scroll to see the pipeline')}
+            </span>
+          </div>
         </div>
       </div>
 
-      <!-- 메트릭 카드 -->
-      <div class="home-metrics-card">
-        {#each stats as s}
-          <div class="home-metric">
-            <div class="home-metric-value">{s.value}</div>
-            <div class="home-metric-label">
-              {tr(s.labelKey, s.fallbackLabel)}
+      <div class="home-hero-right">
+        <!-- 배경 애니메이션 레이어 -->
+        <div class="hero-grid"></div>
+        <div class="home-hero-glow"></div>
+        <div class="home-hero-orbit"></div>
+
+        <!-- 파이프라인 카드 -->
+        <div class="home-orbit-card">
+          <div class="orbit-card-header">
+            <span class="orbit-chip">
+              {tr('home.orbit.headerLabel', 'RFQ pipeline snapshot')}
+            </span>
+            <span class="orbit-badge">
+              {tr('home.orbit.headerBadge', 'Live demo · read-only')}
+            </span>
+          </div>
+
+          <div class="orbit-body">
+            <div class="orbit-timeline">
+              <span class="orbit-line"></span>
+              <span class="orbit-dot orbit-dot-1"></span>
+              <span class="orbit-dot orbit-dot-2"></span>
+              <span class="orbit-dot orbit-dot-3"></span>
+              <span class="orbit-dot-active"></span>
+            </div>
+
+            <div class="orbit-steps">
+              <div class="orbit-step">
+                <p class="orbit-step-label">
+                  {tr('home.orbit.steps.1.label', '01 · RFQ intake')}
+                </p>
+                <p class="orbit-step-text">
+                  {tr(
+                    'home.orbit.steps.1.text',
+                    'Clean brief with drawings, throughput, certifications, standards and risk notes in one place.'
+                  )}
+                </p>
+              </div>
+
+              <div class="orbit-step">
+                <p class="orbit-step-label">
+                  {tr('home.orbit.steps.2.label', '02 · Bench & matching')}
+                </p>
+                <p class="orbit-step-text">
+                  {tr(
+                    'home.orbit.steps.2.text',
+                    'Factories filtered by process, industry, region, certifications and installation envelope.'
+                  )}
+                </p>
+              </div>
+
+              <div class="orbit-step">
+                <p class="orbit-step-label">
+                  {tr('home.orbit.steps.3.label', '03 · Decision layer')}
+                </p>
+                <p class="orbit-step-text">
+                  {tr(
+                    'home.orbit.steps.3.text',
+                    'Comparable quotes, duty impact, risk points and installation requirements — all in a single view.'
+                  )}
+                </p>
+              </div>
             </div>
           </div>
+
+          <div class="orbit-foot">
+            <span class="orbit-foot-label">
+              {tr('home.orbit.footerLabel', 'Typical cycle')}
+            </span>
+            <span class="orbit-foot-value">
+              {tr('home.orbit.footerValue', '5–12 business days from RFQ to awarded PO')}
+            </span>
+          </div>
+        </div>
+
+        <!-- 메트릭 카드 -->
+        <div class="home-metrics-card">
+          {#each stats as s}
+            <div class="home-metric">
+              <div class="home-metric-value">{s.value}</div>
+              <div class="home-metric-label">
+                {tr(s.labelKey, s.fallbackLabel)}
+              </div>
+            </div>
+          {/each}
+        </div>
+
+        <!-- ✅ 숫자 하드코딩 제거: metricsNote는 “중립 문장”만 두고, 숫자는 위 stats로만 표현 -->
+        <p class="home-metrics-note">
+          {tr(
+            'home.metricsNote',
+            'NovaNexus connects production-grade buyers and vetted factories through a single qualified bench spanning North America, Europe and Asia-Pacific.'
+          )}
+        </p>
+      </div>
+    </section>
+
+    <!-- PILLARS -->
+    <section class="home-pillars" in:fade={{ duration: 260, delay: 80 }}>
+      <div class="home-section-head">
+        <div>
+          <p class="section-kicker">
+            {tr('home.pillars.kicker', 'WHO WE BUILD FOR')}
+          </p>
+          <h2 class="section-title">
+            {tr('home.pillars.title', 'A sourcing control tower for both sides of the table.')}
+          </h2>
+          <p class="section-sub">
+            {tr(
+              'home.pillars.sub',
+              'Buyers get clarity. Suppliers get signal. Both sides work from the same live project view — instead of fifteen conflicting email threads.'
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div class="home-pillars-grid">
+        {#each pillars as p}
+          <article class="pillar-card">
+            <h3 class="pillar-title">
+              {tr(p.titleKey, p.fallbackTitle)}
+            </h3>
+
+            <p class="pillar-body">
+              {tr(p.bodyKey, p.fallbackBody)}
+            </p>
+
+            <ul class="pillar-list">
+              {#each p.fallbackBullets as fb, i}
+                <li>▢ {tr(p.bulletKeys[i], fb)}</li>
+              {/each}
+            </ul>
+
+            <a href={p.href} class="pillar-cta">
+              {tr(p.ctaKey, p.fallbackCta)} →
+            </a>
+          </article>
+        {/each}
+      </div>
+    </section>
+
+    <!-- FLOW SUMMARY -->
+    <section class="home-flow" in:fade={{ duration: 260, delay: 110 }}>
+      <div class="home-section-head">
+        <div>
+          <p class="section-kicker">
+            {tr('home.flow.kicker', 'HOW THE PIPELINE RUNS')}
+          </p>
+          <h2 class="section-title">
+            {tr('home.flow.title', 'From RFQ upload to awarded PO in three clear steps.')}
+          </h2>
+          <p class="section-sub">
+            {tr(
+              'home.flow.sub',
+              'The same structure for every project – whether you’re specifying a single filling machine, a medtech cleanroom or a full shuttle-rack system.'
+            )}
+          </p>
+        </div>
+
+        <a href="/how-it-works" class="section-link">
+          {tr('home.flow.link', 'View detailed flow')} →
+        </a>
+      </div>
+
+      <div class="home-flow-grid">
+        {#each flows as f}
+          <article class="flow-card">
+            <div class="flow-header">
+              <span class="flow-step">{f.step}</span>
+            </div>
+            <h3 class="flow-title">
+              {tr(f.titleKey, f.fallbackTitle)}
+            </h3>
+            <p class="flow-body">
+              {tr(f.bodyKey, f.fallbackBody)}
+            </p>
+          </article>
+        {/each}
+      </div>
+    </section>
+
+    <!-- SUPPLIER BENCH TEASER -->
+    <section class="home-suppliers" in:fade={{ duration: 260, delay: 130 }}>
+      <div class="home-section-head">
+        <div>
+          <p class="section-kicker">
+            {tr('home.capabilities.kicker', 'WHAT LIVES INSIDE THE BENCH')}
+          </p>
+          <h2 class="section-title">
+            {tr('home.capabilities.title', 'Lines, processes and regions we actually cover.')}
+          </h2>
+          <p class="section-sub">
+            {tr(
+              'home.capabilities.sub',
+              'A curated global bench instead of a generic directory. Every factory and SI is mapped by process, certification, envelope, regulatory class and installation capability.'
+            )}
+          </p>
+        </div>
+
+        <a href="/suppliers" class="section-link">
+          {tr('home.capabilities.link', 'Explore supplier examples')} →
+        </a>
+      </div>
+
+      <div class="home-suppliers-grid">
+        {#each capabilityExamples as c}
+          <article class="cap-card">
+            <h3 class="cap-title">
+              {tr(c.labelKey, c.fallbackLabel)}
+            </h3>
+            <p class="cap-body">
+              {tr(c.detailKey, c.fallbackDetail)}
+            </p>
+          </article>
         {/each}
       </div>
 
-      <p class="home-metrics-note">
+      <div class="home-suppliers-note">
         {tr(
-          'home.metricsNote',
-          'NovaNexus connects production-grade buyers and vetted factories across the U.S., Europe, Korea and the wider APAC region on a single qualified bench.'
+          'home.capabilities.note',
+          'Bench is intentionally small. New suppliers are added only after running real projects together.'
+        )}
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="home-final" in:fade={{ duration: 260, delay: 150 }}>
+      <h2 class="home-final-title">
+        {tr('home.final.title', 'Ready to send a real RFQ instead of another “just checking in” email?')}
+      </h2>
+      <p class="home-final-sub">
+        {tr(
+          'home.final.sub',
+          'Start with one production-grade project. We’ll help you translate drawings, throughput and constraints into a clean RFQ and route it to the right factories.'
         )}
       </p>
-    </div>
-  </section>
 
-  <!-- PILLARS -->
-  <section class="home-pillars" in:fade={{ duration: 260, delay: 80 }}>
-    <div class="home-section-head">
-      <div>
-        <p class="section-kicker">
-          {tr('home.pillars.kicker', 'WHO WE BUILD FOR')}
-        </p>
-        <h2 class="section-title">
-          {tr(
-            'home.pillars.title',
-            'A sourcing cockpit for both sides of the table.'
-          )}
-        </h2>
-        <p class="section-sub">
-          {tr(
-            'home.pillars.sub',
-            'Buyers get clarity. Suppliers get signal. Everyone sees the same version of the project instead of fifteen email threads.'
-          )}
-        </p>
+      <div class="home-final-cta-row">
+        <a href="/rfqs/new" class="btn-primary">
+          <span>{tr('home.final.primaryCta', 'Submit an RFQ')}</span>
+          <span class="btn-arrow">→</span>
+        </a>
+        <a href="/auth/join" class="btn-ghost">
+          {tr('home.final.secondaryCta', 'Join the private beta')}
+        </a>
       </div>
-    </div>
-
-    <div class="home-pillars-grid">
-      {#each pillars as p}
-        <article class="pillar-card">
-          <h3 class="pillar-title">
-            {tr(p.titleKey, p.fallbackTitle)}
-          </h3>
-          <p class="pillar-body">
-            {tr(p.bodyKey, p.fallbackBody)}
-          </p>
-          <ul class="pillar-list">
-            {#each p.fallbackBullets as fb, i}
-              <li>
-                ▢ {tr(p.bulletKeys[i], fb)}
-              </li>
-            {/each}
-          </ul>
-          <a href={p.href} class="pillar-cta">
-            {tr(p.ctaKey, p.fallbackCta)} →
-          </a>
-        </article>
-      {/each}
-    </div>
-  </section>
-
-  <!-- FLOW SUMMARY -->
-  <section class="home-flow" in:fade={{ duration: 260, delay: 110 }}>
-    <div class="home-section-head">
-      <div>
-        <p class="section-kicker">
-          {tr('home.flow.kicker', 'HOW THE PIPELINE RUNS')}
-        </p>
-        <h2 class="section-title">
-          {tr(
-            'home.flow.title',
-            'From RFQ upload to awarded PO in three clean steps.'
-          )}
-        </h2>
-        <p class="section-sub">
-          {tr(
-            'home.flow.sub',
-            'The same structure for every project – whether you’re speccing a single saw or a full shuttle rack line.'
-          )}
-        </p>
-      </div>
-      <a href="/how-it-works" class="section-link">
-        {tr('home.flow.link', 'See detailed flow')} →
-      </a>
-    </div>
-
-    <div class="home-flow-grid">
-      {#each flows as f}
-        <article class="flow-card">
-          <div class="flow-header">
-            <span class="flow-step">{f.step}</span>
-          </div>
-          <h3 class="flow-title">
-            {tr(f.titleKey, f.fallbackTitle)}
-          </h3>
-          <p class="flow-body">
-            {tr(f.bodyKey, f.fallbackBody)}
-          </p>
-        </article>
-      {/each}
-    </div>
-  </section>
-
-  <!-- SUPPLIER BENCH TEASER -->
-  <section class="home-suppliers" in:fade={{ duration: 260, delay: 130 }}>
-    <div class="home-section-head">
-      <div>
-        <p class="section-kicker">
-          {tr('home.capabilities.kicker', 'WHAT LIVES INSIDE THE BENCH')}
-        </p>
-        <h2 class="section-title">
-          {tr(
-            'home.capabilities.title',
-            'Lines, processes and regions we actually support.'
-          )}
-        </h2>
-        <p class="section-sub">
-          {tr(
-            'home.capabilities.sub',
-            'A curated bench instead of a generic directory. Every factory and SI is mapped by process, certification, envelope and install capability.'
-          )}
-        </p>
-      </div>
-      <a href="/suppliers" class="section-link">
-        {tr(
-          'home.capabilities.link',
-          'Explore supplier examples'
-        )} →
-      </a>
-    </div>
-
-    <div class="home-suppliers-grid">
-      {#each capabilityExamples as c}
-        <article class="cap-card">
-          <h3 class="cap-title">
-            {tr(c.labelKey, c.fallbackLabel)}
-          </h3>
-          <p class="cap-body">
-            {tr(c.detailKey, c.fallbackDetail)}
-          </p>
-        </article>
-      {/each}
-    </div>
-
-    <div class="home-suppliers-note">
-      {tr(
-        'home.capabilities.note',
-        'Bench is intentionally small. New suppliers are added only after running real projects together.'
-      )}
-    </div>
-  </section>
-
-  <!-- FINAL CTA -->
-  <section class="home-final" in:fade={{ duration: 260, delay: 150 }}>
-    <h2 class="home-final-title">
-      {tr(
-        'home.final.title',
-        'Ready to send a real RFQ instead of another “just checking in” email?'
-      )}
-    </h2>
-    <p class="home-final-sub">
-      {tr(
-        'home.final.sub',
-        'Start with one production-grade project. We’ll help you translate drawings, throughput and constraints into a clean RFQ and route it to the right factories.'
-      )}
-    </p>
-
-    <div class="home-final-cta-row">
-      <a href="/rfqs/new" class="btn-primary">
-        <span>
-          {tr('home.final.primaryCta', 'Submit an RFQ')}
-        </span>
-        <span class="btn-arrow">→</span>
-      </a>
-      <a href="/auth/join" class="btn-ghost">
-        {tr('home.final.secondaryCta', 'Join the private beta')}
-      </a>
-    </div>
-  </section>
-</main>
+    </section>
+  </main>
 {/if}
 
 <style>
@@ -526,7 +505,6 @@
   }
 
   /* GLOBAL BG & FRAME */
-
   .home-page::before {
     content: '';
     position: fixed;
@@ -554,7 +532,6 @@
   }
 
   /* HERO */
-
   .home-hero {
     display: flex;
     gap: 44px;
@@ -573,11 +550,7 @@
     align-items: center;
     padding: 4px 18px;
     border-radius: 999px;
-    background: radial-gradient(
-      circle at top,
-      rgba(15, 23, 42, 0.95),
-      rgba(15, 23, 42, 0.99)
-    );
+    background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.99));
     border: 1px solid rgba(51, 65, 85, 0.9);
     margin-bottom: 10px;
   }
@@ -590,7 +563,6 @@
     white-space: nowrap;
   }
 
-  /* 타이틀 라인 높이 / 하단 여백 조정해서 g/y 꼬리 절대 안 잘리게 */
   .home-title {
     font-size: 34px;
     line-height: 1.3;
@@ -610,15 +582,9 @@
   }
 
   @keyframes homeTitleGradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   .home-sub {
@@ -644,9 +610,7 @@
     color: #9ca3af;
   }
 
-  .cta-note {
-    white-space: nowrap;
-  }
+  .cta-note { white-space: nowrap; }
 
   .cta-note-divider {
     width: 12px;
@@ -691,18 +655,9 @@
   }
 
   @keyframes scrollPulse {
-    0% {
-      transform: translateY(0);
-      opacity: 0.6;
-    }
-    50% {
-      transform: translateY(2px);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 0.6;
-    }
+    0% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(2px); opacity: 1; }
+    100% { transform: translateY(0); opacity: 0.6; }
   }
 
   .btn-primary {
@@ -720,11 +675,7 @@
     box-shadow:
       0 14px 36px rgba(15, 23, 42, 0.9),
       0 0 0 1px rgba(148, 163, 184, 0.25);
-    transition:
-      transform 0.18s ease,
-      box-shadow 0.18s ease,
-      opacity 0.18s ease,
-      filter 0.18s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, filter 0.18s ease;
   }
 
   .btn-arrow {
@@ -742,9 +693,7 @@
     filter: saturate(1.15);
   }
 
-  .btn-primary:hover .btn-arrow {
-    transform: translateX(2px);
-  }
+  .btn-primary:hover .btn-arrow { transform: translateX(2px); }
 
   .btn-ghost {
     display: inline-flex;
@@ -758,11 +707,7 @@
     font-size: 13px;
     font-weight: 500;
     text-decoration: none;
-    transition:
-      background 0.18s ease,
-      border-color 0.18s ease,
-      transform 0.18s ease,
-      box-shadow 0.18s ease;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
   }
 
   .btn-ghost:hover {
@@ -779,7 +724,6 @@
   }
 
   /* 배경 그리드/글로우/오빗 */
-
   .hero-grid {
     position: absolute;
     inset: -28px -48px 12px 8px;
@@ -817,18 +761,11 @@
   }
 
   @keyframes glowPulse {
-    0% {
-      transform: translateY(0) scale(1);
-      opacity: 0.8;
-    }
-    100% {
-      transform: translateY(-16px) scale(1.05);
-      opacity: 1;
-    }
+    0% { transform: translateY(0) scale(1); opacity: 0.8; }
+    100% { transform: translateY(-16px) scale(1.05); opacity: 1; }
   }
 
   /* 파이프라인 카드 */
-
   .home-orbit-card {
     position: relative;
     border-radius: 22px;
@@ -846,12 +783,8 @@
   }
 
   @keyframes heroCardFloat {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(-8px);
-    }
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-8px); }
   }
 
   .home-orbit-card::before {
@@ -867,19 +800,13 @@
     animation: orbitSweep 18s linear infinite;
   }
 
-  /* 스캐너 라인 (좌 -> 우로 지나가는 빛) */
   .home-orbit-card::after {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
     width: 40%;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgba(248, 250, 252, 0.08),
-      transparent
-    );
+    background: linear-gradient(to right, transparent, rgba(248, 250, 252, 0.08), transparent);
     transform: translateX(-100%);
     pointer-events: none;
     mix-blend-mode: screen;
@@ -887,39 +814,19 @@
   }
 
   @keyframes scannerSweep {
-    0% {
-      transform: translateX(-110%);
-      opacity: 0;
-    }
-    20% {
-      opacity: 1;
-    }
-    60% {
-      transform: translateX(120%);
-      opacity: 0.9;
-    }
-    100% {
-      transform: translateX(150%);
-      opacity: 0;
-    }
+    0% { transform: translateX(-110%); opacity: 0; }
+    20% { opacity: 1; }
+    60% { transform: translateX(120%); opacity: 0.9; }
+    100% { transform: translateX(150%); opacity: 0; }
   }
 
   @keyframes orbitSweep {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-    50% {
-      transform: translate3d(-10%, -6%, 0);
-    }
-    100% {
-      transform: translate3d(0, 0, 0);
-    }
+    0% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(-10%, -6%, 0); }
+    100% { transform: translate3d(0, 0, 0); }
   }
 
-  .home-orbit-card > * {
-    position: relative;
-    z-index: 1;
-  }
+  .home-orbit-card > * { position: relative; z-index: 1; }
 
   .orbit-card-header {
     display: flex;
@@ -947,10 +854,7 @@
     white-space: nowrap;
   }
 
-  .orbit-body {
-    display: flex;
-    gap: 12px;
-  }
+  .orbit-body { display: flex; gap: 12px; }
 
   .orbit-timeline {
     position: relative;
@@ -978,23 +882,10 @@
     box-shadow: 0 0 10px rgba(191, 219, 254, 0.9);
   }
 
-  .orbit-dot-1 {
-    top: 8px;
-    animation: orbitDotPulse 3.2s ease-in-out infinite;
-  }
+  .orbit-dot-1 { top: 8px; animation: orbitDotPulse 3.2s ease-in-out infinite; }
+  .orbit-dot-2 { top: 50%; margin-top: -3.5px; animation: orbitDotPulse 3.2s ease-in-out infinite 0.6s; }
+  .orbit-dot-3 { bottom: 8px; animation: orbitDotPulse 3.2s ease-in-out infinite 1.2s; }
 
-  .orbit-dot-2 {
-    top: 50%;
-    margin-top: -3.5px;
-    animation: orbitDotPulse 3.2s ease-in-out infinite 0.6s;
-  }
-
-  .orbit-dot-3 {
-    bottom: 8px;
-    animation: orbitDotPulse 3.2s ease-in-out infinite 1.2s;
-  }
-
-  /* 위아래로 움직이는 액티브 점 */
   .orbit-dot-active {
     position: absolute;
     left: 50%;
@@ -1003,38 +894,20 @@
     margin-left: -4px;
     border-radius: 999px;
     background: #38bdf8;
-    box-shadow:
-      0 0 12px rgba(56, 189, 248, 0.9),
-      0 0 30px rgba(56, 189, 248, 0.8);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.9), 0 0 30px rgba(56, 189, 248, 0.8);
     animation: orbitDotTravel 4.6s ease-in-out infinite;
   }
 
   @keyframes orbitDotPulse {
-    0% {
-      transform: scale(0.9);
-      opacity: 0.7;
-    }
-    40% {
-      transform: scale(1.15);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(0.9);
-      opacity: 0.7;
-    }
+    0% { transform: scale(0.9); opacity: 0.7; }
+    40% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
   }
 
   @keyframes orbitDotTravel {
-    0% {
-      top: 10px;
-    }
-    50% {
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    100% {
-      top: calc(100% - 14px);
-    }
+    0% { top: 10px; }
+    50% { top: 50%; transform: translateY(-50%); }
+    100% { top: calc(100% - 14px); }
   }
 
   .orbit-steps {
@@ -1052,10 +925,7 @@
     margin-bottom: 2px;
   }
 
-  .orbit-step-text {
-    font-size: 11px;
-    color: #e5e7eb;
-  }
+  .orbit-step-text { font-size: 11px; color: #e5e7eb; }
 
   .orbit-foot {
     margin-top: 10px;
@@ -1066,19 +936,10 @@
     color: #cbd5f5;
   }
 
-  .orbit-foot-label {
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    opacity: 0.8;
-  }
-
-  .orbit-foot-value {
-    font-weight: 500;
-    white-space: nowrap;
-  }
+  .orbit-foot-label { text-transform: uppercase; letter-spacing: 0.16em; opacity: 0.8; }
+  .orbit-foot-value { font-weight: 500; white-space: nowrap; }
 
   /* 메트릭 카드 */
-
   .home-metrics-card {
     position: relative;
     overflow: hidden;
@@ -1098,7 +959,6 @@
     margin-top: 10px;
   }
 
-  /* 메트릭 카드 위를 천천히 지나가는 하이라이트 */
   .home-metrics-card::before {
     content: '';
     position: absolute;
@@ -1114,21 +974,10 @@
   }
 
   @keyframes metricsSweep {
-    0% {
-      transform: translateX(-18%);
-      opacity: 0;
-    }
-    20% {
-      opacity: 0.9;
-    }
-    60% {
-      transform: translateX(14%);
-      opacity: 0.6;
-    }
-    100% {
-      transform: translateX(24%);
-      opacity: 0;
-    }
+    0% { transform: translateX(-18%); opacity: 0; }
+    20% { opacity: 0.9; }
+    60% { transform: translateX(14%); opacity: 0.6; }
+    100% { transform: translateX(24%); opacity: 0; }
   }
 
   .home-metric {
@@ -1138,10 +987,7 @@
     opacity: 0.9;
   }
 
-  .home-metric:hover {
-    transform: translateY(-2px);
-    opacity: 1;
-  }
+  .home-metric:hover { transform: translateY(-2px); opacity: 1; }
 
   .home-metric-value {
     font-size: 20px;
@@ -1165,30 +1011,14 @@
   }
 
   @media (max-width: 900px) {
-    .home-page::after {
-      inset: 72px 10px auto;
-    }
-
-    .home-hero {
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .home-hero-right {
-      width: 100%;
-    }
-
-    .home-metrics-card {
-      width: 100%;
-    }
-
-    .home-metrics-note {
-      max-width: none;
-    }
+    .home-page::after { inset: 72px 10px auto; }
+    .home-hero { flex-direction: column; gap: 28px; }
+    .home-hero-right { width: 100%; }
+    .home-metrics-card { width: 100%; }
+    .home-metrics-note { max-width: none; }
   }
 
   /* COMMON SECTION HEAD */
-
   .home-section-head {
     display: flex;
     justify-content: space-between;
@@ -1226,15 +1056,10 @@
     white-space: nowrap;
   }
 
-  .section-link:hover {
-    color: #e0f2fe;
-  }
+  .section-link:hover { color: #e0f2fe; }
 
   /* PILLARS */
-
-  .home-pillars {
-    margin-bottom: 44px;
-  }
+  .home-pillars { margin-bottom: 44px; }
 
   .home-pillars-grid {
     display: grid;
@@ -1261,15 +1086,8 @@
     border-color: rgba(148, 163, 184, 0.9);
   }
 
-  .pillar-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #f3f4f6;
-  }
-
-  .pillar-body {
-    color: #d1d5db;
-  }
+  .pillar-title { font-size: 14px; font-weight: 600; color: #f3f4f6; }
+  .pillar-body { color: #d1d5db; }
 
   .pillar-list {
     margin: 4px 0 4px;
@@ -1278,9 +1096,7 @@
     color: #9ca3af;
   }
 
-  .pillar-list li + li {
-    margin-top: 3px;
-  }
+  .pillar-list li + li { margin-top: 3px; }
 
   .pillar-cta {
     margin-top: auto;
@@ -1290,21 +1106,14 @@
     font-weight: 600;
   }
 
-  .pillar-cta:hover {
-    color: #e0f2fe;
-  }
+  .pillar-cta:hover { color: #e0f2fe; }
 
   @media (max-width: 900px) {
-    .home-pillars-grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
+    .home-pillars-grid { grid-template-columns: minmax(0, 1fr); }
   }
 
   /* FLOW */
-
-  .home-flow {
-    margin-bottom: 44px;
-  }
+  .home-flow { margin-bottom: 44px; }
 
   .home-flow-grid {
     display: grid;
@@ -1331,11 +1140,7 @@
     box-shadow: 0 24px 60px rgba(15, 23, 42, 1);
   }
 
-  .flow-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .flow-header { display: flex; justify-content: space-between; align-items: center; }
 
   .flow-step {
     font-size: 11px;
@@ -1344,27 +1149,15 @@
     color: #64748b;
   }
 
-  .flow-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #e5e7eb;
-  }
-
-  .flow-body {
-    color: #9ca3af;
-  }
+  .flow-title { font-size: 14px; font-weight: 600; color: #e5e7eb; }
+  .flow-body { color: #9ca3af; }
 
   @media (max-width: 900px) {
-    .home-flow-grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
+    .home-flow-grid { grid-template-columns: minmax(0, 1fr); }
   }
 
   /* SUPPLIERS TEASER */
-
-  .home-suppliers {
-    margin-bottom: 44px;
-  }
+  .home-suppliers { margin-bottom: 44px; }
 
   .home-suppliers-grid {
     display: grid;
@@ -1388,31 +1181,16 @@
     box-shadow: 0 24px 60px rgba(15, 23, 42, 1);
   }
 
-  .cap-title {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #f3f4f6;
-  }
+  .cap-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #f3f4f6; }
+  .cap-body { color: #9ca3af; }
 
-  .cap-body {
-    color: #9ca3af;
-  }
-
-  .home-suppliers-note {
-    margin-top: 10px;
-    font-size: 11px;
-    color: #6b7280;
-  }
+  .home-suppliers-note { margin-top: 10px; font-size: 11px; color: #6b7280; }
 
   @media (max-width: 900px) {
-    .home-suppliers-grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
+    .home-suppliers-grid { grid-template-columns: minmax(0, 1fr); }
   }
 
   /* FINAL CTA */
-
   .home-final {
     margin-top: 8px;
     padding-top: 24px;
@@ -1420,12 +1198,7 @@
     text-align: center;
   }
 
-  .home-final-title {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #f9fafb;
-  }
+  .home-final-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; color: #f9fafb; }
 
   .home-final-sub {
     font-size: 13px;
@@ -1442,8 +1215,6 @@
   }
 
   @media (max-width: 640px) {
-    .home-title {
-      font-size: 28px;
-    }
+    .home-title { font-size: 28px; }
   }
 </style>

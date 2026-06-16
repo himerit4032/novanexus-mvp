@@ -9,8 +9,9 @@
 
 /* 시스템에서 가장 또렷한 산세리프 폰트 스택 */
 :root {
-  --nn-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  --nn-font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
 html,
@@ -19,11 +20,16 @@ body {
   padding: 0;
   min-height: 100%;
   /* 모든 페이지 공통 배경 – 어두운 네이비 그라디언트 */
-  background: radial-gradient(circle at top, #020617, #020617 55%, #000814 100%);
+  background: radial-gradient(
+    circle at top,
+    #020617,
+    #020617 55%,
+    #000814 100%
+  );
   color: #e5e7eb;
 
   font-family: var(--nn-font-sans);
-  font-size: 15px;        /* 기본 폰트 한 단계 키움 */
+  font-size: 15px; /* 기본 폰트 한 단계 키움 */
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

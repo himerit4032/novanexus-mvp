@@ -2,11 +2,11 @@
 
 <script lang="ts" context="module">
   /**
-   * 레이아웃 모듈이 로드될 때 i18n을 가장 먼저 한 번만 초기화
-   * - SSR / 브라우저 둘 다 여기서 먼저 실행
+   * i18n 초기화는 SSR/브라우저 공통으로 여기서 "한 번"만.
+   * (클라이언트에서 다시 setupI18n을 호출하면 충돌/중복 로딩이 생길 수 있음)
    */
   import { setupI18n } from '$lib/i18n/config';
-  setupI18n();
+  setupI18n('en');
 </script>
 
 <script lang="ts">
@@ -15,16 +15,26 @@
   import { page } from '$app/stores';
   import { afterNavigate, beforeNavigate } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
 
-  import { t } from 'svelte-i18n';
+  import { t, isLoading } from 'svelte-i18n';
+  import { locale as localeStore, SUPPORTED_LOCALES } from '$lib/i18n/config';
+
   import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+  import IndustryUniverseScanner from '$lib/components/IndustryUniverseScanner.svelte';
 
   let navigating = false;
+  let i18nReady = false;
 
+  // ✅ 공개 Live RFQ 페이지 경로 (필요하면 여기만 변경)
+  const LIVE_RFQ_PUBLIC_HREF = '/live-rfq';
+
+  // ✅ navLinks에서 Live RFQ를 공개 라우트로 변경
   const navLinks: { href: string; key: string }[] = [
     { href: '/how-it-works', key: 'nav.howItWorks' },
-    { href: '/rfqs', key: 'nav.liveRFQs' },
+    { href: LIVE_RFQ_PUBLIC_HREF, key: 'nav.liveRFQs' },
     { href: '/suppliers', key: 'nav.forSuppliers' },
+    { href: '/pricing', key: 'nav.pricing' },
     { href: '/about', key: 'nav.about' }
   ];
 
@@ -33,7 +43,25 @@
     return currentPath.startsWith(href);
   };
 
+  const normalizeLocale = (raw: string | null) => {
+    const code = (raw || 'en').toLowerCase();
+    const ok = SUPPORTED_LOCALES?.some?.((x: any) => x.code === code);
+    return ok ? code : 'en';
+  };
+
   onMount(() => {
+    // ✅ 브라우저에 저장된 locale이 있으면 store만 동기화 (setupI18n 다시 호출 X)
+    if (browser) {
+      try {
+        const saved = normalizeLocale(localStorage.getItem('locale'));
+        localeStore.set(saved);
+      } catch {}
+    }
+
+    const stopLoading = isLoading.subscribe(($loading) => {
+      if (!$loading) i18nReady = true;
+    });
+
     const stopBefore = beforeNavigate(() => {
       navigating = true;
     });
@@ -43,6 +71,7 @@
     });
 
     return () => {
+      stopLoading();
       stopBefore();
       stopAfter();
     };
@@ -51,6 +80,7 @@
 
 <svelte:head>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NovaNexus</title>
 </svelte:head>
 
 <div class="layout-shell">
@@ -70,20 +100,36 @@
             href={link.href}
             class="nn-nav-link {isActive(link.href, $page.url.pathname) ? 'active' : ''}"
           >
-            {$t(link.key)}
+            {#if i18nReady}
+              {$t(link.key)}
+            {:else}
+              {link.key}
+            {/if}
           </a>
         {/each}
       </nav>
 
-      <!-- Right side: language + CTAs -->
+      <!-- Right side: AI RFQ 버튼 + language + CTAs -->
       <div class="nn-header-right">
+        <a href="/ai-intake" class="nn-ai-btn">AI RFQ Check</a>
+
         <LanguageSwitcher />
 
-        <a href="/login" class="nn-login-btn">
-          {$t('nav.login')}
+        <!-- ✅ 로그인은 /auth/login 으로 -->
+        <a href="/auth/login" class="nn-login-btn">
+          {#if i18nReady}
+            {$t('nav.login')}
+          {:else}
+            nav.login
+          {/if}
         </a>
+
         <a href="/auth/join" class="nn-join-btn">
-          {$t('nav.joinBeta')}
+          {#if i18nReady}
+            {$t('nav.joinBeta')}
+          {:else}
+            nav.joinBeta
+          {/if}
         </a>
       </div>
     </div>
@@ -96,6 +142,10 @@
 
   <!-- MAIN -->
   <main class="nn-main">
+    {#if $page.url.pathname === '/'}
+      <IndustryUniverseScanner />
+    {/if}
+
     <slot />
   </main>
 
@@ -107,51 +157,114 @@
           <span class="nn-footer-dot"></span>
           <span class="nn-footer-name">NovaNexus</span>
         </div>
+
         <p class="nn-footer-tagline">
-          {$t('footer.tagline')}
+          {#if i18nReady}
+            {$t('footer.tagline')}
+          {:else}
+            footer.tagline
+          {/if}
         </p>
+
         <p class="nn-footer-rights">
-          © {new Date().getFullYear()} NovaNexus. {$t('footer.rights')}
+          © {new Date().getFullYear()} NovaNexus.
+          {#if i18nReady}
+            {$t('footer.rights')}
+          {:else}
+            footer.rights
+          {/if}
         </p>
       </div>
 
       <div class="nn-footer-columns">
         <div class="nn-footer-col">
           <p class="nn-footer-heading">
-            {$t('footer.platform')}
+            {#if i18nReady}
+              {$t('footer.platform')}
+            {:else}
+              footer.platform
+            {/if}
           </p>
-          <a href="/rfqs" class="nn-footer-link">
-            {$t('footer.liveRFQs')}
+
+          <!-- ✅ Footer Live RFQ도 공개 링크로 -->
+          <a href={LIVE_RFQ_PUBLIC_HREF} class="nn-footer-link">
+            {#if i18nReady}
+              {$t('footer.liveRFQs')}
+            {:else}
+              footer.liveRFQs
+            {/if}
           </a>
+
           <a href="/suppliers" class="nn-footer-link">
-            {$t('footer.becomeSupplier')}
+            {#if i18nReady}
+              {$t('footer.becomeSupplier')}
+            {:else}
+              footer.becomeSupplier
+            {/if}
           </a>
+
+          <a href="/pricing" class="nn-footer-link">
+            {#if i18nReady}
+              {$t('nav.pricing')}
+            {:else}
+              nav.pricing
+            {/if}
+          </a>
+
           <a href="/about" class="nn-footer-link">
-            {$t('footer.about')}
+            {#if i18nReady}
+              {$t('footer.about')}
+            {:else}
+              footer.about
+            {/if}
           </a>
         </div>
 
         <div class="nn-footer-col">
           <p class="nn-footer-heading">
-            {$t('footer.forBuyers')}
+            {#if i18nReady}
+              {$t('footer.forBuyers')}
+            {:else}
+              footer.forBuyers
+            {/if}
           </p>
           <a href="/dashboard/buyer" class="nn-footer-link">
-            {$t('footer.buyerDashboard')}
+            {#if i18nReady}
+              {$t('footer.buyerDashboard')}
+            {:else}
+              footer.buyerDashboard
+            {/if}
           </a>
           <a href="/contact" class="nn-footer-link">
-            {$t('footer.contact')}
+            {#if i18nReady}
+              {$t('footer.contact')}
+            {:else}
+              footer.contact
+            {/if}
           </a>
         </div>
 
         <div class="nn-footer-col">
           <p class="nn-footer-heading">
-            {$t('footer.forSuppliers')}
+            {#if i18nReady}
+              {$t('footer.forSuppliers')}
+            {:else}
+              footer.forSuppliers
+            {/if}
           </p>
           <a href="/dashboard/supplier" class="nn-footer-link">
-            {$t('footer.supplierDashboard')}
+            {#if i18nReady}
+              {$t('footer.supplierDashboard')}
+            {:else}
+              footer.supplierDashboard
+            {/if}
           </a>
           <a href="/auth/join" class="nn-footer-link">
-            {$t('footer.joinBeta')}
+            {#if i18nReady}
+              {$t('footer.joinBeta')}
+            {:else}
+              footer.joinBeta
+            {/if}
           </a>
         </div>
       </div>
@@ -160,6 +273,7 @@
 </div>
 
 <style>
+  /* ✅ 스타일은 당신 원본 그대로 (변경 없음) */
   .layout-shell {
     min-height: 100vh;
     display: flex;
@@ -172,7 +286,6 @@
     position: sticky;
     top: 0;
     z-index: 40;
-    /* Safari 호환성 */
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
     background: linear-gradient(
@@ -265,6 +378,44 @@
     gap: 10px;
   }
 
+  .nn-ai-btn {
+    font-size: 12px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: #e5e7eb;
+    background: radial-gradient(
+      circle at top left,
+      rgba(56, 189, 248, 0.15),
+      rgba(30, 64, 175, 0.35)
+    );
+    border: 1px solid rgba(56, 189, 248, 0.8);
+    box-shadow:
+      0 10px 28px rgba(15, 23, 42, 0.9),
+      0 0 18px rgba(56, 189, 248, 0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+    transition:
+      transform 0.16s ease,
+      box-shadow 0.16s ease,
+      border-color 0.16s ease,
+      background 0.16s ease;
+  }
+
+  .nn-ai-btn:hover {
+    transform: translateY(-1px) scale(1.02);
+    border-color: rgba(125, 211, 252, 0.95);
+    background: radial-gradient(
+      circle at top left,
+      rgba(56, 189, 248, 0.28),
+      rgba(30, 64, 175, 0.55)
+    );
+    box-shadow:
+      0 16px 40px rgba(15, 23, 42, 0.95),
+      0 0 22px rgba(56, 189, 248, 0.8);
+  }
+
   .nn-login-btn {
     font-size: 13px;
     padding: 7px 14px;
@@ -327,20 +478,12 @@
   }
 
   @keyframes nn-progress {
-    0% {
-      transform: translateX(-100%);
-    }
-    50% {
-      transform: translateX(-10%);
-    }
-    100% {
-      transform: translateX(100%);
-    }
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(-10%); }
+    100% { transform: translateX(100%); }
   }
 
-  .nn-main {
-    flex: 1;
-  }
+  .nn-main { flex: 1; }
 
   .nn-footer {
     border-top: 1px solid rgba(15, 23, 42, 0.9);
@@ -358,9 +501,7 @@
     align-items: flex-start;
   }
 
-  .nn-footer-brand {
-    max-width: 260px;
-  }
+  .nn-footer-brand { max-width: 260px; }
 
   .nn-footer-logo {
     display: flex;
@@ -400,9 +541,7 @@
     gap: 32px;
   }
 
-  .nn-footer-col {
-    min-width: 150px;
-  }
+  .nn-footer-col { min-width: 150px; }
 
   .nn-footer-heading {
     font-size: 12px;
@@ -430,30 +569,15 @@
   }
 
   @media (max-width: 900px) {
-    .nn-header-inner {
-      padding-inline: 16px;
-      gap: 12px;
-    }
-
-    .nn-nav {
-      display: none;
-    }
-
-    .nn-footer-inner {
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .nn-footer-columns {
-      width: 100%;
-      justify-content: space-between;
-    }
+    .nn-header-inner { padding-inline: 16px; gap: 12px; }
+    .nn-nav { display: none; }
+    .nn-header-right { gap: 8px; }
+    .nn-footer-inner { flex-direction: column; gap: 20px; }
+    .nn-footer-columns { width: 100%; justify-content: space-between; }
   }
 
   @media (max-width: 640px) {
-    .nn-footer-columns {
-      flex-direction: column;
-      gap: 16px;
-    }
+    .nn-footer-columns { flex-direction: column; gap: 16px; }
+    .nn-ai-btn { display: none; }
   }
 </style>

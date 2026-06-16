@@ -1,35 +1,61 @@
 <!-- src/routes/rfqs/new/+page.svelte -->
 
 <svelte:head>
-  <title>NovaNexus ▢ Create RFQ</title>
+  <title>{$t('rfqNew.metaTitle')}</title>
 </svelte:head>
 
 <script lang="ts">
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
+  import { t } from 'svelte-i18n';
+  import { get } from 'svelte/store';
 
-  // ----- 옵션 상수들 -----
-  const regions = ['Korea', 'USA', 'Europe', 'Japan', 'Vietnam', 'Middle East', 'Other'];
+  const translate = (key: string) => get(t)(key) as string;
 
-  const industries = [
-    'Aluminum extrusion & finishing',
-    'CNC machining & fabrication',
-    'Press lines & forming',
-    'Industrial robotics & cells',
-    'Material handling & conveyors',
-    'Warehouse systems & AS/RS',
-    'Packaging & end-of-line',
-    'Injection molding & plastics',
-    'Steel processing & coil lines',
-    'Food & beverage automation',
-    'Pharma & medical devices',
-    'EV & battery production lines',
-    'Other'
+  // ----- 옵션 상수들 (값 = 백엔드에 저장, labelKey = 번역 키) -----
+  type Option = { value: string; labelKey: string };
+
+  const regionOptions: Option[] = [
+    { value: 'Korea', labelKey: 'rfqNew.fields.region.options.korea' },
+    { value: 'USA', labelKey: 'rfqNew.fields.region.options.usa' },
+    { value: 'Europe', labelKey: 'rfqNew.fields.region.options.europe' },
+    { value: 'Japan', labelKey: 'rfqNew.fields.region.options.japan' },
+    { value: 'Vietnam', labelKey: 'rfqNew.fields.region.options.vietnam' },
+    { value: 'Middle East', labelKey: 'rfqNew.fields.region.options.middleEast' },
+    { value: 'Other', labelKey: 'rfqNew.fields.region.options.other' }
   ];
 
-  const budgets = ['<$200k', '$200k–$500k', '$500k–$1M', '$1M–$3M', '$3M+'];
-  const timelines = ['<3 months', '3–6 months', '6–12 months', '12+ months'];
+  const industryOptions: Option[] = [
+    { value: 'Aluminum extrusion & finishing', labelKey: 'rfqNew.fields.industry.options.aluminum' },
+    { value: 'CNC machining & fabrication', labelKey: 'rfqNew.fields.industry.options.cnc' },
+    { value: 'Press lines & forming', labelKey: 'rfqNew.fields.industry.options.press' },
+    { value: 'Industrial robotics & cells', labelKey: 'rfqNew.fields.industry.options.robotics' },
+    { value: 'Material handling & conveyors', labelKey: 'rfqNew.fields.industry.options.conveyors' },
+    { value: 'Warehouse systems & AS/RS', labelKey: 'rfqNew.fields.industry.options.warehouse' },
+    { value: 'Packaging & end-of-line', labelKey: 'rfqNew.fields.industry.options.packaging' },
+    { value: 'Injection molding & plastics', labelKey: 'rfqNew.fields.industry.options.plastics' },
+    { value: 'Steel processing & coil lines', labelKey: 'rfqNew.fields.industry.options.steel' },
+    { value: 'Food & beverage automation', labelKey: 'rfqNew.fields.industry.options.food' },
+    { value: 'Pharma & medical devices', labelKey: 'rfqNew.fields.industry.options.pharma' },
+    { value: 'EV & battery production lines', labelKey: 'rfqNew.fields.industry.options.ev' },
+    { value: 'Other', labelKey: 'rfqNew.fields.industry.options.other' }
+  ];
+
+  const budgetOptions: Option[] = [
+    { value: '<$200k', labelKey: 'rfqNew.fields.budget.options.lt200' },
+    { value: '$200k–$500k', labelKey: 'rfqNew.fields.budget.options.200to500' },
+    { value: '$500k–$1M', labelKey: 'rfqNew.fields.budget.options.500to1m' },
+    { value: '$1M–$3M', labelKey: 'rfqNew.fields.budget.options.1to3m' },
+    { value: '$3M+', labelKey: 'rfqNew.fields.budget.options.gt3m' }
+  ];
+
+  const timelineOptions: Option[] = [
+    { value: '<3 months', labelKey: 'rfqNew.fields.timeline.options.lt3' },
+    { value: '3–6 months', labelKey: 'rfqNew.fields.timeline.options.3to6' },
+    { value: '6–12 months', labelKey: 'rfqNew.fields.timeline.options.6to12' },
+    { value: '12+ months', labelKey: 'rfqNew.fields.timeline.options.gt12' }
+  ];
 
   // ----- 상태 -----
   let mounted = false;
@@ -37,12 +63,12 @@
   let companyName = '';
   let projectName = '';
   let role: 'buyer' | 'supplier' | 'other' = 'buyer';
-  let region = 'Korea';
-  let industry = 'Aluminum extrusion & finishing';
+  let region = regionOptions[0].value;
+  let industry = industryOptions[0].value;
   let process = '';
   let annualVolume = '';
-  let budget = '$200k–$500k';
-  let timeline = '3–6 months';
+  let budget = budgetOptions[1].value;
+  let timeline = timelineOptions[1].value;
   let description = '';
   let constraints = '';
   let contactName = '';
@@ -71,11 +97,11 @@
 
   // ----- 헬퍼: 필수 필드 검증 -----
   const validateRequired = () => {
-    if (!projectName.trim()) return 'Project name is required.';
-    if (!process.trim()) return 'Core process / line focus is required.';
-    if (!description.trim()) return 'Please describe what you are trying to build or upgrade.';
-    if (!contactName.trim()) return 'Contact name is required.';
-    if (!contactEmail.trim()) return 'Work email is required.';
+    if (!projectName.trim()) return translate('rfqNew.validation.projectName');
+    if (!process.trim()) return translate('rfqNew.validation.process');
+    if (!description.trim()) return translate('rfqNew.validation.description');
+    if (!contactName.trim()) return translate('rfqNew.validation.contactName');
+    if (!contactEmail.trim()) return translate('rfqNew.validation.contactEmail');
     return '';
   };
 
@@ -104,8 +130,7 @@
     createdId = '';
 
     if (!pbClient) {
-      errorMsg =
-        'RFQ backend is not reachable from this environment. Please check PocketBase URL and client config.';
+      errorMsg = translate('rfqNew.errors.noBackend');
       loading = false;
       return;
     }
@@ -140,8 +165,7 @@
       constraints = '';
     } catch (err) {
       console.warn('RFQ create failed', err);
-      errorMsg =
-        'There was an issue saving this RFQ. Please check the RFQ collection, API rules and PocketBase URL.';
+      errorMsg = translate('rfqNew.errors.saveFailed');
     } finally {
       loading = false;
     }
@@ -155,30 +179,28 @@
     <div class="rfq-hero-glow"></div>
 
     <div class="rfq-hero-left" in:fade={{ duration: 260, delay: 40 }}>
-      <p class="rfq-kicker">CREATE RFQ ▢ PRODUCTION-GRADE ONLY</p>
-      <h1 class="rfq-title">Start with one real project.</h1>
+      <p class="rfq-kicker">{$t('rfqNew.hero.kicker')}</p>
+      <h1 class="rfq-title">{$t('rfqNew.hero.title')}</h1>
       <p class="rfq-sub">
-        Use this form for lines, cells, retrofits and automation where a wrong supplier
-        actually hurts. Keep it concrete: what you’re running today, what needs to be
-        different and where the line will live.
+        {$t('rfqNew.hero.subtitle')}
       </p>
 
       <div class="rfq-steps">
         <div class="step-pill">
           <span class="step-index">1</span>
-          <span>Basics</span>
+          <span>{$t('rfqNew.hero.steps.basics')}</span>
         </div>
         <div class="step-pill">
           <span class="step-index">2</span>
-          <span>Scope & region</span>
+          <span>{$t('rfqNew.hero.steps.scope')}</span>
         </div>
         <div class="step-pill">
           <span class="step-index">3</span>
-          <span>Technical description</span>
+          <span>{$t('rfqNew.hero.steps.tech')}</span>
         </div>
         <div class="step-pill">
           <span class="step-index">4</span>
-          <span>Contact</span>
+          <span>{$t('rfqNew.hero.steps.contact')}</span>
         </div>
       </div>
     </div>
@@ -189,15 +211,14 @@
         <div class="rfq-dot"></div>
       </div>
       <div class="rfq-hero-note-text">
-        <div class="rfq-hero-note-title">What happens after you submit?</div>
+        <div class="rfq-hero-note-title">
+          {$t('rfqNew.hero.noteTitle')}
+        </div>
         <p>
-          RFQs are reviewed, cleaned up and matched against a curated bench of factories
-          and integrators. There is no bulk “blast all suppliers” button – every project
-          is routed intentionally.
+          {$t('rfqNew.hero.noteBody')}
         </p>
         <p class="rfq-hero-note-foot">
-          If something is confidential, you can keep names generic here and share drawings
-          under NDA later.
+          {$t('rfqNew.hero.noteFoot')}
         </p>
       </div>
     </aside>
@@ -216,28 +237,31 @@
       <!-- Project basics -->
       <div class="rfq-section">
         <div class="rfq-section-head">
-          <h2>Project basics</h2>
+          <h2>{$t('rfqNew.sections.basics.title')}</h2>
           <p class="rfq-section-sub">
-            Enough context so a technical salesperson or engineer immediately understands
-            what kind of line or cell we’re talking about.
+            {$t('rfqNew.sections.basics.subtitle')}
           </p>
         </div>
 
         <div class="rfq-grid">
           <div class="field">
-            <label for="rfq-company">Company / organization (optional)</label>
+            <label for="rfq-company">
+              {$t('rfqNew.fields.company.label')}
+            </label>
             <input
               id="rfq-company"
               name="company_name"
               type="text"
               bind:value={companyName}
-              placeholder="Example: tier-1 automotive supplier, 3PL warehouse, medtech OEM…"
+              placeholder={$t('rfqNew.fields.company.placeholder')}
               autocomplete="organization"
             />
           </div>
 
           <div class="field">
-            <label for="rfq-project">Project name *</label>
+            <label for="rfq-project">
+              {$t('rfqNew.fields.projectName.label')}
+            </label>
             <input
               id="rfq-project"
               name="project_name"
@@ -245,13 +269,15 @@
               bind:value={projectName}
               required
               autocomplete="off"
-              placeholder="Example: new aluminum extrusion line for building profiles"
+              placeholder={$t('rfqNew.fields.projectName.placeholder')}
             />
           </div>
 
           <div class="field field-role">
-            <div class="field-label">Your role *</div>
-            <div class="radio-row" aria-label="Your role">
+            <div class="field-label">
+              {$t('rfqNew.fields.role.label')}
+            </div>
+            <div class="radio-row" aria-label={$t('rfqNew.fields.role.label')}>
               <label>
                 <input
                   type="radio"
@@ -259,7 +285,7 @@
                   value="buyer"
                   bind:group={role}
                 />
-                <span>Buyer / plant / engineering</span>
+                <span>{$t('rfqNew.fields.role.options.buyer')}</span>
               </label>
               <label>
                 <input
@@ -268,7 +294,7 @@
                   value="supplier"
                   bind:group={role}
                 />
-                <span>Supplier exploring partnership</span>
+                <span>{$t('rfqNew.fields.role.options.supplier')}</span>
               </label>
               <label>
                 <input
@@ -277,7 +303,7 @@
                   value="other"
                   bind:group={role}
                 />
-                <span>Other</span>
+                <span>{$t('rfqNew.fields.role.options.other')}</span>
               </label>
             </div>
           </div>
@@ -287,67 +313,78 @@
       <!-- Scope & region -->
       <div class="rfq-section">
         <div class="rfq-section-head">
-          <h2>Scope & location</h2>
+          <h2>{$t('rfqNew.sections.scope.title')}</h2>
           <p class="rfq-section-sub">
-            Region and industry help narrow the bench. If you’re flexible, mention it in
-            the constraints section below.
+            {$t('rfqNew.sections.scope.subtitle')}
           </p>
         </div>
 
         <div class="rfq-grid">
           <div class="field">
-            <label for="rfq-region">Preferred region *</label>
+            <label for="rfq-region">
+              {$t('rfqNew.fields.region.label')}
+            </label>
             <select id="rfq-region" name="region" bind:value={region} required>
-              {#each regions as r}
-                <option value={r}>{r}</option>
+              {#each regionOptions as r}
+                <option value={r.value}>{$t(r.labelKey)}</option>
               {/each}
             </select>
           </div>
 
           <div class="field">
-            <label for="rfq-industry">Primary industry *</label>
+            <label for="rfq-industry">
+              {$t('rfqNew.fields.industry.label')}
+            </label>
             <select id="rfq-industry" name="industry" bind:value={industry} required>
-              {#each industries as ind}
-                <option value={ind}>{ind}</option>
+              {#each industryOptions as ind}
+                <option value={ind.value}>{$t(ind.labelKey)}</option>
               {/each}
             </select>
           </div>
 
           <div class="field">
-            <label for="rfq-process">Core process or line focus *</label>
+            <label for="rfq-process">
+              {$t('rfqNew.fields.process.label')}
+            </label>
             <input
               id="rfq-process"
               name="process_focus"
               bind:value={process}
               required
-              placeholder="Example: extrusion & hot saws, shuttle racking, palletizing cells…"
+              placeholder={$t('rfqNew.fields.process.placeholder')}
             />
           </div>
 
           <div class="field">
-            <label for="rfq-volume">Annual volume / throughput (rough)</label>
+            <label for="rfq-volume">
+              {$t('rfqNew.fields.annualVolume.label')}
+            </label>
             <input
               id="rfq-volume"
               name="annual_volume"
               bind:value={annualVolume}
-              placeholder="Example: 15,000 tons/year, 500 pallets/day, 40 modules/hour…"
+              placeholder={$t('rfqNew.fields.annualVolume.placeholder')}
             />
           </div>
 
           <div class="field">
-            <label for="rfq-budget">Budget range *</label>
+            <label for="rfq-budget">
+              {$t('rfqNew.fields.budget.label')}
+            </label>
             <select id="rfq-budget" name="budget_range" bind:value={budget} required>
-              {#each budgets as b}
-                <option value={b}>{b}</option>
+              {#each budgetOptions as b}
+                <option value={b.value}>{$t(b.labelKey)}</option>
               {/each}
             </select>
           </div>
 
           <div class="field">
-            <label for="rfq-timeline">Target timeline *</label>
+            <label for="rfq-timeline">
+              {$t('rfqNew.fields.timeline.label')}
+            </label>
             <select id="rfq-timeline" name="timeline" bind:value={timeline} required>
-              {#each timelines as t}
-                <option value={t}>{t}</option>
+              {#each timelineOptions as tOpt}
+                <option value={tOpt.value}>{$t(tOpt.labelKey)}</option>
               {/each}
             </select>
           </div>
@@ -357,37 +394,36 @@
       <!-- Technical description -->
       <div class="rfq-section">
         <div class="rfq-section-head">
-          <h2>Technical description</h2>
+          <h2>{$t('rfqNew.sections.tech.title')}</h2>
           <p class="rfq-section-sub">
-            Bullet points are perfect. Focus on what must be true – layout, interfaces
-            with existing equipment, safety, clean-room, local service, certifications.
+            {$t('rfqNew.sections.tech.subtitle')}
           </p>
         </div>
 
         <div class="field">
-          <label for="rfq-description">What are you trying to build or upgrade? *</label>
+          <label for="rfq-description">
+            {$t('rfqNew.fields.description.label')}
+          </label>
           <textarea
             id="rfq-description"
             name="description"
             rows="5"
             bind:value={description}
             required
-            placeholder="- New extrusion line to replace aging equipment
-- Integrate shuttle racking with existing WMS
-- Add robotic palletizing cell after existing case packer…"
+            placeholder={$t('rfqNew.fields.description.placeholder')}
           ></textarea>
         </div>
 
         <div class="field">
-          <label for="rfq-constraints">Key constraints or must-haves</label>
+          <label for="rfq-constraints">
+            {$t('rfqNew.fields.constraints.label')}
+          </label>
           <textarea
             id="rfq-constraints"
             name="constraints"
             rows="3"
             bind:value={constraints}
-            placeholder="- Existing building layout / ceiling height
-- Local service needed in specific country
-- Cleanroom / validation / certification requirements…"
+            placeholder={$t('rfqNew.fields.constraints.placeholder')}
           ></textarea>
         </div>
       </div>
@@ -395,28 +431,31 @@
       <!-- Contact -->
       <div class="rfq-section">
         <div class="rfq-section-head">
-          <h2>Contact</h2>
+          <h2>{$t('rfqNew.sections.contact.title')}</h2>
           <p class="rfq-section-sub">
-            Used only to follow up on this RFQ. In the MVP there is no public profile tied
-            to this form.
+            {$t('rfqNew.sections.contact.subtitle')}
           </p>
         </div>
 
         <div class="rfq-grid">
           <div class="field">
-            <label for="rfq-contact-name">Your name *</label>
+            <label for="rfq-contact-name">
+              {$t('rfqNew.fields.contactName.label')}
+            </label>
             <input
               id="rfq-contact-name"
               name="contact_name"
               bind:value={contactName}
               required
               autocomplete="name"
-              placeholder="Example: operations manager, project engineer…"
+              placeholder={$t('rfqNew.fields.contactName.placeholder')}
             />
           </div>
 
           <div class="field">
-            <label for="rfq-contact-email">Work email *</label>
+            <label for="rfq-contact-email">
+              {$t('rfqNew.fields.contactEmail.label')}
+            </label>
             <input
               id="rfq-contact-email"
               name="contact_email"
@@ -424,7 +463,7 @@
               bind:value={contactEmail}
               required
               autocomplete="email"
-              placeholder="name@company.com"
+              placeholder={$t('rfqNew.fields.contactEmail.placeholder')}
             />
           </div>
         </div>
@@ -439,13 +478,15 @@
           aria-busy={loading}
         >
           {#if loading}
-            Submitting…
+            {$t('rfqNew.actions.submitting')}
           {:else}
-            Create RFQ
+            {$t('rfqNew.actions.submit')}
           {/if}
         </button>
 
-        <a href="/rfqs" class="btn-ghost-sm">Back to live RFQs</a>
+        <a href="/rfqs" class="btn-ghost-sm">
+          {$t('rfqNew.actions.backToRfqs')}
+        </a>
       </div>
 
       {#if errorMsg}
@@ -456,12 +497,15 @@
 
       {#if submitted}
         <div id="rfq-success" class="rfq-success">
-          <div class="rfq-success-title">Your RFQ has been created.</div>
+          <div class="rfq-success-title">
+            {$t('rfqNew.success.title')}
+          </div>
           <p>
-            It’s now in the review queue. You’ll hear back once it’s been structured and
-            matched to a realistic bench of factories.
+            {$t('rfqNew.success.body')}
             {#if createdId}
-              <span class="rfq-id">Internal ID: {createdId}</span>
+              <span class="rfq-id">
+                {$t('rfqNew.success.internalIdPrefix')} {createdId}
+              </span>
             {/if}
           </p>
         </div>
