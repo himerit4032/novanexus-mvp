@@ -1,11 +1,11 @@
-// vite.config.ts
+﻿// vite.config.ts
 import { sveltekit } from "@sveltejs/kit/vite";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [
-    // Tailwind CSS v4 (Vite 전용 플러그인)
+    // Tailwind CSS v4 (Vite ì „ìš© í”ŒëŸ¬ê·¸ì¸)
     tailwindcss(),
     // SvelteKit
     sveltekit(),
@@ -21,7 +21,7 @@ export default defineConfig({
     strictPort: true,
   },
 
-  // Vitest 설정 (단위테스트/컴포넌트 테스트)
+  // Vitest ì„¤ì • (ë‹¨ìœ„í…ŒìŠ¤íŠ¸/ì»´í¬ë„ŒíŠ¸ í…ŒìŠ¤íŠ¸)
   test: {
     environment: "jsdom",
     globals: true,
@@ -33,3 +33,4 @@ export default defineConfig({
     },
   },
 });
+

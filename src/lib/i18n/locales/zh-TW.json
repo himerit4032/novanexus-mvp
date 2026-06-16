@@ -1,0 +1,831 @@
+{
+  "nav": {
+    "howItWorks": "How it works",
+    "liveRFQs": "Live RFQs",
+    "forSuppliers": "For suppliers",
+    "pricing": "Pricing",
+    "about": "About the platform",
+    "login": "Log in",
+    "joinBeta": "Join beta"
+  },
+
+  "footer": {
+    "tagline": "We turn complex CAPEX projects into clear, globally quotable work packages.",
+    "rights": "All rights reserved.",
+    "platform": "Platform",
+    "liveRFQs": "Live RFQs",
+    "becomeSupplier": "Become a vetted supplier",
+    "about": "About NovaNexus",
+    "forBuyers": "For buyers",
+    "buyerDashboard": "Buyer cockpit (preview)",
+    "contact": "Contact",
+    "forSuppliers": "For suppliers",
+    "supplierDashboard": "Supplier cockpit (preview)",
+    "joinBeta": "Join the beta program"
+  },
+
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "ko": "Korean",
+    "ja": "Japanese",
+    "zh": "Chinese",
+    "vi": "Vietnamese",
+    "de": "German",
+    "fr": "French",
+    "es": "Spanish",
+    "it": "Italian",
+    "ar": "Arabic"
+  },
+
+  "common": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "learnMore": "Learn more",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading…",
+    "optional": "Optional",
+    "required": "Required"
+  },
+
+  "home": {
+    "hero": {
+      "kicker": "MANUFACTURING ▢ AUTOMATION ▢ GLOBAL SOURCING",
+      "titleLine1": "Global manufacturing,",
+      "titleHighlight": "without the fog.",
+      "sub": "NovaNexus turns complex production projects into clear, structured work packages that can actually be quoted. The platform sits as a neutral layer between buyers and vetted factories, translating drawings, capacity and risk into a shared map both sides can work from.",
+      "primaryCta": "Submit an RFQ",
+      "secondaryCta": "Apply as vetted supplier",
+      "noteBuyers": "For buyers as well as plant / project teams",
+      "noteSuppliers": "For factories, system integrators & automation teams",
+      "footnote": "For plant managers, project engineers and owners who are tired of endless email threads.",
+      "scrollLabel": "Scroll to see the pipeline"
+    },
+
+    "stats": {
+      "factories": "Vetted factories & SIs",
+      "industries": "Covered industries",
+      "regions": "Active regions"
+    },
+
+    "orbit": {
+      "headerLabel": "RFQ pipeline snapshot",
+      "headerBadge": "Live demo · read-only",
+      "steps": {
+        "1": {
+          "label": "01 · RFQ intake",
+          "text": "Clean brief with drawings, throughput and standards in one place."
+        },
+        "2": {
+          "label": "02 · Bench & matching",
+          "text": "Curated bench of factories filtered by process, region and envelope."
+        },
+        "3": {
+          "label": "03 · Decision layer",
+          "text": "Comparable quotes, duty impact and risk points in a single view."
+        }
+      },
+      "footerLabel": "Typical cycle",
+      "footerValue": "5–12 business days from RFQ to award"
+    },
+
+    "metricsNote": "NovaNexus connects production-ready buyers and vetted factories through a single qualified bench – USA, Europe, Korea and a wider APAC footprint.",
+
+    "pillars": {
+      "kicker": "WHO IT SERVES",
+      "title": "A sourcing cockpit for both sides of the table.",
+      "sub": "Buyers get clarity. Suppliers get signal. Everyone sees the same version of the project – instead of fifteen different email threads.",
+      "buyer": {
+        "title": "For buyers & plant teams",
+        "body": "Operations, engineering and project teams that run real lines – not test rigs.",
+        "bullets": [
+          "Structured RFQs so suppliers see the real requirement from day one.",
+          "More realistic expectations on budget, lead time and duty before you commit.",
+          "A bench of factories you can reuse for follow-on projects."
+        ],
+        "cta": "See buyer workflows"
+      },
+      "supplier": {
+        "title": "For suppliers & integrators",
+        "body": "Factories in Korea & APAC, system integrators and automation teams that actually build, install and support lines.",
+        "bullets": [
+          "RFQs that fit your machines, certifications and installation envelope.",
+          "Less time cleaning up chaotic drawings, more time actually quoting.",
+          "Signal on what global buyers will ask for next."
+        ],
+        "cta": "Open supplier playbook"
+      },
+      "both": {
+        "title": "For both sides – long term",
+        "body": "A shared surface instead of buried emails and scattered spreadsheets.",
+        "bullets": [
+          "Project history you can plug straight into the next RFQ.",
+          "Shared context for operations, finance and leadership.",
+          "Clearer decisions on where you should really build your next line."
+        ],
+        "cta": "Walk the full pipeline"
+      }
+    },
+
+    "flow": {
+      "kicker": "HOW THE PIPELINE RUNS",
+      "title": "From RFQ upload to awarded PO in three clear steps.",
+      "sub": "The same structure for every project – whether you’re specifying a single saw or a full shuttle-rack system.",
+      "link": "View detailed flow",
+      "1": {
+        "title": "Upload a structured RFQ",
+        "body": "Drawings, throughput, standards and target dates in a clean intake instead of scattered attachments."
+      },
+      "2": {
+        "title": "Match to the right factories",
+        "body": "Curated bench by process, region, envelope and certifications – no mass blast to random vendors."
+      },
+      "3": {
+        "title": "Clarify, compare, award",
+        "body": "Clarifications, quotes and award live in one thread so operations, engineering and finance stay in sync."
+      }
+    },
+
+    "capabilities": {
+      "kicker": "WHAT LIVES IN THE BENCH",
+      "title": "Lines, processes and regions we actually cover.",
+      "sub": "A deliberately curated bench instead of a generic directory. Every factory and SI is mapped by process, certification, envelope and installation capability.",
+      "link": "Explore supplier examples",
+      "note": "The bench is kept intentionally lean. New suppliers are added only after running real projects together.",
+      "production": {
+        "label": "Production lines",
+        "detail": "Aluminum extrusion, racking & AS/RS, press & coil lines, conveyors, packaging and end-of-line."
+      },
+      "precision": {
+        "label": "Precision & assemblies",
+        "detail": "Machined parts, fixtures & tooling, cleanroom equipment, medtech and EV components."
+      },
+      "regions": {
+        "label": "Regions",
+        "detail": "Korea-led bench with coverage for the US, EU and Southeast Asia – including build and installation."
+      }
+    },
+
+    "final": {
+      "title": "Ready to send a real RFQ – instead of another ‘quick question’ email?",
+      "sub": "Start with a production-ready project. We help translate drawings, throughput and constraints into a clean RFQ and route it to the right factories.",
+      "primaryCta": "Submit an RFQ",
+      "secondaryCta": "Join private beta"
+    }
+  },
+
+  "about": {
+    "hero": {
+      "badge": "ABOUT THIS PLATFORM",
+      "titleStatic": "Global manufacturing,",
+      "titleAccent": "without the fog.",
+      "body": "NovaNexus sits as a neutral layer between buyers and suppliers in precision manufacturing and industrial automation. The goal is simple:",
+      "bodyStrong": "fewer surprises before anyone signs a PO.",
+      "ctaSubmit": "Submit an RFQ",
+      "ctaBecomeSupplier": "Become a supplier",
+      "map": {
+        "usEurope": "US · Europe",
+        "koreaApac": "Korea · APAC",
+        "linesAutomation": "Lines & automation",
+        "kicker": "SIGNAL, NOT NOISE",
+        "bodyPrefix": "Processes, capacity and risk translated into",
+        "bodyStrong": " a shared map both sides can work from.",
+        "metricLiveRfqs": "Live / in-review RFQs",
+        "metricTypicalValue": "Typical project value"
+      }
+    },
+
+    "stats": {
+      "qualifiedSuppliers": "Qualified suppliers",
+      "coreVerticals": "Core verticals",
+      "activeRegions": "Active regions"
+    },
+
+    "pillars": {
+      "heading": "What actually sits behind the listings.",
+      "subheading": "Most industrial directories maximize the number of logos. NovaNexus is deliberately focused – on depth of capability, real capacity and the work it takes to run a line, not just contact fields.",
+      "capability": {
+        "label": "Capability map",
+        "title": "Processes, not just company logos.",
+        "body": "Every supplier is anchored by processes, materials, tolerances and certifications – so buyers can search the way engineers think.",
+        "bullets": [
+          "Process tags across machining, extrusion, automation, cleanroom and more.",
+          "Material coverage and typical tolerances visible at a glance.",
+          "Certifications and industry focus clearly highlighted."
+        ]
+      },
+      "rfqs": {
+        "label": "Structured RFQs",
+        "title": "RFQs that can be quoted cleanly the first time.",
+        "body": "Guided RFQ intake removes guesswork so suppliers respond with real numbers, not “call us to discuss”.",
+        "bullets": [
+          "Required fields for drawings, volumes and quality requirements.",
+          "Upload drawings, BOMs and reference photos.",
+          "Automatic nudges when a critical detail is missing."
+        ]
+      },
+      "decision": {
+        "label": "Decision layer",
+        "title": "Playbooks above the listings.",
+        "body": "Lightweight guides sit right next to suppliers so teams can decide faster and with less politics.",
+        "bullets": [
+          "Make-or-buy and route comparisons for common cases.",
+          "Checklists for first-time sourcing and new regions.",
+          "Signals on where capacity and lead times are shifting."
+        ]
+      }
+    },
+
+    "buyers": {
+      "title": "If you sit on the buyer side",
+      "copy": "Built for operations, engineering and sourcing teams that need a shared, realistic map before a PO goes out.",
+      "overline": "You get",
+      "benefits": [
+        "A shortlist of realistic options by process, region and budget band.",
+        "Cleaner RFQs that bring back real quotes quickly.",
+        "Early visibility into risk, lead times and rough cost bands."
+      ]
+    },
+
+    "suppliers": {
+      "title": "If you sit on the supplier side",
+      "copy": "Your profile here should feel lighter than a full corporate site, but far more informative than a logo in a directory.",
+      "overline": "You see more clearly",
+      "benefits": [
+        "A way to show depth without hiring a marketing agency.",
+        "Context on what global buyers are actually asking for this year.",
+        "Signals on where to place your next capacity or automation bets."
+      ]
+    },
+
+    "roadmap": {
+      "heading": "Where this is headed.",
+      "copy": "The roadmap follows how real CAPEX teams buy and build lines – not a shiny feature list. The more projects run through NovaNexus, the sharper guidance and benchmarking become.",
+      "now": {
+        "phase": "NOW · MVP",
+        "title": "Curated supplier bench & structured intake",
+        "body": "Curated supplier bench, structured RFQ intake and early playbooks so both sides know what “good” looks like from day one."
+      },
+      "next": {
+        "phase": "NEXT",
+        "title": "Deeper filters, clearer bands",
+        "body": "Richer discovery filters, broader automation coverage and clearer cost and lead-time bands for common project types."
+      },
+      "later": {
+        "phase": "LATER",
+        "title": "Analytics, heatmaps and field guides",
+        "body": "Lightweight analytics for suppliers, regional heatmaps for buyers and deeper “how to scope it” guides based on live project data."
+      }
+    },
+
+    "cta": {
+      "heading": "Explore the ecosystem.",
+      "copy": "Browse suppliers, read the guides and send a test RFQ. Even if you’re just mapping options, you should leave with a clearer, more realistic view of what’s possible for your next line or cell.",
+      "overline": "Start from the side that fits you best.",
+      "primary": "Browse suppliers",
+      "secondary": "See how it works",
+      "note": "No fees or commitments for browsing."
+    }
+  },
+
+  "suppliers": {
+    "heroTitle": "A clean stream of realistic RFQs, not noise.",
+    "heroSubtitle": "NovaNexus filters out weak leads so factories and system integrators only see projects they can realistically win and deliver.",
+    "benefitsTitle": "Benefits for vetted suppliers",
+    "benefits": {
+      "fitTitle": "Better project fit",
+      "fitBody": "RFQs are matched by process window, envelope, certifications and installation reach.",
+      "contextTitle": "More context up front",
+      "contextBody": "You see throughput, duty assumptions and risk flags from the start instead of guessing over email.",
+      "supportTitle": "Hands-on support",
+      "supportBody": "Support on scoping, quoting and installation planning so you can stay focused on execution."
+    },
+    "ctaApply": "Apply as vetted supplier"
+  },
+
+  "auth": {
+    "loginTitle": "Log in",
+    "joinTitle": "Join NovaNexus",
+    "nameLabel": "Name",
+    "emailLabel": "Business email",
+    "roleLabel": "You primarily act as",
+    "roleBuyer": "Buyer / operator",
+    "roleSupplier": "Factory / supplier",
+    "roleBoth": "Both sides",
+    "notesLabel": "What types of projects do you plan or supply?",
+    "successMessage": "Thanks – we’ve received your details and will follow up shortly.",
+    "join": {
+      "metaTitle": "NovaNexus ▢ Create account",
+      "badge": "BETA ACCESS · PORTAL ACCOUNT",
+      "titlePrefix": "Create your NovaNexus",
+      "titleHighlight": "buyer / supplier account",
+      "subtitle": "A secure login for RFQs, quotes and project status. Join on the buyer side, supplier side, or both – and connect real projects to the right factories.",
+      "metaTypicalLabel": "TYPICAL RESPONSE TIME",
+      "metaTypicalValue": "3–5 business days",
+      "metaRegionLabel": "REGION FOCUS",
+      "metaRegionValue": "Cross-border projects across North America, Europe and Korea · APAC hubs.",
+      "formIntroTitle": "Set up your creator account for NovaNexus.",
+      "formIntroBody": "This login holds RFQs, quotes and project threads. You can invite additional plant, engineering or sourcing teammates later from inside the portal.",
+      "passwordLabel": "Password",
+      "passwordConfirmLabel": "Confirm password",
+      "placeholders": {
+        "name": "Your full name",
+        "email": "name@company.com",
+        "password": "At least 8 characters",
+        "passwordConfirm": "Re-enter password",
+        "notes": "Examples: EV battery module line in the US, AS/RS warehouse in the EU, extrusion + machining for building profiles in APAC…"
+      },
+      "roleHelper": "This only shapes onboarding. You can use NovaNexus on both sides of a project later.",
+      "submitLabel": "Create NovaNexus account",
+      "submittingLabel": "Creating account…",
+      "primaryAccountNote": "This is your primary creator account. You can add additional teammates or integrators later from inside the portal.",
+      "alreadyHaveAccount": "Already have an account?",
+      "loginInstead": "Log in instead",
+      "buyerSideLabel": "Strong fits on the buyer side",
+      "supplierSideLabel": "What we look for on the supplier side",
+      "buyerSignals": [
+        "Plant / OEM teams planning real CAPEX projects (lines, cells, warehouses, automation).",
+        "RFQs where drawings, throughput and rough budget bands are already defined.",
+        "Projects where factories in Korea · APAC are a realistic option – not just an afterthought."
+      ],
+      "supplierSignals": [
+        "Factories with a proven export track record or installation partners in target regions.",
+        "Shops that own both manufacturing and on-site commissioning – not just machine sales.",
+        "Teams that like working from structured RFQs, drawings and target standards."
+      ],
+      "loginControlsTitle": "What this login controls",
+      "loginControlsBody": "RFQs, quotes, project history and central files across your lines and warehouses.",
+      "accessTitle": "Access & safety",
+      "accessBody": "Each teammate gets their own login. You can revoke or rotate access at any time.",
+      "successMessage": "Account created. You’ll be redirected to your NovaNexus portal in a moment.",
+      "errors": {
+        "nameRequired": "Name is required.",
+        "emailRequired": "Business email is required.",
+        "passwordRequired": "Password is required.",
+        "passwordTooShort": "Password must be at least 8 characters.",
+        "passwordMismatch": "Passwords do not match.",
+        "generic": "We couldn’t create this account. Please check your details and try again."
+      }
+    }
+  },
+
+  "howItWorks": {
+    "hero": {
+      "flowBadge": "FLOW ▢ FROM BRIEF TO DECISION",
+      "titleLine1": "How NovaNexus works",
+      "titleLine2": "from first idea to running line.",
+      "subtitle": "One RFQ in, one clear pipeline out. The goal is simple: fewer email chains, fewer “what are we actually working on?” calls and more lines that start up on time.",
+      "anchorBuyer": "Buyer workflows",
+      "anchorSupplier": "Supplier playbook",
+      "anchorPipeline": "Full pipeline",
+      "ctaPrimary": "Create RFQ",
+      "ctaSecondary": "Open buyer overview"
+    },
+
+    "orbit": {
+      "pipelineLabel": "RFQ pipeline",
+      "spineLabel": "NovaNexus spine",
+      "factoriesStatValue": "1 → 3–7",
+      "factoriesStatLabel": "curated factories per project",
+      "stagesStatValue": "3 stages",
+      "stagesStatLabel": "Intake · matching · award",
+      "nodeIntake": "RFQ intake",
+      "nodeBench": "Bench & matching",
+      "nodeAward": "Award & rollout"
+    },
+
+    "steps": {
+      "01": {
+        "title": "Describe the line or project",
+        "body": "You give a concise brief: process, materials, annual volume, region, target budget and timeline. You can upload layouts, drawings or photos directly."
+      },
+      "02": {
+        "title": "RFQ is cleaned up and structured",
+        "body": "Missing details are flagged, scope is sharpened and the RFQ is turned into a structured package that suppliers can quote from immediately."
+      },
+      "03": {
+        "title": "Bench & matching",
+        "body": "The project is routed only to suppliers whose capabilities, region and minimum project size truly match the scope – not just to whoever happens to be closest."
+      },
+      "04": {
+        "title": "Focused conversations",
+        "body": "All candidates see the same structured brief. Questions revolve around options and trade-offs – not “what exactly are you asking for?”"
+      },
+      "05": {
+        "title": "Decision support",
+        "body": "You get context on cost drivers, lead-time bands and risk points so you can pick a path that fits your plant – not just the cheapest quote."
+      }
+    },
+
+    "stepsSection": {
+      "kicker": "STEP BY STEP",
+      "title": "What actually happens after you click “Create RFQ”.",
+      "subtitle": "The nuances differ, but every project runs along the same backbone so expectations stay aligned across plants, regions and suppliers.",
+      "flowPill": "Flow"
+    },
+
+    "rolesSection": {
+      "kicker": "WHO IT’S BUILT FOR",
+      "title": "Two sides of the same production line."
+    },
+
+    "roles": {
+      "buyers": {
+        "title": "For buyers & operations",
+        "point1": "Cleaner RFQs and fewer ping-pong emails.",
+        "point2": "A shortlist of realistic suppliers per project.",
+        "point3": "A better feel for cost and lead-time bands before you commit."
+      },
+      "suppliers": {
+        "title": "For factories & integrators",
+        "point1": "Requests that match your processes and minimum project sizes.",
+        "point2": "Structured information from day one instead of vague one-liners.",
+        "point3": "A place to show depth of capability, not just a logo."
+      }
+    },
+
+    "buyerSection": {
+      "kicker": "BUYER WORKFLOWS",
+      "title": "How NovaNexus fits into a buyer’s week.",
+      "subtitle": "NovaNexus is not another system you need to roll out across the plant. It’s a structured workspace your team can throw projects into once a clean RFQ and realistic bench of factories are needed.",
+      "step1": {
+        "pill": "Step 1 · Scoping",
+        "title": "Capture the real requirement once, cleanly.",
+        "point1": "Upload layouts, drawings, photos and data on the current line.",
+        "point2": "Tag the RFQ by plant, line, process, safety standard and target go-live.",
+        "point3": "Add throughput targets, budget bands and duty / FTA assumptions.",
+        "point4": "Share the workspace with operations, maintenance and finance via a single link."
+      },
+      "step2": {
+        "pill": "Step 2 · Shortlisting",
+        "title": "A bench of factories that can actually deliver.",
+        "point1": "NovaNexus filters suppliers by process capability, certifications and region.",
+        "point2": "You see a shortlist of 3–7 realistic options instead of a directory with hundreds of entries.",
+        "point3": "Each candidate shows reference projects, typical lead times and cost bands.",
+        "point4": "Internal comments stay within your team – suppliers only see what they need."
+      },
+      "step3": {
+        "pill": "Step 3 · Decision",
+        "title": "Decide with less noise and more context.",
+        "point1": "Quotes arrive in the same structure – comparisons take minutes, not days.",
+        "point2": "You see how duty, freight and local installation change true landed cost.",
+        "point3": "You capture why a supplier was selected or declined – for audits and repeat projects.",
+        "point4": "Export a clear summary for CAPEX reviews and management approvals."
+      }
+    },
+
+    "supplierSection": {
+      "kicker": "SUPPLIER PLAYBOOK",
+      "title": "What “good” looks like on NovaNexus for factories.",
+      "subtitle": "The best suppliers behave like engineering partners, not quote machines. Here’s how high-performing factories use NovaNexus to protect capacity and win the right projects.",
+      "before": {
+        "pill": "Before RFQs",
+        "title": "Sharpen your profile so the right jobs find you.",
+        "point1": "Define your sweet spots: processes, tonnage, materials and minimum ticket size.",
+        "point2": "Upload reference lines with photos, videos and real throughput numbers.",
+        "point3": "Keep certifications, safety standards and countries of origin current.",
+        "point4": "Block capacity windows so buyers only see realistic lead times."
+      },
+      "during": {
+        "pill": "When RFQs arrive",
+        "title": "Qualify fast and quote without chaos.",
+        "point1": "Score each RFQ on fit: process match, volume, timing and strategic value.",
+        "point2": "Ask structured questions on drawings instead of long email chains.",
+        "point3": "Quote with clear breakdown: equipment, options, installation, training.",
+        "point4": "Flag technical risks early so FAT and SAT don’t surface surprises."
+      },
+      "after": {
+        "pill": "After you win",
+        "title": "Deliver cleanly and earn the next project.",
+        "point1": "Lock in milestones: design freeze, FAT, shipment, installation, ramp-up.",
+        "point2": "Share on-site requirements, checklists and drawings in the project workspace.",
+        "point3": "Log change orders with reasons so buyer finance and management stay aligned.",
+        "point4": "Capture lessons learned to raise your hit rate on similar RFQs."
+      },
+      "summary": {
+        "signalLabel": "Signal",
+        "signalBody": "See which sectors and regions are heating up – from live RFQ volume, not rumor.",
+        "focusLabel": "Focus",
+        "focusBody": "Spend time on fewer, better-qualified RFQs that fit your lines and margin goals.",
+        "partnershipLabel": "Partnership",
+        "partnershipBody": "Buyers see that you cover build, installation and long-term support – not just the first shipment."
+      }
+    },
+
+    "pipeline": {
+      "kicker": "END-TO-END PIPELINE",
+      "title": "From RFQ upload to awarded PO in three clear stages.",
+      "subtitle": "Every project follows the same backbone – whether it’s a single saw or a full shuttle-rack system. That consistency keeps programs on track.",
+      "stage1": {
+        "pill": "Stage 1 · RFQ intake",
+        "title": "Upload once, auto-structure.",
+        "point1": "Upload drawings, BOMs, photos and line data in standard formats.",
+        "point2": "Tag safety standards, certifications, region and target start date.",
+        "point3": "Auto-generate a clean RFQ summary suppliers can quote from immediately.",
+        "point4": "Let internal stakeholders comment before anything goes out to vendors."
+      },
+      "stage2": {
+        "pill": "Stage 2 · Matching & quotes",
+        "title": "Match to the right factories and align scope.",
+        "point1": "NovaNexus proposes a curated bench that fits process, scale and region.",
+        "point2": "Suppliers confirm feasibility and highlight trade-offs instead of guessing.",
+        "point3": "Quotes come back in comparable format with options and lead-time scenarios.",
+        "point4": "All clarifications and revisions stay anchored to the project, not scattered in inboxes."
+      },
+      "stage3": {
+        "pill": "Stage 3 · Award & rollout",
+        "title": "Decide and keep execution visible.",
+        "point1": "Select a supplier and capture decision logic for audits and repeat projects.",
+        "point2": "Track key milestones against the agreed schedule and responsibilities.",
+        "point3": "Store FAT reports, installation photos and SAT sign-offs in the same workspace.",
+        "point4": "Use post-project reviews to continuously sharpen your preferred supplier bench."
+      },
+      "summary": {
+        "oneSpineLabel": "One spine",
+        "oneSpineBody": "Every RFQ follows the same structure – from pilot lines to full plant expansions.",
+        "contextLabel": "Shared context",
+        "contextBody": "Engineering, operations, finance and leadership all see the same live picture.",
+        "knowledgeLabel": "Reusable knowledge",
+        "knowledgeBody": "Completed projects become templates instead of disappearing into email archives."
+      }
+    },
+
+    "finalCta": {
+      "title": "Start with a real project.",
+      "subtitle": "Submit an RFQ, browse the supplier bench or use the content to sharpen your options. You should leave with a clearer view than when you arrived.",
+      "ctaPrimary": "Create RFQ",
+      "ctaSecondary": "Join private beta"
+    }
+  },
+
+  "rfqs": {
+    "hero": {
+      "badge": "LIVE RFQS ▢ PRODUCTION-READY PROJECTS",
+      "title": "Live RFQs across lines, robotics and industrial automation.",
+      "subtitle": "A rotating, anonymized snapshot of RFQs running through NovaNexus – CNC and press lines, warehouse systems, EV cells plus medical and cleanroom projects where engineering quality matters more than the lowest bid.",
+      "note": "Representative sample projects by region. Live RFQs appear here automatically while active.",
+      "stats": {
+        "liveValue": "9",
+        "liveLabel": "Live / in-review RFQs",
+        "valueBandsValue": "$220k",
+        "valueBandsLabel": "Typical project value",
+        "factoriesValue": "160+",
+        "factoriesLabel": "Vetted factories"
+      }
+    },
+
+    "regions": {
+      "suppliersLabel": "Suppliers",
+      "sampleRfqsLabel": " active / sample RFQs in scope",
+      "americas": {
+        "label": "US & Americas",
+        "headline": "North-America-led, with additional capacity in LATAM.",
+        "short": "US & Americas"
+      },
+      "europe": {
+        "label": "Europe",
+        "headline": "Precision-heavy projects across DACH, Nordics and beyond.",
+        "short": "Europe"
+      },
+      "apac": {
+        "label": "Asia-Pacific",
+        "headline": "Korea-led bench with selected partners across wider APAC.",
+        "short": "Asia-Pacific"
+      }
+    },
+
+    "filters": {
+      "statusLabel": "Status",
+      "regionLabel": "Region",
+      "statusAll": "All",
+      "regionAll": "All",
+      "note": "Filters only change the view. Underneath, every row is a fully scoped RFQ with drawings, throughput and standards."
+    },
+
+    "status": {
+      "open": "Open",
+      "inReview": "In review",
+      "closed": "Closed"
+    },
+
+    "table": {
+      "headers": {
+        "id": "ID",
+        "title": "Title",
+        "process": "Process",
+        "region": "Region",
+        "budget": "Budget",
+        "status": "Status",
+        "decisionDate": "Decision date"
+      },
+      "empty": "No RFQs match the current filters.",
+      "sampleRows": [
+        {
+          "title": "Aluminum cutting line for automotive",
+          "process": "Aluminum line · hot saw + cooling",
+          "budget": "$600k–$1.2M"
+        },
+        {
+          "title": "High-bay warehouse with shuttle racks",
+          "process": "Racking system · shuttle + conveyors",
+          "budget": "$1.8M–$3.2M"
+        },
+        {
+          "title": "Cleanroom assembly cells for medical devices",
+          "process": "Assembly · robotics + vision inspection",
+          "budget": "$900k–$1.6M"
+        }
+      ]
+    },
+
+    "final": {
+      "title": "Should your next RFQ live here instead of an email chain?",
+      "body": "Start with a production-ready project. We help translate drawings, throughput and constraints into a clean RFQ and route it to a realistic bench of factories.",
+      "ctaPrimary": "Submit RFQ",
+      "ctaSecondary": "See how the pipeline works"
+    }
+  },
+
+  "rfqNew": {
+    "metaTitle": "NovaNexus ▢ Create RFQ",
+    "hero": {
+      "kicker": "CREATE RFQ ▢ PRODUCTION-READY PROJECTS ONLY",
+      "title": "Start with a real project.",
+      "subtitle": "This form is for lines, cells, retrofits and automation where choosing the wrong supplier really hurts. Be concrete: what runs today, what has to change and where the line will live later.",
+      "steps": {
+        "basics": "Basics",
+        "scope": "Scope & region",
+        "tech": "Technical description",
+        "contact": "Contact"
+      },
+      "noteTitle": "What happens after you submit?",
+      "noteBody": "RFQs are reviewed, cleaned up and matched to a curated bench of factories and integrators. There is no “send to all suppliers” button – every project is routed deliberately.",
+      "noteFoot": "If something is sensitive, you can keep names generic here and share drawings later under NDA."
+    },
+    "sections": {
+      "basics": {
+        "title": "Project basics",
+        "subtitle": "Just enough context that a technical sales or engineering lead understands what type of line or cell this is."
+      },
+      "scope": {
+        "title": "Scope & location",
+        "subtitle": "Region and industry help narrow the bench. If you’re flexible, mention it under constraints."
+      },
+      "tech": {
+        "title": "Technical description",
+        "subtitle": "Bullets are ideal. Focus on must-haves – layout, interfaces with existing equipment, safety, cleanroom, local service, certifications."
+      },
+      "contact": {
+        "title": "Contact",
+        "subtitle": "Used only to come back to this RFQ. In the MVP there’s no public profile tied to this form."
+      }
+    },
+    "fields": {
+      "company": {
+        "label": "Company / organization (optional)",
+        "placeholder": "Example: Tier-1 automotive supplier, 3PL logistics, medtech OEM…"
+      },
+      "projectName": {
+        "label": "Project name *",
+        "placeholder": "Example: new aluminum extrusion line for building profiles"
+      },
+      "role": {
+        "label": "Your role *",
+        "options": {
+          "buyer": "Buyer / plant / engineering",
+          "supplier": "Supplier exploring partnership",
+          "other": "Other"
+        }
+      },
+      "region": {
+        "label": "Preferred region *",
+        "options": {
+          "korea": "Korea",
+          "usa": "USA",
+          "europe": "Europe",
+          "japan": "Japan",
+          "vietnam": "Vietnam",
+          "middleEast": "Middle East",
+          "other": "Other / flexible"
+        }
+      },
+      "industry": {
+        "label": "Primary industry *",
+        "options": {
+          "aluminum": "Aluminum extrusion & finishing",
+          "cnc": "CNC machining & manufacturing",
+          "press": "Press lines & forming",
+          "robotics": "Industrial robotics & cells",
+          "conveyors": "Material handling & conveyors",
+          "warehouse": "Warehousing systems & AS/RS",
+          "packaging": "Packaging & end-of-line",
+          "plastics": "Injection molding & plastics",
+          "steel": "Steel processing & coil lines",
+          "food": "Food & beverage automation",
+          "pharma": "Pharma & medical devices",
+          "ev": "EV & battery production lines",
+          "other": "Other"
+        }
+      },
+      "process": {
+        "label": "Core process / line focus *",
+        "placeholder": "Example: extrusion & hot saws, shuttle racking, palletizing cells…"
+      },
+      "annualVolume": {
+        "label": "Annual volume / throughput (rough)",
+        "placeholder": "Example: 15,000 t / year, 500 pallets / day, 40 modules / hour…"
+      },
+      "budget": {
+        "label": "Budget band *",
+        "options": {
+          "lt200": "Under $200k",
+          "200to500": "$200k–$500k",
+          "500to1m": "$500k–$1M",
+          "1to3m": "$1M–$3M",
+          "gt3m": "$3M+"
+        }
+      },
+      "timeline": {
+        "label": "Target timing *",
+        "options": {
+          "lt3": "<3 months",
+          "3to6": "3–6 months",
+          "6to12": "6–12 months",
+          "gt12": "12+ months"
+        }
+      },
+      "description": {
+        "label": "What do you want to build or upgrade? *",
+        "placeholder": "- New extrusion line to replace aging equipment\n- Shuttle racks integrated into existing WMS\n- Robot palletizer cell added after current case packer…"
+      },
+      "constraints": {
+        "label": "Key constraints / must-haves",
+        "placeholder": "- Existing building layout / ceiling height\n- Local service required in a specific country\n- Cleanroom / validation / certification requirements…"
+      },
+      "contactName": {
+        "label": "Your name *",
+        "placeholder": "Example: operations manager, project engineer…"
+      },
+      "contactEmail": {
+        "label": "Business email *",
+        "placeholder": "name@company.com"
+      }
+    },
+    "validation": {
+      "projectName": "Project name is required.",
+      "process": "Core process / line focus is required.",
+      "description": "Please describe what you want to build or upgrade.",
+      "contactName": "Contact name is required.",
+      "contactEmail": "Business email is required."
+    },
+    "errors": {
+      "noBackend": "The RFQ backend is not reachable from this environment. Please check PocketBase URL and client configuration.",
+      "saveFailed": "There was an error saving this RFQ. Please check the RFQ collection, API rules and PocketBase URL."
+    },
+    "actions": {
+      "submit": "Create RFQ",
+      "submitting": "Submitting…",
+      "backToRfqs": "Back to live RFQs"
+    },
+    "success": {
+      "title": "Your RFQ has been created.",
+      "body": "The RFQ is now in the review queue. You’ll hear from us once it’s structured and matched to a realistic bench of factories.",
+      "internalIdPrefix": "Internal ID:"
+    }
+  },
+
+  "contact": {
+    "hero": {
+      "badge": "FOR BUYERS · SUPPLIERS",
+      "title": "Start with a project or a factory.",
+      "body": "Give a short sketch of what you’re working on. We’ll come back with a clear next step – from RFQ intake to a supplier intro or a quick reality check on scope and budget."
+    },
+    "buyers": {
+      "title": "For buyers",
+      "body": "Planning a new line, retrofit or warehouse project and want to see whether NovaNexus fits?",
+      "bullets": [
+        "▢ Short project overview (product, volume, timing).",
+        "▢ Region / preferred installation window.",
+        "▢ Constraints we should know from day one."
+      ],
+      "cta": "Create RFQ"
+    },
+    "suppliers": {
+      "title": "For suppliers",
+      "body": "Factory, integrator or automation shop that wants to be considered for matched projects?",
+      "bullets": [
+        "▢ Core processes and equipment you’re strong in.",
+        "▢ Typical project sizes / ticket range.",
+        "▢ Certifications and reference installations."
+      ],
+      "cta": "Apply as supplier"
+    },
+    "email": {
+      "title": "Direct email",
+      "body": "Prefer to write directly? Send a short note with your role and what you’re trying to solve. You can attach layouts, photos or existing RFQs if helpful.",
+      "address": "contact@novanexus.app",
+      "footnote": "For active projects we typically respond within 1–2 business days."
+    }
+  }
+}
